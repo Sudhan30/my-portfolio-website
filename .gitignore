@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+
+# build artifacts
+/build
+
+# local environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# misc
+.DS_Store
