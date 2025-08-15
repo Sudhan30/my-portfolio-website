@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Linkedin, Mail, Phone, MapPin, ChevronDown, Award, Briefcase, GraduationCap, Code, Database, Cloud, BarChart, Brain, GitBranch, Zap, Lightbulb, User, Building } from 'lucide-react';
+import { Linkedin, ChevronDown, Award, Briefcase, GraduationCap, Code, Database, Cloud, BarChart, Brain, GitBranch, Zap, Lightbulb, User, Building } from 'lucide-react';
 
 // Main App Component
 const App = () => {
