@@ -30,12 +30,12 @@ const App = () => {
                 // For local development, this points to the Firebase emulator.
                 // In a production environment, this should be replaced with the actual cloud function URL,
                 // ideally using environment variables.
-                const response = await fetch('http://localhost:5001/my-portfolio-app/us-central1/pageView', { method: 'POST' });
+                const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/pageView', { method: 'POST' });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                setViewCount(data.count);
+                // setViewCount(data.count);
                 if (data.message) {
                     setSpecialMessage(data.message);
                 }
