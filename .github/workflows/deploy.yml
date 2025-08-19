@@ -72,6 +72,10 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
+      - name: Clear existing bucket contents
+        run: |
+          gcloud storage rm -r gs://${{ env.BUCKET_NAME }}/* || true
+
       - name: Upload build to GCS
         uses: google-github-actions/upload-cloud-storage@v2
         with:
@@ -79,5 +83,11 @@ jobs:
           destination: ${{ env.BUCKET_NAME }}
           parent: false
           glob: '**'
-          headers: |
-            Cache-Control: public, max-age=3600
+          exclude: '**/.DS_Store'
+
+      - name: Set Cache-Control on uploaded files
+        run: |
+          gcloud storage objects update gs://${{ env.BUCKET_NAME }}/* --cache-control="public, max-age=3600" || {
+            echo "Failed to set Cache-Control metadata"
+            exit 1
+          }
