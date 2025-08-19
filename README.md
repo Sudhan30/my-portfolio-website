@@ -1,70 +1,153 @@
-# Getting Started with Create React App
+# Personal Portfolio Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a personal portfolio website built to showcase my skills, experience, and projects. It's a single-page application that provides a comprehensive overview of my professional profile.
 
-## Available Scripts
+## Technologies Used
 
-In the project directory, you can run:
+### Frontend
 
-### `npm start`
+*   **React.js:** A JavaScript library for building user interfaces.
+*   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+*   **Lucide React:** A library of beautiful and consistent icons.
+*   **SweetAlert2:** A library for creating beautiful and responsive alerts.
+*   **React Confetti:** A React component for creating a confetti effect.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Backend
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+*   **Firebase Functions:** A serverless framework for running backend code in response to events.
+*   **Node.js:** A JavaScript runtime for building server-side applications.
+*   **Firebase Firestore:** A NoSQL document database for storing and syncing data.
+*   **CORS:** A Node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+*   **Firebase Functions Rate Limiter:** A middleware for rate-limiting requests to Firebase Functions.
 
-### `npm test`
+### Deployment & DevOps
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+*   **Google Cloud Platform (GCP):** A suite of cloud computing services that runs on the same infrastructure that Google uses internally for its end-user products.
+*   **Google Cloud Storage:** A scalable, fully-managed, and highly available object storage service.
+*   **Google Cloud CDN:** A content delivery network that accelerates the delivery of web and video content.
+*   **GitHub Actions:** A CI/CD platform for automating build, test, and deployment pipelines.
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+*   **Single-Page Application (SPA):** A single-page application that provides a seamless user experience.
+*   **Responsive Design:** The website is fully responsive and works on all devices.
+*   **Interactive UI:** The UI includes interactive elements and animations to engage users.
+*   **Contact Form:** A contact form that allows users to send me a message. The form is connected to a serverless backend that stores the messages in a Firestore database.
+*   **Special Effects:** The website includes special effects like confetti and sweet alerts to provide a unique user experience.
+*   **Dynamic View Count:** The website tracks the number of page views and displays a special message for certain visitors.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## System Architecture
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The following diagram illustrates the high-level architecture of the system:
 
-### `npm run eject`
+```mermaid
+graph TD
+    subgraph "User"
+        A[Browser]
+    end
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    subgraph "Google Cloud Platform"
+        B[Cloud CDN]
+        C[Cloud Storage]
+        D[Cloud Function - Page View]
+        E[Cloud Function - Submit Feedback]
+        F[Firestore Database]
+    end
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    subgraph "GitHub"
+        G[GitHub Repository]
+        H[GitHub Actions]
+    end
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    A -- "Request Website" --> B
+    B -- "Serve Static Files" --> A
+    C -- "Serves Content to" --> B
+    A -- "Submit Feedback" --> E
+    E -- "Store Feedback" --> F
+    A -- "Page View" --> D
+    D -- "Update View Count" --> F
+    G -- "Push to main" --> H
+    H -- "Deploy to" --> C
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## User Interaction Flow
 
-## Learn More
+The following flowchart illustrates the user's journey through the website:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```mermaid
+graph TD
+    A[User visits the website] --> B{Is it a special visit?}
+    B -- "Yes" --> C[Display confetti and special message]
+    B -- "No" --> D[Display regular welcome page]
+    C --> D
+    D --> E{User navigates through sections}
+    E -- "Clicks on Contact" --> F[Contact form is displayed]
+    F --> G{User fills out and submits the form}
+    G -- "Success" --> H[Show success message]
+    G -- "Error" --> I[Show error message]
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Local Development
 
-### Code Splitting
+To run this project locally, you will need to have Node.js and npm installed on your machine.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repo-name.git
+    cd your-repo-name
+    ```
 
-### Analyzing the Bundle Size
+2.  **Install frontend dependencies:**
+    ```bash
+    npm install
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3.  **Install backend dependencies:**
+    ```bash
+    cd functions
+    npm install
+    cd ..
+    ```
 
-### Making a Progressive Web App
+4.  **Set up Firebase emulators (optional but recommended):**
+    To test the backend functions locally, you can use the Firebase Local Emulator Suite.
+    - Install the Firebase CLI: `npm install -g firebase-tools`
+    - Initialize Firebase in your project: `firebase init`
+    - Start the emulators: `firebase emulators:start`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+5.  **Start the React application:**
+    ```bash
+    npm start
+    ```
+    The application will be available at `http://localhost:3000`.
 
-### Advanced Configuration
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Frontend
 
-### Deployment
+The frontend is automatically deployed to Google Cloud Storage whenever changes are pushed to the `main` branch. The deployment pipeline is defined in the `.github/workflows/deploy.yml` file and includes the following steps:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1.  **Checkout code:** The code is checked out from the repository.
+2.  **Set up Node.js:** Node.js is set up to the specified version.
+3.  **Install dependencies:** The project dependencies are installed using `npm ci`.
+4.  **Build React app:** The React application is built for production.
+5.  **Authorize with Google Cloud:** The workflow authenticates with Google Cloud using a service account.
+6.  **Deploy to GCS:** The build files are uploaded to a Google Cloud Storage bucket.
+7.  **Invalidate CDN Cache:** The Cloud CDN cache is invalidated to ensure that the latest version of the website is served to users.
 
-### `npm run build` fails to minify
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The backend consists of two Cloud Functions: `pageView` and `submitFeedback`. These functions need to be deployed manually. For detailed instructions on how to deploy the functions and set up the API Gateway, please refer to the `gcp-deployment-instructions.md` file.
+
+## Backend Details
+
+The backend is built with Firebase Functions, a serverless compute service that lets you run backend code in response to events.
+
+### Cloud Functions
+
+*   **`pageView`:** This function is triggered whenever a user visits the website. It increments a counter in the Firestore database and returns a special message if the visitor is the 10th, 100th, 1000th, etc.
+*   **`submitFeedback`:** This function is triggered when a user submits the contact form. It stores the user's message in the Firestore database and sends a confirmation email to the user.
+
+### Rate Limiting
+
+To prevent abuse, the `submitFeedback` function is protected by a rate limiter. The rate limiter is configured to allow a certain number of requests per IP address per hour.
