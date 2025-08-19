@@ -1,4 +1,3 @@
-import React from 'react';
 import { Code, Zap, Database, Cloud, Brain, BarChart, GitBranch, Briefcase, Lightbulb } from 'lucide-react';
 
 export const skills = [
