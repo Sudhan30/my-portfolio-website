@@ -5,12 +5,6 @@ on:
     branches:
       - main
 
-env:
-  PROJECT_ID: 'sudhanportfoliowebsite'
-  BUCKET_NAME: 'www.sudharsana.dev'
-  SERVICE_ACCOUNT: 'github-actions-deployer@sudhanportfoliowebsite.iam.gserviceaccount.com'
-  WIF_PROVIDER: 'projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
-
 permissions:
   contents: 'read'
   id-token: 'write'
@@ -49,45 +43,35 @@ jobs:
           echo "Build directory contents:"
           ls -la ./build
 
-      - name: Debug OIDC token
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
-        run: |
-          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://iam.googleapis.com/projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github" | jq -r .value)
-          PAYLOAD=$(echo $TOKEN | jq -R 'split(".")[1] | @base64d | fromjson')
-          echo "Repository: $(echo $PAYLOAD | jq -r .repository)"
-          echo "Audience: $(echo $PAYLOAD | jq -r .aud)"
-
       - name: Authorize with Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ env.WIF_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           token_format: 'access_token'
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ env.PROJECT_ID }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Clear existing bucket contents
         run: |
-          gcloud storage rm -r gs://${{ env.BUCKET_NAME }}/* || true
+          gcloud storage rm -r gs://${{ secrets.GCP_BUCKET_NAME }}/* || true
 
       - name: Upload build to GCS
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: './build'
-          destination: ${{ env.BUCKET_NAME }}
+          destination: ${{ secrets.GCP_BUCKET_NAME }}
           parent: false
           glob: '**'
           exclude: '**/.DS_Store'
 
       - name: Set Cache-Control on uploaded files
         run: |
-          gcloud storage objects update gs://${{ env.BUCKET_NAME }}/* --cache-control="public, max-age=3600" || {
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/* --cache-control="public, max-age=3600" || {
             echo "Failed to set Cache-Control metadata"
             exit 1
           }
