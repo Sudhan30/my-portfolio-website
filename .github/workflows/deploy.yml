@@ -94,7 +94,6 @@ jobs:
 
       - name: Invalidate Cloud CDN cache
         run: |
-          gcloud compute url-maps cache-invalidation-rules invalidate \
-            sudharsana-load-balancer \
+          gcloud compute url-maps invalidate-cdn-cache sudharsana-load-balancer \
             --path "/*" \
             --global
