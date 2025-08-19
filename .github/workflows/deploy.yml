@@ -95,5 +95,4 @@ jobs:
       - name: Invalidate Cloud CDN cache
         uses: google-github-actions/gcloud-cli@v2
         with:
-          command: 'cdn-cache-invalidation'
-          args: 'invalidate-cache --bucket=${{ env.BUCKET_NAME }} --path="/*"'
+          command: 'compute url-maps invalidate-cache sudharsana-load-balancer --path="/*" --global'
