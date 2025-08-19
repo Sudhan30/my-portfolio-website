@@ -1,7 +1,6 @@
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 
-// This initializes the Admin SDK and connects to Firestore
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -27,7 +26,7 @@ exports.submitFeedback = (req, res) => {
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
             };
 
-            // This adds the data to the 'feedback' collection in Firestore
+            // This adds the data to the 'feedbackCollect' collection
             await db.collection('feedbackCollect').add(feedbackEntry);
 
             res.status(200).send({ message: 'Feedback submitted successfully.' });
