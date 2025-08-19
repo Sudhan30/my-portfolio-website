@@ -9,7 +9,7 @@ env:
   PROJECT_ID: 'sudhanportfoliowebsite'
   BUCKET_NAME: 'www.sudharsana.dev'
   SERVICE_ACCOUNT: 'github-actions-deployer@sudhanportfoliowebsite.iam.gserviceaccount.com'
-  WIF_PROVIDER: 'projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
+  WIF_PROVIDER: '//iam.googleapis.com/projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
 
 permissions:
   contents: 'read'
@@ -34,17 +34,16 @@ jobs:
         run: npm run build
 
       - name: Authorize with Google Cloud
-        uses: 'google-github-actions/auth@v2'
+        uses: google-github-actions/auth@v2
         with:
+          token_format: 'access_token'
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
 
       - name: Upload build to GCS
-        uses: 'google-github-actions/upload-cloud-storage@v2'
+        uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: './build'
           destination: ${{ env.BUCKET_NAME }}
           parent: false
           glob: '**'
-          precondition_if: |
-            ! (github.event_name == 'pull_request' && github.event.action == 'synchronize')
