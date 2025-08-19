@@ -1,73 +1,80 @@
 name: Deploy to Google Cloud Storage
 
-on:
-  push:
-    branches:
-      - main
+     on:
+       push:
+         branches:
+           - main
 
-env:
-  PROJECT_ID: 'sudhanportfoliowebsite'
-  BUCKET_NAME: 'www.sudharsana.dev'
-  SERVICE_ACCOUNT: 'github-actions-deployer@sudhanportfoliowebsite.iam.gserviceaccount.com'
-  WIF_PROVIDER: 'projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
+     env:
+       PROJECT_ID: 'sudhanportfoliowebsite'
+       BUCKET_NAME: 'www.sudharsana.dev'
+       SERVICE_ACCOUNT: 'github-actions-deployer@sudhanportfoliowebsite.iam.gserviceaccount.com'
+       WIF_PROVIDER: 'projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
 
-permissions:
-  contents: 'read'
-  id-token: 'write'
+     permissions:
+       contents: 'read'
+       id-token: 'write'
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+     jobs:
+       deploy:
+         runs-on: ubuntu-latest
+         steps:
+           - name: Checkout code
+             uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+           - name: Set up Node.js
+             uses: actions/setup-node@v4
+             with:
+               node-version: '20'
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+           - name: Cache Node.js modules
+             uses: actions/cache@v4
+             with:
+               path: ~/.npm
+               key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+               restore-keys: ${{ runner.os }}-node-
 
-      - name: Install dependencies
-        run: npm ci
+           - name: Install dependencies
+             run: npm ci
 
-      - name: Build React app
-        run: npm run build
+           - name: Build React app
+             run: npm run build
 
-      - name: Verify build
-        run: |
-          if [ ! -d "./build" ]; then
-            echo "Build directory not found!"
-            exit 1
-          fi
-          echo "Build directory contents:"
-          ls -la ./build
+           - name: Verify build
+             run: |
+               if [ ! -d "./build" ]; then
+                 echo "Build directory not found!"
+                 exit 1
+               fi
+               echo "Build directory contents:"
+               ls -la ./build
 
-      - name: Authorize with Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ env.WIF_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-          token_format: 'access_token'
+           - name: Debug OIDC token
+             env:
+               ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
+               ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+             run: |
+               curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://iam.googleapis.com/projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github" | jq .
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
+           - name: Authorize with Google Cloud
+             id: auth
+             uses: google-github-actions/auth@v2
+             with:
+               workload_identity_provider: ${{ env.WIF_PROVIDER }}
+               service_account: ${{ env.SERVICE_ACCOUNT }}
+               token_format: 'access_token'
 
-      - name: Upload build to GCS
-        uses: google-github-actions/upload-cloud-storage@v2
-        with:
-          path: './build'
-          destination: ${{ env.BUCKET_NAME }}
-          parent: false
-          glob: '**'
-          headers: |
-            Cache-Control: public, max-age=3600
+           - name: Set up Cloud SDK
+             uses: google-github-actions/setup-gcloud@v2
+             with:
+               project_id: ${{ env.PROJECT_ID }}
+
+           - name: Upload build to GCS
+             uses: google-github-actions/upload-cloud-storage@v2
+             with:
+               path: './build'
+               destination: ${{ env.BUCKET_NAME }}
+               parent: false
+               glob: '**'
+               headers: |
+                 Cache-Control: public, max-age=3600
