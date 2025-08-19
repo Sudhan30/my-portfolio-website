@@ -1,12 +1,13 @@
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 
+// This initializes the Admin SDK and connects to Firestore
 admin.initializeApp();
-
 const db = admin.firestore();
 
-exports.submitFeedback = functions.https.onRequest((req, res) => {
+// This is the actual Cloud Function code
+exports.submitFeedback = (req, res) => {
+    // This handles the CORS preflight requests
     cors(req, res, async () => {
         if (req.method !== 'POST') {
             return res.status(405).send('Method Not Allowed');
@@ -26,12 +27,14 @@ exports.submitFeedback = functions.https.onRequest((req, res) => {
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
             };
 
-            await db.collection('feedback').add(feedbackEntry);
+            // This adds the data to the 'feedback' collection in Firestore
+            await db.collection('feedbackCollect').add(feedbackEntry);
 
             res.status(200).send({ message: 'Feedback submitted successfully.' });
+
         } catch (error) {
             console.error('Error submitting feedback:', error);
             res.status(500).send('Internal Server Error');
         }
     });
-});
+};

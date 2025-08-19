@@ -19,7 +19,7 @@ const Feedback = ({ onClose }) => {
         setSubmitting(true);
 
         try {
-            const response = await fetch('YOUR_API_GATEWAY_URL/submit-feedback', {
+            const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/submitFeedback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
