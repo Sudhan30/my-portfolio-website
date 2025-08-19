@@ -1,8 +1,28 @@
-const admin = require('firebase-admin');
-const cors = require('cors')({origin: true});
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const cors = require("cors")({ origin: true });
+const { FirebaseFunctionsRateLimiter } = require("firebase-functions-rate-limiter");
 
 admin.initializeApp();
 const db = admin.firestore();
+
+const pageViewLimiter = FirebaseFunctionsRateLimiter.withFirestoreBackend(
+    {
+        name: "page_view_limiter",
+        maxCalls: 20,
+        periodSeconds: 60,
+    },
+    db
+);
+
+const feedbackLimiter = FirebaseFunctionsRateLimiter.withFirestoreBackend(
+    {
+        name: "feedback_limiter",
+        maxCalls: 5,
+        periodSeconds: 60,
+    },
+    db
+);
 
 // Helper functions for mathematically significant numbers
 const isPrime = (num) => {
@@ -52,13 +72,15 @@ const getMathematicalMessage = (num) => {
     return null;
 };
 
-exports.pageView = (req, res) => {
+exports.pageView = functions.https.onRequest(async (req, res) => {
     cors(req, res, async () => {
-        const docRef = db.collection('pageViews').doc('counter');
-        let newCount;
-        let message = null;
-
         try {
+            await pageViewLimiter.rejectOnQuotaExceededOrRecordUsage(req.ip);
+
+            const docRef = db.collection('pageViews').doc('counter');
+            let newCount;
+            let message = null;
+
             const doc = await docRef.get();
             if (!doc.exists) {
                 newCount = 1;
@@ -72,14 +94,18 @@ exports.pageView = (req, res) => {
 
             res.status(200).send({ count: newCount, message: message });
         } catch (error) {
-            console.error('Error updating page view count:', error);
-            res.status(500).send('Internal Server Error');
+            if (error instanceof functions.https.HttpsError) {
+                res.status(429).send(error.message);
+            } else {
+                console.error('Error updating page view count:', error);
+                res.status(500).send('Internal Server Error');
+            }
         }
     });
-};
+});
 
 // This is the actual Cloud Function code
-exports.submitFeedback = (req, res) => {
+exports.submitFeedback = functions.https.onRequest(async (req, res) => {
     // This handles the CORS preflight requests
     cors(req, res, async () => {
         if (req.method !== 'POST') {
@@ -87,6 +113,8 @@ exports.submitFeedback = (req, res) => {
         }
 
         try {
+            await feedbackLimiter.rejectOnQuotaExceededOrRecordUsage(req.ip);
+
             const { name, email, feedback } = req.body;
 
             if (!feedback) {
@@ -106,8 +134,12 @@ exports.submitFeedback = (req, res) => {
             res.status(200).send({ message: 'Feedback submitted successfully.' });
 
         } catch (error) {
-            console.error('Error submitting feedback:', error);
-            res.status(500).send('Internal Server Error');
+            if (error instanceof functions.https.HttpsError) {
+                res.status(429).send(error.message);
+            } else {
+                console.error('Error submitting feedback:', error);
+                res.status(500).send('Internal Server Error');
+            }
         }
     });
-};
+});
