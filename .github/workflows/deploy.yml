@@ -9,7 +9,7 @@ env:
   PROJECT_ID: 'sudhanportfoliowebsite'
   BUCKET_NAME: 'www.sudharsana.dev'
   SERVICE_ACCOUNT: 'github-actions-deployer@sudhanportfoliowebsite.iam.gserviceaccount.com'
-  WIF_PROVIDER: '//iam.googleapis.com/projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
+  WIF_PROVIDER: 'projects/254598432060/locations/global/workloadIdentityPools/github-pool-new/providers/github'
 
 permissions:
   contents: 'read'
@@ -23,22 +23,44 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build React app
         run: npm run build
 
+      - name: Verify build
+        run: |
+          if [ ! -d "./build" ]; then
+            echo "Build directory not found!"
+            exit 1
+          fi
+          echo "Build directory contents:"
+          ls -la ./build
+
       - name: Authorize with Google Cloud
+        id: auth
         uses: google-github-actions/auth@v2
         with:
-          token_format: 'access_token'
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
 
       - name: Upload build to GCS
         uses: google-github-actions/upload-cloud-storage@v2
@@ -47,3 +69,5 @@ jobs:
           destination: ${{ env.BUCKET_NAME }}
           parent: false
           glob: '**'
+          headers: |
+            Cache-Control: public, max-age=3600
