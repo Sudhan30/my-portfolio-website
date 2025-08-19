@@ -92,7 +92,6 @@ jobs:
             exit 1
           }
 
-      - name: Invalidate Cloud CDN cache
-        uses: google-github-actions/gcloud-cli@v2
-        with:
-          command: 'compute url-maps invalidate-cache sudharsana-load-balancer --path="/*" --global'
+     - name: Invalidate Cloud CDN cache
+        run: |
+          gcloud compute url-maps invalidate-cache sudharsana-load-balancer --path="/*" --global
