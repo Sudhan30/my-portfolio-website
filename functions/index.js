@@ -4,6 +4,80 @@ const cors = require('cors')({origin: true});
 admin.initializeApp();
 const db = admin.firestore();
 
+// Helper functions for mathematically significant numbers
+const isPrime = (num) => {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+    if (num % 2 === 0 || num % 3 === 0) return false;
+    for (let i = 5; i * i <= num; i = i + 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
+    }
+    return true;
+};
+
+const isPerfect = (num) => {
+    if (num <= 1) return false;
+    let sum = 1;
+    for (let i = 2; i * i <= num; i++) {
+        if (num % i === 0) {
+            sum += i;
+            if (i * i !== num) {
+                sum += num / i;
+            }
+        }
+    }
+    return sum === num;
+};
+
+const isFibonacci = (num) => {
+    let a = 0, b = 1;
+    while (b < num) {
+        let temp = b;
+        b = a + b;
+        a = temp;
+    }
+    return b === num;
+};
+
+const getMathematicalMessage = (num) => {
+    if (isPrime(num)) {
+        return `Congratulations! Your visit is the ${num}th, which is a prime number!`;
+    }
+    if (isPerfect(num)) {
+        return `Wow! Your visit is the ${num}th, a perfect number!`;
+    }
+    if (isFibonacci(num)) {
+        return `Fantastic! Your visit is the ${num}th, a Fibonacci number!`;
+    }
+    return null;
+};
+
+exports.pageView = (req, res) => {
+    cors(req, res, async () => {
+        const docRef = db.collection('pageViews').doc('counter');
+        let newCount;
+        let message = null;
+
+        try {
+            const doc = await docRef.get();
+            if (!doc.exists) {
+                newCount = 1;
+            } else {
+                newCount = doc.data().count + 1;
+            }
+
+            message = getMathematicalMessage(newCount);
+
+            await docRef.set({ count: newCount });
+
+            res.status(200).send({ count: newCount, message: message });
+        } catch (error) {
+            console.error('Error updating page view count:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+};
+
 // This is the actual Cloud Function code
 exports.submitFeedback = (req, res) => {
     // This handles the CORS preflight requests
