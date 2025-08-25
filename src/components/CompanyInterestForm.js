@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Building } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 const CompanyInterestForm = () => {
     const [formData, setFormData] = useState({
@@ -20,23 +22,18 @@ const CompanyInterestForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // In a real application, you would send this data to a backend service.
-        // For example, a Google Cloud Function, App Engine endpoint, or a third-party form service.
         console.log('Form submitted:', formData);
 
-        // Display a simple message box instead of alert()
-        const messageBox = document.createElement('div');
-        messageBox.className = 'fixed-message-box-overlay';
-        messageBox.innerHTML = `
-            <div class="fixed-message-box-content">
-                <h4 class="message-box-title">Thank You!</h4>
-                <p class="message-box-text">Your interest has been noted. Sudharsana will get back to you soon.</p>
-                <button id="closeMessageBox" class="message-box-button">Close</button>
-            </div>
-        `;
-        document.body.appendChild(messageBox);
-
-        document.getElementById('closeMessageBox').addEventListener('click', () => {
-            document.body.removeChild(messageBox);
+        Swal.fire({
+            title: 'Thank You!',
+            text: 'Your interest has been noted. Sudharsana will get back to you soon.',
+            icon: 'success',
+            confirmButtonText: 'Close',
+            customClass: {
+                popup: 'rounded-xl shadow-lg',
+                title: 'text-2xl font-bold text-gray-900',
+                confirmButton: 'bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full',
+            }
         });
 
         // Clear the form
@@ -49,9 +46,9 @@ const CompanyInterestForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-layout">
+        <form onSubmit={handleSubmit} className="space-y-6 text-left">
             <div className="form-group">
-                <label htmlFor="companyName">Company Name</label>
+                <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2 pl-4">Company Name</label>
                 <input
                     type="text"
                     id="companyName"
@@ -60,10 +57,11 @@ const CompanyInterestForm = () => {
                     onChange={handleChange}
                     placeholder="Your Company Name"
                     required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-purple-500"
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="contactPerson">Contact Person</label>
+                <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-2 pl-4">Contact Person</label>
                 <input
                     type="text"
                     id="contactPerson"
@@ -72,10 +70,11 @@ const CompanyInterestForm = () => {
                     onChange={handleChange}
                     placeholder="Your Name"
                     required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-purple-500"
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="email">Company Email</label>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 pl-4">Company Email</label>
                 <input
                     type="email"
                     id="email"
@@ -84,10 +83,11 @@ const CompanyInterestForm = () => {
                     onChange={handleChange}
                     placeholder="contact@company.com"
                     required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-purple-500"
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="message">Message / Area of Interest</label>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2 pl-4">Message / Area of Interest</label>
                 <textarea
                     id="message"
                     name="message"
@@ -96,72 +96,18 @@ const CompanyInterestForm = () => {
                     rows="5"
                     placeholder="Tell us about your interest..."
                     required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-purple-500"
                 ></textarea>
             </div>
-            <button
+            <motion.button
                 type="submit"
-                className="form-submit-button"
+                className="w-full bg-purple-600 text-white px-6 py-3 rounded-full text-lg font-semibold shadow-md flex items-center justify-center"
+                whileHover={{ scale: 1.05, backgroundColor: '#7c3aed' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
             >
-                <Building style={{ marginRight: '0.5rem' }} size={20} /> Submit Interest
-            </button>
-            <style>
-                {`
-                .form-layout {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.5rem; /* space-y-6 equivalent */
-                    text-align: left; /* Ensure content is left-aligned within the form */
-                }
-
-                .fixed-message-box-overlay {
-                    position: fixed;
-                    inset: 0;
-                    background-color: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 50;
-                }
-
-                .fixed-message-box-content {
-                    background-color: var(--white);
-                    padding: 2rem;
-                    border-radius: 0.5rem;
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                    text-align: center;
-                    max-width: 24rem;
-                    margin-left: auto;
-                    margin-right: auto;
-                }
-
-                .message-box-title {
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    color: var(--gray-900);
-                    margin-bottom: 1rem;
-                }
-
-                .message-box-text {
-                    color: var(--gray-700);
-                    margin-bottom: 1.5rem;
-                }
-
-                .message-box-button {
-                    background-color: var(--purple-600);
-                    color: var(--white);
-                    padding: 0.5rem 1.5rem;
-                    border-radius: 9999px;
-                    transition-property: background-color;
-                    transition-duration: 300ms;
-                    cursor: pointer;
-                    border: none;
-                }
-
-                .message-box-button:hover {
-                    background-color: var(--purple-700);
-                }
-                `}
-            </style>
+                <Building className="mr-2" size={20} /> Submit Interest
+            </motion.button>
         </form>
     );
 };

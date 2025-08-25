@@ -14,11 +14,11 @@ const Footer = () => {
 
     return (
         <>
-            <footer className="footer">
-                <div className="footer-container">
+            <footer className="bg-gray-900 text-gray-300 py-8 text-center mt-auto rounded-t-xl">
+                <div className="max-w-6xl mx-auto">
                     <p>&copy; {new Date().getFullYear()} Sudharsana Rajasekaran. All rights reserved.</p>
-                    <div className="footer-links">
-                        <button onClick={handleOpenFeedbackModal} className="feedback-link">Feedback</button>
+                    <div className="mt-4">
+                        <button onClick={handleOpenFeedbackModal} className="text-purple-400 hover:text-purple-300 underline">Feedback</button>
                     </div>
                 </div>
             </footer>
