@@ -1,4 +1,5 @@
 import React from 'react';
+import myProfPhoto from '../myProfPhoto.png';
 
 const Hero = ({ scrollToSection }) => {
     return (
@@ -8,7 +9,7 @@ const Hero = ({ scrollToSection }) => {
                 <div className="animate-pulse-slow delay-500" style={{ bottom: 0, right: 0 }}></div>
             </div>
             <div className="hero-content">
-                <img src="https://i.pravatar.cc/150" alt="Sudharsana Rajasekaran" className="hero-avatar" />
+                <img src={myProfPhoto} alt="Sudharsana Rajasekaran" className="hero-avatar" />
                 <h2 className="hero-title animate-fade-in-up">
                     Hello, I'm <span style={{ color: 'var(--yellow-300)' }}>Sudharsana Rajasekaran</span>
                 </h2>
