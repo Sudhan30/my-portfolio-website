@@ -144,12 +144,6 @@ const TelemetryConsent = () => {
                     </div>
                 </div>
 
-                <div className="consent-footer">
-                    <p>
-                        By using this site, you agree to our privacy practices. 
-                        You can change your preferences at any time.
-                    </p>
-                </div>
             </div>
         </div>
     );
