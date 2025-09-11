@@ -19,7 +19,7 @@ import { config } from './utils/env';
 const App = () => {
     const [loading, setLoading] = useState(true);
     const [activeSection, setActiveSection] = useState('home');
-    const [viewCount, setViewCount] = useState(0);
+    // const [viewCount, setViewCount] = useState(0); // Unused for now
     const [specialMessage, setSpecialMessage] = useState(null);
     const [showConfetti, setShowConfetti] = useState(false);
 

@@ -6,7 +6,7 @@ import './TelemetryConsent.css';
 const TelemetryConsent = () => {
     const [showBanner, setShowBanner] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
-    const [consentGiven, setConsentGiven] = useState(false);
+    const [, setConsentGiven] = useState(false);
 
     useEffect(() => {
         // Check if user has already made a consent decision

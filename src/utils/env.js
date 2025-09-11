@@ -50,4 +50,7 @@ export const debugEnv = () => {
   console.log('process.env keys:', Object.keys(process.env).filter(key => key.startsWith('REACT_APP_')));
 };
 
+// Alias for backward compatibility
+export const getEnvConfig = () => config;
+
 export default config;

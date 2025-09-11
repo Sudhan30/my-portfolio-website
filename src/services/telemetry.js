@@ -84,7 +84,7 @@ class TelemetryService {
             timestamp: new Date().toISOString(),
             url: window.location.href,
             userAgent: navigator.userAgent,
-            screenResolution: `${screen.width}x${screen.height}`,
+            screenResolution: `${window.screen.width}x${window.screen.height}`,
             viewportSize: `${window.innerWidth}x${window.innerHeight}`,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             language: navigator.language,
