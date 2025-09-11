@@ -1,19 +1,21 @@
-import { Code, Zap, Database, Cloud, Brain, BarChart, GitBranch, Briefcase, Lightbulb } from 'lucide-react';
+import { Code, Zap, Database, Cloud, Brain, BarChart, GitBranch, Briefcase, Lightbulb, Settings, Cpu } from 'lucide-react';
 
 export const skills = [
     { category: 'Programming', icon: Code, skills: ['Python', 'Scala', 'Java'] },
-    { category: 'Big Data', icon: Zap, skills: ['Apache Hadoop', 'Hive', 'Apache Kafka', 'Apache Spark', 'Apache Airflow', 'Apache NiFi'] },
-    { category: 'Databases', icon: Database, skills: ['Presto', 'Cosmos DB', 'Microsoft SQL Server', 'MySQL', 'Oracle', 'Teradata', 'MongoDB'] },
-    { category: 'Cloud Technologies', icon: Cloud, skills: ['Google Cloud Platform (GCP)', 'Google Cloud Storage (GCS)', 'Google BigQuery', 'Google DataProc'] },
-    { category: 'Data Science Skills', icon: Brain, skills: ['Regression Techniques', 'Neural Networks', 'ANOVA', 'Hypothesis Testing', 'Time Series Analysis', 'Data Mining', 'Data Visualization', 'Predictive Analytics', 'Deep Learning', 'Computer Vision'] },
     { category: 'BI/ETL/Reporting Tools', icon: BarChart, skills: ['Tableau', 'Power BI', 'Looker', 'SAP Business Objects', 'IBM Cognos'] },
-    { category: 'CI/CD Automation', icon: GitBranch, skills: ['Looper'] },
+    { category: 'Big Data', icon: Zap, skills: ['Spark', 'Hadoop', 'Hive', 'Flink', 'Kafka', 'Airflow', 'NiFi', 'Trino/Presto', 'Apache Iceberg', 'Hudi'] },
+    { category: 'Data Science Skills', icon: Brain, skills: ['Regression Techniques', 'Neural Networks', 'ANOVA', 'Hypothesis Testing', 'Time Series Analysis', 'Data Mining', 'Data Visualization', 'Predictive Analytics', 'Deep Learning', 'Computer Vision'] },
+    { category: 'Databases', icon: Database, skills: ['Presto', 'Cosmos DB', 'Microsoft SQL Server', 'MySQL', 'Oracle', 'Teradata', 'MongoDB'] },
+    { category: 'Cloud Technologies', icon: Cloud, skills: ['Google Cloud Platform', 'BigQuery', 'DataProc', 'Google Cloud Storage (GCS)', 'Cloud SQL', 'Firestore', 'AWS', 'Azure'] },
+    { category: 'CI/CD Automation', icon: GitBranch, skills: ['GitHub Actions', 'FluxCD (GitOps)'] },
+    { category: 'DevOps & Infrastructure', icon: Settings, skills: ['Kubernetes (k3s, GKE)', 'Docker', 'Helm', 'Prometheus', 'Grafana', 'OpenTelemetry', 'Cloudflare', 'Kustomize', 'YAML', 'Git', 'Linux'] },
+    { category: 'Machine Learning / AI', icon: Cpu, skills: ['TensorFlow', 'PyTorch', 'scikit-learn', 'Hugging Face', 'MLflow', 'Feature Engineering & Feature Stores', 'Model Serving (FastAPI/Flask)', 'Computer Vision', 'Generative AI Workflows'] },
 ];
 
 export const experiences = [
     {
         title: 'Senior Data Engineer',
-        company: 'Walmart Global Tech, Sunnyvale, California',
+        company: 'Walmart Global Tech, Sunnyvale',
         duration: 'March 2022 - Present',
         icon: Briefcase,
         projects: [
@@ -51,7 +53,7 @@ export const experiences = [
     },
     {
         title: 'Business Intelligence Engineer',
-        company: 'Google (Contractor), Sunnyvale, California',
+        company: 'Google (Contractor), Sunnyvale',
         duration: 'August 2020 - March 2022',
         icon: Lightbulb,
         projects: [

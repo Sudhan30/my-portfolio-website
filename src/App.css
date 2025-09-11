@@ -873,12 +873,56 @@ body {
     font-size: 1.125rem; /* text-lg */
     font-weight: 500; /* font-medium */
     color: var(--gray-700);
-    transition-property: color;
-    transition-duration: 300ms;
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .contact-link-item:hover span {
     color: var(--gray-900);
+}
+
+/* Contact Button Styles */
+.contact-button {
+    background-color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0.75rem;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.contact-button:hover {
+    background: linear-gradient(135deg, var(--green-50), var(--green-100));
+    box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.1), 0 4px 6px -2px rgba(34, 197, 94, 0.05);
+    transform: scale(1.05);
+}
+
+.contact-button:hover span {
+    color: var(--green-700);
+}
+
+.contact-button:active {
+    transform: scale(0.98);
+}
+
+/* Contact Form Wrapper Transitions */
+.contact-form-wrapper {
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+}
+
+.contact-form-wrapper.show {
+    max-height: 1000px;
+    opacity: 1;
+    margin-bottom: 2rem;
+}
+
+.contact-form-wrapper.hide {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
 }
 
 .contact-address {
@@ -959,6 +1003,245 @@ body {
     .analyze-button, .clear-button {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* Comprehensive Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Global Mobile Styles */
+    .section-padding {
+        padding: 2rem 1rem;
+    }
+    
+    .section-container {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    /* Header Mobile Styles */
+    .header {
+        padding: 1rem;
+    }
+    
+    .header-nav {
+        display: none;
+    }
+    
+    .mobile-menu-button {
+        display: block;
+    }
+    
+    /* Hero Section Mobile */
+    .hero-section {
+        padding: 3rem 1rem;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .hero-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+    }
+    
+    /* About Section Mobile */
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .about-text {
+        text-align: center;
+    }
+    
+    /* Skills Section Mobile */
+    .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .skill-category {
+        padding: 1.5rem;
+    }
+    
+    .skill-category h4 {
+        font-size: 1.125rem;
+    }
+    
+    /* Experience Section Mobile */
+    .job-experience-container {
+        gap: 2rem;
+    }
+    
+    .job-card {
+        padding: 1.5rem;
+    }
+    
+    .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .job-title {
+        font-size: 1.25rem;
+    }
+    
+    .job-company {
+        font-size: 1rem;
+    }
+    
+    .job-duration {
+        font-size: 0.875rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .project-card {
+        padding: 1rem;
+    }
+    
+    .project-name {
+        font-size: 1rem;
+    }
+    
+    .project-description,
+    .project-impact {
+        font-size: 0.875rem;
+    }
+    
+    /* Job Analyzer Mobile */
+    .job-analyzer-container {
+        padding: 1rem;
+    }
+    
+    .job-analyzer-title {
+        font-size: 1.75rem;
+    }
+    
+    .job-analyzer-description {
+        font-size: 0.875rem;
+    }
+    
+    /* Contact Section Mobile */
+    .contact-links {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .contact-link-item {
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .contact-link-item span {
+        font-size: 1rem;
+    }
+    
+    /* Footer Mobile */
+    .footer {
+        padding: 1.5rem 1rem;
+    }
+    
+    .footer-container {
+        padding: 0;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .section-padding {
+        padding: 1.5rem 0.75rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .skill-category {
+        padding: 1rem;
+    }
+    
+    .job-card {
+        padding: 1rem;
+    }
+    
+    .project-card {
+        padding: 0.75rem;
+    }
+    
+    .contact-link-item {
+        padding: 0.75rem;
+    }
+    
+    .contact-link-item span {
+        font-size: 0.875rem;
+    }
+    
+    /* Contact Form Wrapper Mobile */
+    .contact-form-wrapper.show {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Touch-Friendly Mobile Styles */
+@media (max-width: 768px) {
+    /* Ensure touch targets are at least 44px */
+    .hero-button,
+    .contact-link-item,
+    .floating-feedback-button,
+    .analyze-button,
+    .clear-button,
+    .contact-form-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improve touch scrolling */
+    .floating-feedback-modal {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent text selection on buttons */
+    .hero-button,
+    .contact-link-item,
+    .floating-feedback-button,
+    .analyze-button,
+    .clear-button,
+    .contact-form-button {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Improve tap highlighting */
+    .hero-button,
+    .contact-link-item,
+    .floating-feedback-button,
+    .analyze-button,
+    .clear-button,
+    .contact-form-button {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
     }
 }
 

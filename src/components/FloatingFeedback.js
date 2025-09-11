@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle, Star, X } from 'lucide-react';
 import './FloatingFeedback.css';
 
@@ -12,6 +12,26 @@ const FloatingFeedback = () => {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [isNearFooter, setIsNearFooter] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const footer = document.querySelector('.footer');
+            if (footer) {
+                const footerRect = footer.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                const threshold = 200; // Distance from footer to trigger change
+                
+                // Check if footer is near the bottom of the viewport
+                setIsNearFooter(footerRect.top <= windowHeight + threshold);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Check initial position
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -120,7 +140,7 @@ const FloatingFeedback = () => {
     return (
         <>
             <button 
-                className="floating-feedback-button"
+                className={`floating-feedback-button ${isNearFooter ? 'near-footer' : ''}`}
                 onClick={() => setIsOpen(true)}
                 title="Give Feedback"
             >
@@ -136,26 +156,9 @@ const FloatingFeedback = () => {
                         
                         <div className="feedback-header">
                             <h3>Share Your Feedback</h3>
-                            <p>Help us improve this portfolio</p>
                         </div>
                         
                         <form onSubmit={handleSubmit} className="feedback-form">
-                            <div className="rating-section">
-                                <label className="rating-label">
-                                    How would you rate this portfolio? <span className="required">*</span>
-                                </label>
-                                <div className="stars-container">
-                                    {renderStars()}
-                                    <span className="rating-text">
-                                        {rating === 0 ? 'Click to rate' : 
-                                         rating === 1 ? 'Poor' :
-                                         rating === 2 ? 'Fair' :
-                                         rating === 3 ? 'Good' :
-                                         rating === 4 ? 'Very Good' : 'Excellent'}
-                                    </span>
-                                </div>
-                            </div>
-                            
                             <div className="form-group">
                                 <label htmlFor="name">Name (Optional)</label>
                                 <input
@@ -178,6 +181,22 @@ const FloatingFeedback = () => {
                                     placeholder="your.email@example.com"
                                     disabled={submitting}
                                 />
+                            </div>
+                            
+                            <div className="rating-section">
+                                <label className="rating-label">
+                                    How would you rate this portfolio? <span className="required">*</span>
+                                </label>
+                                <div className="stars-container">
+                                    {renderStars()}
+                                    <span className="rating-text">
+                                        {rating === 0 ? 'Click to rate' : 
+                                         rating === 1 ? 'Poor' :
+                                         rating === 2 ? 'Fair' :
+                                         rating === 3 ? 'Good' :
+                                         rating === 4 ? 'Very Good' : 'Excellent'}
+                                    </span>
+                                </div>
                             </div>
                             
                             <div className="form-group">

@@ -40,7 +40,7 @@ const Experience = () => {
         <section id="experience" className="section-padding experience-section">
             <div className="section-container">
                 <h3 className="section-title">
-                    <span className="relative-text">Professional Experience & Projects</span>
+                    <span className="relative-text">Professional Experience</span>
                     <span className="underline-effect"></span>
                 </h3>
                 <div className="job-experience-container">

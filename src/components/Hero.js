@@ -14,7 +14,7 @@ const Hero = ({ scrollToSection }) => {
                     Hello, I'm <span style={{ color: 'var(--yellow-300)' }}>Sudharsana Rajasekaran</span>
                 </h2>
                 <p className="hero-subtitle animate-fade-in-up delay-200">
-                    A <span style={{ fontWeight: '600' }}>Senior Data Engineer</span> passionate about building scalable data solutions and driving business insights.
+                    A <span style={{ fontWeight: '600' }}>Data Engineer</span> passionate about building scalable data solutions and driving business insights.
                 </p>
                 <button
                     onClick={() => scrollToSection('experience')}

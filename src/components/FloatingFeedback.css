@@ -19,13 +19,32 @@
     animation: pulse 2s infinite;
 }
 
+/* Near Footer Styles */
+.floating-feedback-button.near-footer {
+    background: linear-gradient(135deg, var(--gray-700), var(--gray-800));
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    right: 2rem;
+    bottom: 1rem;
+    animation: none;
+}
+
 .floating-feedback-button:hover {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 12px 35px rgba(37, 99, 235, 0.4);
     background: linear-gradient(135deg, var(--blue-700), var(--blue-800));
 }
 
+.floating-feedback-button.near-footer:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, var(--gray-600), var(--gray-700));
+}
+
 .floating-feedback-button:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.floating-feedback-button.near-footer:active {
     transform: translateY(0) scale(0.95);
 }
 
@@ -333,6 +352,32 @@
     .floating-feedback-modal {
         width: 95%;
         margin: 1rem;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .feedback-form {
+        gap: 1rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .rating-section {
+        margin: 1rem 0;
+    }
+    
+    .stars-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .feedback-button {
+        width: 100%;
+        padding: 1rem;
     }
     
     .feedback-header,

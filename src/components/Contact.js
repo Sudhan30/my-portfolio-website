@@ -1,7 +1,10 @@
-import React from 'react';
-import { Linkedin, Github, BookOpen } from 'lucide-react';
+import React, { useState } from 'react';
+import { Linkedin, Github, BookOpen, MessageCircle } from 'lucide-react';
+import ContactForm from './ContactForm';
 
 const Contact = () => {
+    const [showContactForm, setShowContactForm] = useState(false);
+
     return (
         <section id="contact" className="section-padding contact-section">
             <div className="contact-container">
@@ -9,6 +12,11 @@ const Contact = () => {
                     <span className="relative-text">Get in Touch</span>
                     <span className="underline-effect"></span>
                 </h3>
+                
+                <div className={`contact-form-wrapper ${showContactForm ? 'show' : 'hide'}`}>
+                    {showContactForm && <ContactForm />}
+                </div>
+                
                 <div className="contact-links">
                     <a href="https://www.linkedin.com/in/sudharsanarajasekaran/" target="_blank" rel="noopener noreferrer" className="contact-link-item">
                         <Linkedin style={{ color: 'var(--blue-700)' }} size={32} />
@@ -22,10 +30,14 @@ const Contact = () => {
                         <BookOpen style={{ color: 'var(--purple-600)' }} size={32} />
                         <span>My Blog</span>
                     </a>
-                    {/* Email removed as requested */}
-                    {/* Phone number removed as requested */}
+                    <button 
+                        onClick={() => setShowContactForm(!showContactForm)}
+                        className="contact-link-item contact-button"
+                    >
+                        <MessageCircle style={{ color: 'var(--green-600)' }} size={32} />
+                        <span>{showContactForm ? 'Hide Contact Form' : 'Let\'s Connect!'}</span>
+                    </button>
                 </div>
-                {/* Address removed as requested */}
             </div>
         </section>
     );

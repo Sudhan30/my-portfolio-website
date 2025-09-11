@@ -34,6 +34,15 @@ const jobAnalyzerLimiter = FirebaseFunctionsRateLimiter.withFirestoreBackend(
     db
 );
 
+const contactFormLimiter = FirebaseFunctionsRateLimiter.withFirestoreBackend(
+    {
+        name: "contact_form_limiter",
+        maxCalls: 3,
+        periodSeconds: 60,
+    },
+    db
+);
+
 // Helper functions for mathematically significant numbers
 const isPrime = (num) => {
     if (num <= 1) return false;
@@ -149,6 +158,51 @@ exports.submitFeedback = functions.https.onRequest(async (req, res) => {
                 res.status(429).send(error.message);
             } else {
                 console.error('Error submitting feedback:', error);
+                res.status(500).send('Internal Server Error');
+            }
+        }
+    });
+});
+
+// Contact Form Submission Function
+exports.submitContactForm = functions.https.onRequest(async (req, res) => {
+    cors(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).send('Method Not Allowed');
+        }
+
+        try {
+            await contactFormLimiter.rejectOnQuotaExceededOrRecordUsage(req.ip);
+
+            const { name, email, subject, message } = req.body;
+
+            if (!name || !email || !subject || !message) {
+                return res.status(400).send('All fields are required.');
+            }
+
+            const contactEntry = {
+                name: name.trim(),
+                email: email.trim(),
+                subject: subject.trim(),
+                message: message.trim(),
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                ip: req.ip
+            };
+
+            // Store in Firestore
+            await db.collection('contactSubmissions').add(contactEntry);
+
+            // TODO: Add email notification here
+            // You can integrate with SendGrid, Nodemailer, or other email services
+            console.log('Contact form submission:', contactEntry);
+
+            res.status(200).send({ message: 'Message sent successfully!' });
+
+        } catch (error) {
+            if (error instanceof functions.https.HttpsError) {
+                res.status(429).send(error.message);
+            } else {
+                console.error('Error submitting contact form:', error);
                 res.status(500).send('Internal Server Error');
             }
         }

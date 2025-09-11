@@ -1,3 +1,33 @@
+# Robots.txt for Sudharsana Rajasekaran's Portfolio
 # https://www.robotstxt.org/robotstxt.html
+
+# Allow all search engines to crawl the entire site
 User-agent: *
-Disallow:
+Allow: /
+
+# Specific directives for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block access to admin or private areas (if any)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /.env
+Disallow: /functions/
+
+# Allow access to important files
+Allow: /sitemap.xml
+Allow: /favicon.ico
+Allow: /manifest.json
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://sudharsana.dev/sitemap.xml
