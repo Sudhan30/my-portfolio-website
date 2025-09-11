@@ -8,9 +8,10 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
-import InterestSection from './components/InterestSection';
+import JobDescriptionAnalyzer from './components/JobDescriptionAnalyzer';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import FloatingFeedback from './components/FloatingFeedback';
 
 const App = () => {
     const [loading, setLoading] = useState(true);
@@ -54,7 +55,11 @@ const App = () => {
                 title: 'Special Visit!',
                 text: specialMessage,
                 icon: 'success',
-                confirmButtonText: 'Awesome!'
+                confirmButtonText: 'Awesome!',
+                confirmButtonColor: '#2563eb', // Blue-600 to match theme
+                customClass: {
+                    confirmButton: 'swal-confirm-button'
+                }
             });
             setShowConfetti(true);
             const confettiTimer = setTimeout(() => {
@@ -89,10 +94,11 @@ const App = () => {
                 <About />
                 <Skills />
                 <Experience />
-                <InterestSection />
+                <JobDescriptionAnalyzer />
                 <Contact />
             </main>
             <Footer />
+            <FloatingFeedback />
         </div>
     );
 };

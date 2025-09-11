@@ -147,7 +147,7 @@ const CompanyInterestForm = () => {
                 }
 
                 .message-box-button {
-                    background-color: var(--purple-600);
+                    background-color: var(--blue-600);
                     color: var(--white);
                     padding: 0.5rem 1.5rem;
                     border-radius: 9999px;
@@ -158,7 +158,7 @@ const CompanyInterestForm = () => {
                 }
 
                 .message-box-button:hover {
-                    background-color: var(--purple-700);
+                    background-color: var(--blue-700);
                 }
                 `}
             </style>
