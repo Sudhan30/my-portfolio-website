@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Send, Loader2 } from 'lucide-react';
 import './ContactForm.css';
 import { config } from '../utils/env';
+import telemetryService from '../services/telemetry';
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -25,6 +26,15 @@ const ContactForm = () => {
         e.preventDefault();
         setSubmitting(true);
         setError(null);
+
+        // Track form submission
+        telemetryService.trackFormSubmit(e.target, {
+            formType: 'contact',
+            hasName: !!formData.name,
+            hasEmail: !!formData.email,
+            hasSubject: !!formData.subject,
+            hasMessage: !!formData.message
+        });
 
         try {
                     const response = await fetch(config.submitContactFormUrl, {

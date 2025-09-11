@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Star, X } from 'lucide-react';
 import './FloatingFeedback.css';
 import { config } from '../utils/env';
+import telemetryService from '../services/telemetry';
 
 const FloatingFeedback = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -90,6 +91,11 @@ const FloatingFeedback = () => {
         setIsOpen(false);
         setSuccess(false);
         setRating(0);
+        
+        // Track close button click
+        telemetryService.trackClose(document.querySelector('.floating-feedback-close'), {
+            context: 'feedback_modal'
+        });
         setHoveredRating(0);
         setName('');
         setEmail('');
@@ -123,7 +129,10 @@ const FloatingFeedback = () => {
             <>
                 <button 
                     className="floating-feedback-button"
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {
+                        setIsOpen(true);
+                        telemetryService.trackButtonClick('Open Feedback', 'floating_button');
+                    }}
                     title="Give Feedback"
                 >
                     <MessageCircle size={24} />
@@ -131,7 +140,7 @@ const FloatingFeedback = () => {
                 
                 <div className="floating-feedback-overlay">
                     <div className="floating-feedback-modal">
-                        <button onClick={handleClose} className="close-button">
+                        <button onClick={handleClose} className="close-button floating-feedback-close">
                             <X size={20} />
                         </button>
                         <div className="success-content">
@@ -153,7 +162,10 @@ const FloatingFeedback = () => {
             {showButton && (
                 <button 
                     className={`floating-feedback-button ${isNearFooter ? 'near-footer' : ''}`}
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {
+                        setIsOpen(true);
+                        telemetryService.trackButtonClick('Open Feedback', 'floating_button');
+                    }}
                     title="Give Feedback"
                 >
                     <MessageCircle size={24} />
@@ -163,7 +175,7 @@ const FloatingFeedback = () => {
             {isOpen && (
                 <div className="floating-feedback-overlay">
                     <div className="floating-feedback-modal">
-                        <button onClick={handleClose} className="close-button">
+                        <button onClick={handleClose} className="close-button floating-feedback-close">
                             <X size={20} />
                         </button>
                         

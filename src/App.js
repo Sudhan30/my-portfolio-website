@@ -12,6 +12,8 @@ import JobDescriptionAnalyzer from './components/JobDescriptionAnalyzer';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingFeedback from './components/FloatingFeedback';
+import TelemetryConsent from './components/TelemetryConsent';
+import telemetryService from './services/telemetry';
 import { config } from './utils/env';
 
 const App = () => {
@@ -46,6 +48,10 @@ const App = () => {
         };
 
         fetchViewCount();
+
+        // Initialize telemetry tracking
+        telemetryService.trackPageView();
+
         return () => clearTimeout(timer);
     }, []);
 
@@ -74,6 +80,9 @@ const App = () => {
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
             setActiveSection(id);
+            
+            // Track navigation
+            telemetryService.trackNavigation(activeSection, id);
         }
     };
 
@@ -99,6 +108,7 @@ const App = () => {
             </main>
             <Footer />
             <FloatingFeedback />
+            <TelemetryConsent />
         </div>
     );
 };

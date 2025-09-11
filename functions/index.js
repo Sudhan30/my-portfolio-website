@@ -755,3 +755,109 @@ function parseSalary(salaryStr) {
         return parseInt(cleanStr) || 0;
     }
 }
+
+// Telemetry Tracking Function
+exports.trackTelemetry = functions.https.onRequest(async (req, res) => {
+    cors(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).send('Method Not Allowed');
+        }
+
+        try {
+            const { events, userId, sessionId } = req.body;
+
+            if (!events || !Array.isArray(events) || events.length === 0) {
+                return res.status(400).send('Invalid events data');
+            }
+
+            if (!userId || !sessionId) {
+                return res.status(400).send('Missing userId or sessionId');
+            }
+
+            // Validate and sanitize events
+            const sanitizedEvents = events.map(event => {
+                return {
+                    id: event.id || null,
+                    userId: userId,
+                    sessionId: sessionId,
+                    eventType: event.eventType || 'unknown',
+                    timestamp: event.timestamp || new Date().toISOString(),
+                    url: event.url || null,
+                    userAgent: event.userAgent || null,
+                    screenResolution: event.screenResolution || null,
+                    viewportSize: event.viewportSize || null,
+                    timezone: event.timezone || null,
+                    language: event.language || null,
+                    // Event-specific data (sanitized)
+                    elementType: event.elementType || null,
+                    elementId: event.elementId || null,
+                    elementClass: event.elementClass || null,
+                    elementText: event.elementText ? event.elementText.substring(0, 200) : null,
+                    elementHref: event.elementHref || null,
+                    clickPosition: event.clickPosition || null,
+                    action: event.action || null,
+                    selectedValue: event.selectedValue || null,
+                    selectedText: event.selectedText || null,
+                    formId: event.formId || null,
+                    formClass: event.formClass || null,
+                    formAction: event.formAction || null,
+                    formMethod: event.formMethod || null,
+                    fieldCount: event.fieldCount || null,
+                    hasFileUpload: event.hasFileUpload || false,
+                    closeContext: event.closeContext || null,
+                    referrer: event.referrer || null,
+                    pageTitle: event.pageTitle || null,
+                    pageLoadTime: event.pageLoadTime || null,
+                    hidden: event.hidden || null,
+                    visibilityState: event.visibilityState || null,
+                    buttonText: event.buttonText || null,
+                    buttonContext: event.buttonContext || null,
+                    fromSection: event.fromSection || null,
+                    toSection: event.toSection || null,
+                    scrollDepth: event.scrollDepth || null,
+                    section: event.section || null,
+                    hoverDuration: event.hoverDuration || null,
+                    consentType: event.consentType || null,
+                    // Additional metadata
+                    ip: req.ip,
+                    receivedAt: admin.firestore.FieldValue.serverTimestamp()
+                };
+            });
+
+            // Store events in Firestore
+            const batch = db.batch();
+            const telemetryCollection = db.collection('telemetry');
+
+            for (const event of sanitizedEvents) {
+                const docRef = telemetryCollection.doc();
+                batch.set(docRef, event);
+            }
+
+            await batch.commit();
+
+            // Update session metadata
+            const sessionRef = db.collection('telemetry_sessions').doc(sessionId);
+            await sessionRef.set({
+                userId: userId,
+                sessionId: sessionId,
+                lastActivity: admin.firestore.FieldValue.serverTimestamp(),
+                eventCount: admin.firestore.FieldValue.increment(events.length),
+                userAgent: events[0]?.userAgent || null,
+                ip: req.ip,
+                createdAt: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            console.log(`Telemetry: Stored ${events.length} events for session ${sessionId}`);
+
+            res.status(200).send({ 
+                message: 'Events stored successfully',
+                eventCount: events.length,
+                sessionId: sessionId
+            });
+
+        } catch (error) {
+            console.error('Error storing telemetry events:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+});

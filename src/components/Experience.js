@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { experiences } from '../data';
+import telemetryService from '../services/telemetry';
 
 const JobExperience = ({ job }) => {
     const [isOpen, setIsOpen] = useState(false);
 
+    const handleToggle = () => {
+        const newIsOpen = !isOpen;
+        setIsOpen(newIsOpen);
+        
+        // Track dropdown interaction
+        telemetryService.trackDropdown(
+            newIsOpen ? 'open' : 'close',
+            document.querySelector(`[data-job-id="${job.company}"]`),
+            {
+                jobTitle: job.title,
+                company: job.company,
+                duration: job.duration
+            }
+        );
+    };
+
     return (
-        <div className="job-card animate-fade-in-up">
-            <div className="job-card-header" onClick={() => setIsOpen(!isOpen)}>
+        <div className="job-card animate-fade-in-up" data-job-id={job.company}>
+            <div className="job-card-header" onClick={handleToggle}>
                 <div className="job-card-header-left">
                     {React.createElement(job.icon, { size: 32, style: { color: 'var(--purple-600)', marginRight: '1rem' } })}
                     <div>
