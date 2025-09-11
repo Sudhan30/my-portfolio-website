@@ -1151,7 +1151,14 @@ body {
         max-width: 100%;
     }
     
-    .job-header {
+    .job-card-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .job-card-header-left {
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
@@ -1173,8 +1180,8 @@ body {
         text-align: center;
     }
     
-    .job-icon {
-        margin: 0 auto 0.5rem auto;
+    .job-chevron {
+        margin-top: 0.5rem;
     }
     
     .projects-grid {
@@ -1305,20 +1312,27 @@ body {
         padding: 1rem;
     }
     
+    .job-card-header {
+        gap: 0.75rem;
+    }
+    
+    .job-card-header-left {
+        gap: 0.25rem;
+    }
+    
     .job-title {
         font-size: 1.125rem;
+        text-align: center;
     }
     
     .job-company {
         font-size: 0.9rem;
+        text-align: center;
     }
     
     .job-duration {
         font-size: 0.8rem;
-    }
-    
-    .job-card {
-        padding: 1rem;
+        text-align: center;
     }
     
     .project-card {
