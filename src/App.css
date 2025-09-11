@@ -1064,8 +1064,8 @@ body {
     }
     
     .hero-avatar {
-        width: 120px !important;
-        height: 120px !important;
+        width: 140px !important;
+        height: 140px !important;
         margin: 0 auto 1.5rem auto !important;
         display: block !important;
         object-fit: cover !important;
@@ -1261,8 +1261,8 @@ body {
     }
     
     .hero-avatar {
-        width: 100px !important;
-        height: 100px !important;
+        width: 120px !important;
+        height: 120px !important;
         margin: 0 auto 1.25rem auto !important;
         object-fit: cover !important;
         object-position: center 30% !important;
