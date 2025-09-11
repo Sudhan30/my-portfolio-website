@@ -57,17 +57,17 @@ jobs:
               
               <!-- Open Graph / Facebook -->
               <meta property="og:type" content="website" />
-              <meta property="og:url" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/" />
+              <meta property="og:url" content="https://www.sudharsana.dev/" />
               <meta property="og:title" content="Sudharsana Rajasekaran - Data Engineer Portfolio" />
               <meta property="og:description" content="Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms." />
-              <meta property="og:image" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/logo512.png" />
+              <meta property="og:image" content="https://www.sudharsana.dev/logo512.png" />
               
               <!-- Twitter -->
               <meta property="twitter:card" content="summary_large_image" />
-              <meta property="twitter:url" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/" />
+              <meta property="twitter:url" content="https://www.sudharsana.dev/" />
               <meta property="twitter:title" content="Sudharsana Rajasekaran - Data Engineer Portfolio" />
               <meta property="twitter:description" content="Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms." />
-              <meta property="twitter:image" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/logo512.png" />
+              <meta property="twitter:image" content="https://www.sudharsana.dev/logo512.png" />
               
               <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-sr-dramatic.svg" />
               <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -97,7 +97,7 @@ jobs:
                 "name": "Sudharsana Rajasekaran",
                 "jobTitle": "Data Engineer",
                 "description": "Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms.",
-                "url": "https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/",
+                "url": "https://www.sudharsana.dev/",
                 "sameAs": [
                   "https://www.linkedin.com/in/sudharsanarajasekaran/",
                   "https://github.com/Sudhan30",
@@ -117,7 +117,7 @@ jobs:
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 "name": "Sudharsana Rajasekaran Portfolio",
-                "url": "https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/",
+                "url": "https://www.sudharsana.dev/",
                 "description": "Data Engineer Portfolio showcasing skills, experience, and projects.",
                 "author": {
                   "@type": "Person",

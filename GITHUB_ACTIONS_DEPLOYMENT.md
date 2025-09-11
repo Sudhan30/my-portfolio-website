@@ -30,7 +30,7 @@ Value: sudhanportfoliowebsite
 #### **GCP_BUCKET_NAME**
 ```
 Name: GCP_BUCKET_NAME
-Value: sudhanportfoliowebsite-portfolio
+Value: www.sudharsana.dev
 ```
 
 #### **GCP_WIF_PROVIDER**
@@ -216,7 +216,7 @@ gcloud iam workload-identity-pools describe github \
   --location="global"
 
 # Check bucket permissions
-gsutil iam get gs://sudhanportfoliowebsite-portfolio
+gsutil iam get gs://www.sudharsana.dev
 ```
 
 ## 🔄 Workflow Customization
