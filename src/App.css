@@ -1135,6 +1135,7 @@ body {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
+        width: 100% !important;
     }
     
     .job-card {
@@ -1143,6 +1144,9 @@ body {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
     
     .job-card-header {
@@ -1150,6 +1154,8 @@ body {
         align-items: center !important;
         gap: 1rem !important;
         text-align: center !important;
+        width: 100% !important;
+        justify-content: center !important;
     }
     
     .job-card-header-left {
@@ -1157,25 +1163,45 @@ body {
         align-items: center !important;
         gap: 0.5rem !important;
         text-align: center !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .job-card-header-left svg {
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
+    }
+    
+    .job-card-header-left > div {
+        text-align: center !important;
+        width: 100% !important;
     }
     
     .job-title {
         font-size: 1.25rem !important;
         text-align: center !important;
+        margin: 0 auto !important;
+        display: block !important;
     }
     
     .job-company {
         font-size: 1rem !important;
         text-align: center !important;
+        margin: 0 auto !important;
+        display: block !important;
     }
     
     .job-duration {
         font-size: 0.875rem !important;
         text-align: center !important;
+        margin: 0 auto !important;
+        display: block !important;
     }
     
     .job-chevron {
         margin-top: 0.5rem !important;
+        align-self: center !important;
     }
     
     /* Contact Section Mobile */
@@ -1255,18 +1281,39 @@ body {
     /* Experience Small Mobile */
     .job-card {
         padding: 1rem !important;
+        text-align: center !important;
+    }
+    
+    .job-card-header {
+        text-align: center !important;
+    }
+    
+    .job-card-header-left {
+        text-align: center !important;
+    }
+    
+    .job-card-header-left svg {
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
     }
     
     .job-title {
         font-size: 1.125rem !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
     
     .job-company {
         font-size: 0.9rem !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
     
     .job-duration {
         font-size: 0.8rem !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
     
     /* Contact Small Mobile */
