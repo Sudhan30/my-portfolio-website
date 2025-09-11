@@ -13,17 +13,27 @@ const FloatingFeedback = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [isNearFooter, setIsNearFooter] = useState(false);
+    const [showButton, setShowButton] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             const footer = document.querySelector('.footer');
+            const aboutSection = document.querySelector('#about');
+            const windowHeight = window.innerHeight;
+            
             if (footer) {
                 const footerRect = footer.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
                 const threshold = 200; // Distance from footer to trigger change
                 
                 // Check if footer is near the bottom of the viewport
                 setIsNearFooter(footerRect.top <= windowHeight + threshold);
+            }
+            
+            // Check if user has scrolled past the hero section (about section is visible)
+            if (aboutSection) {
+                const aboutRect = aboutSection.getBoundingClientRect();
+                const isAboutVisible = aboutRect.top <= windowHeight * 0.5; // Show when about section is 50% visible
+                setShowButton(isAboutVisible);
             }
         };
 
@@ -139,13 +149,15 @@ const FloatingFeedback = () => {
 
     return (
         <>
-            <button 
-                className={`floating-feedback-button ${isNearFooter ? 'near-footer' : ''}`}
-                onClick={() => setIsOpen(true)}
-                title="Give Feedback"
-            >
-                <MessageCircle size={24} />
-            </button>
+            {showButton && (
+                <button 
+                    className={`floating-feedback-button ${isNearFooter ? 'near-footer' : ''}`}
+                    onClick={() => setIsOpen(true)}
+                    title="Give Feedback"
+                >
+                    <MessageCircle size={24} />
+                </button>
+            )}
             
             {isOpen && (
                 <div className="floating-feedback-overlay">

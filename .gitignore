@@ -13,3 +13,6 @@
 
 # misc
 .DS_Store
+
+# configuration files with sensitive data
+/functions/config.js

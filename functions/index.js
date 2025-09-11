@@ -2,10 +2,37 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const cors = require("cors")({ origin: true });
 const { FirebaseFunctionsRateLimiter } = require("firebase-functions-rate-limiter");
+const { SecretManagerServiceClient } = require("@google-cloud/secret-manager");
+const nodemailer = require("nodemailer");
 const resumeData = require("./resumeData");
+
+// Load configuration (if exists)
+let config = {};
+try {
+    config = require("./config");
+} catch (error) {
+    // Use default values if config file doesn't exist
+    config = {
+        projectId: process.env.GCP_PROJECT || 'your-project-id',
+        email: {
+            smtpHost: 'smtp.zoho.com',
+            smtpPort: 465,
+            useSSL: true,
+            recipients: {
+                primary: 'your-primary-email@domain.com',
+                cc: 'your-cc-email@domain.com'
+            }
+        },
+        secrets: {
+            emailCredentials: 'email-credentials',
+            emailPassword: 'email-password'
+        }
+    };
+}
 
 admin.initializeApp();
 const db = admin.firestore();
+const secretClient = new SecretManagerServiceClient();
 
 const pageViewLimiter = FirebaseFunctionsRateLimiter.withFirestoreBackend(
     {
@@ -89,6 +116,73 @@ const getMathematicalMessage = (num) => {
         return `Fantastic! Your visit is the ${num}th, a Fibonacci number!`;
     }
     return null;
+};
+
+// Email helper functions
+const getSecret = async (secretName) => {
+    try {
+        const [version] = await secretClient.accessSecretVersion({
+            name: `projects/${config.projectId}/secrets/${secretName}/versions/latest`,
+        });
+        return version.payload.data.toString();
+    } catch (error) {
+        console.error(`Error accessing secret ${secretName}:`, error);
+        throw error;
+    }
+};
+
+const sendEmail = async (contactData) => {
+    try {
+        // Get email credentials from Secret Manager
+        const [email, password] = await Promise.all([
+            getSecret(config.secrets.emailCredentials),
+            getSecret(config.secrets.emailPassword)
+        ]);
+
+        // Create transporter
+        const transporter = nodemailer.createTransporter({
+            host: config.email.smtpHost,
+            port: config.email.smtpPort,
+            secure: config.email.useSSL,
+            auth: {
+                user: email,
+                pass: password
+            }
+        });
+
+        // Email content
+        const mailOptions = {
+            from: email,
+            to: config.email.recipients.primary,
+            cc: config.email.recipients.cc,
+            subject: `Portfolio Contact: ${contactData.subject}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #2563eb;">New Contact Form Submission</h2>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <p><strong>Name:</strong> ${contactData.name}</p>
+                        <p><strong>Email:</strong> ${contactData.email}</p>
+                        <p><strong>Subject:</strong> ${contactData.subject}</p>
+                        <p><strong>Message:</strong></p>
+                        <div style="background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #2563eb;">
+                            ${contactData.message.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                    <p style="color: #64748b; font-size: 14px;">
+                        This message was sent from your portfolio website contact form.
+                    </p>
+                </div>
+            `
+        };
+
+        // Send email
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', result.messageId);
+        return result;
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error;
+    }
 };
 
 exports.pageView = functions.https.onRequest(async (req, res) => {
@@ -192,9 +286,14 @@ exports.submitContactForm = functions.https.onRequest(async (req, res) => {
             // Store in Firestore
             await db.collection('contactSubmissions').add(contactEntry);
 
-            // TODO: Add email notification here
-            // You can integrate with SendGrid, Nodemailer, or other email services
-            console.log('Contact form submission:', contactEntry);
+            // Send email notification
+            try {
+                await sendEmail(contactEntry);
+                console.log('Contact form submission and email sent:', contactEntry);
+            } catch (emailError) {
+                console.error('Email sending failed, but form was saved:', emailError);
+                // Don't fail the request if email fails, form is still saved
+            }
 
             res.status(200).send({ message: 'Message sent successfully!' });
 
