@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Github } from 'lucide-react';
+import { Linkedin, Github, BookOpen } from 'lucide-react';
 
 const Contact = () => {
     return (
@@ -17,6 +17,10 @@ const Contact = () => {
                     <a href="https://github.com/Sudhan30" target="_blank" rel="noopener noreferrer" className="contact-link-item">
                         <Github style={{ color: 'var(--gray-800)' }} size={32} />
                         <span>GitHub Profile</span>
+                    </a>
+                    <a href="https://blog.sudharsana.dev" target="_blank" rel="noopener noreferrer" className="contact-link-item">
+                        <BookOpen style={{ color: 'var(--purple-600)' }} size={32} />
+                        <span>My Blog</span>
                     </a>
                     {/* Email removed as requested */}
                     {/* Phone number removed as requested */}
