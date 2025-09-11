@@ -27,18 +27,18 @@
 }
 
 .contact-form-header h3 {
-    color: var(--white);
+    color: #ffffff;
     font-size: 1.875rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--blue-400), var(--purple-400));
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .contact-form-header p {
-    color: var(--gray-300);
+    color: #d1d5db;
     font-size: 1rem;
     line-height: 1.6;
     margin: 0;
@@ -56,7 +56,7 @@
 }
 
 .form-group label {
-    color: var(--white);
+    color: #ffffff;
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -70,7 +70,7 @@
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.05);
-    color: var(--white);
+    color: #ffffff;
     font-size: 1rem;
     font-family: inherit;
     transition: all 0.3s ease;
@@ -79,7 +79,7 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-    color: var(--gray-400);
+    color: #9ca3af;
 }
 
 .form-group input:focus,
@@ -107,8 +107,8 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 1rem 2rem;
-    background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
-    color: var(--white);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
     border: none;
     border-radius: 12px;
     font-size: 1rem;
@@ -119,7 +119,7 @@
 }
 
 .contact-form-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--blue-700), var(--blue-800));
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
@@ -150,19 +150,19 @@
 }
 
 .success-icon {
-    color: var(--green-400);
+    color: #22c55e;
     margin-bottom: 1.5rem;
 }
 
 .contact-form-success h3 {
-    color: var(--white);
+    color: #ffffff;
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
 }
 
 .contact-form-success p {
-    color: var(--gray-300);
+    color: #d1d5db;
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 2rem;
