@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { config } from '../utils/env';
 
 const JobDescriptionAnalyzer = () => {
     const [jobDescription, setJobDescription] = useState('');
@@ -19,7 +20,7 @@ const JobDescriptionAnalyzer = () => {
         setAnalysisResult(null);
 
         try {
-            const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/analyzeJobDescription', {
+            const response = await fetch(config.analyzeJobDescriptionUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

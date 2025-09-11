@@ -22,11 +22,8 @@ module.exports = {
         // Whether to use SSL (true for port 465, false for port 587)
         useSSL: true,
         
-        // Recipient email addresses
-        recipients: {
-            primary: 'your-primary-email@domain.com',
-            cc: 'your-cc-email@domain.com'
-        }
+        // Note: Recipient email addresses are now stored in Google Secret Manager
+        // as 'email-recipient-primary' and 'email-recipient-cc' secrets
     },
     
     // Secret names in Google Secret Manager

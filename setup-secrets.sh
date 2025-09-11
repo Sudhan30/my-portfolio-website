@@ -74,6 +74,45 @@ else
     echo "⚠️  Secret might already exist, continuing..."
 fi
 
+# Create recipient email secrets
+echo ""
+echo "3️⃣ Creating recipient email secrets..."
+echo "Enter your primary recipient email (where contact form emails will be sent):"
+read -r PRIMARY_EMAIL
+
+if [ -z "$PRIMARY_EMAIL" ]; then
+    echo "❌ Primary email cannot be empty"
+    exit 1
+fi
+
+echo "$PRIMARY_EMAIL" | gcloud secrets create email-recipient-primary \
+    --data-file=- \
+    --project=$PROJECT_ID
+
+if [ $? -eq 0 ]; then
+    echo "✅ Primary recipient email secret created successfully"
+else
+    echo "⚠️  Secret might already exist, continuing..."
+fi
+
+echo ""
+echo "Enter your CC email (optional, press Enter to skip):"
+read -r CC_EMAIL
+
+if [ -n "$CC_EMAIL" ]; then
+    echo "$CC_EMAIL" | gcloud secrets create email-recipient-cc \
+        --data-file=- \
+        --project=$PROJECT_ID
+
+    if [ $? -eq 0 ]; then
+        echo "✅ CC recipient email secret created successfully"
+    else
+        echo "⚠️  Secret might already exist, continuing..."
+    fi
+else
+    echo "ℹ️  No CC email provided, skipping..."
+fi
+
 echo ""
 echo "🔑 Granting Cloud Functions access to secrets..."
 
@@ -90,14 +129,38 @@ gcloud secrets add-iam-policy-binding email-password \
     --role="roles/secretmanager.secretAccessor" \
     --project=$PROJECT_ID
 
+gcloud secrets add-iam-policy-binding email-recipient-primary \
+    --member="serviceAccount:${CLOUD_FUNCTIONS_SA}" \
+    --role="roles/secretmanager.secretAccessor" \
+    --project=$PROJECT_ID
+
+# Only add CC permissions if CC email was provided
+if [ -n "$CC_EMAIL" ]; then
+    gcloud secrets add-iam-policy-binding email-recipient-cc \
+        --member="serviceAccount:${CLOUD_FUNCTIONS_SA}" \
+        --role="roles/secretmanager.secretAccessor" \
+        --project=$PROJECT_ID
+fi
+
 echo "✅ Permissions granted to Cloud Functions service account"
 echo ""
 echo "🎉 Setup complete! Your secrets are now securely stored in Google Secret Manager."
 echo ""
 echo "📋 Summary:"
 echo "   • Email: $EMAIL_ADDRESS"
-echo "   • Recipients: your-primary-email@domain.com (CC: your-cc-email@domain.com)"
+echo "   • Primary Recipient: $PRIMARY_EMAIL"
+if [ -n "$CC_EMAIL" ]; then
+    echo "   • CC Recipient: $CC_EMAIL"
+fi
 echo "   • SMTP: smtp.your-provider.com:465"
+echo ""
+echo "🔐 Secrets Created:"
+echo "   • email-credentials"
+echo "   • email-password"
+echo "   • email-recipient-primary"
+if [ -n "$CC_EMAIL" ]; then
+    echo "   • email-recipient-cc"
+fi
 echo ""
 echo "🚀 Next steps:"
 echo "   1. Install dependencies: cd functions && npm install"

@@ -12,6 +12,7 @@ import JobDescriptionAnalyzer from './components/JobDescriptionAnalyzer';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingFeedback from './components/FloatingFeedback';
+import { config } from './utils/env';
 
 const App = () => {
     const [loading, setLoading] = useState(true);
@@ -29,9 +30,8 @@ const App = () => {
             try {
                 // The URL for the pageView function.
                 // For local development, this points to the Firebase emulator.
-                // In a production environment, this should be replaced with the actual cloud function URL,
-                // ideally using environment variables.
-                const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/pageView', { method: 'POST' });
+                // Use environment configuration for Cloud Functions URL
+                const response = await fetch(config.pageViewUrl, { method: 'POST' });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

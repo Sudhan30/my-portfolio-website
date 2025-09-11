@@ -49,8 +49,8 @@ gcloud functions deploy submitContactForm \
 ## 📧 Email Configuration
 
 ### Recipients
-- **Primary**: `your-primary-email@domain.com`
-- **CC**: `your-cc-email@domain.com`
+- **Primary**: Stored in `email-recipient-primary` secret
+- **CC**: Stored in `email-recipient-cc` secret (optional)
 
 ### SMTP Settings
 - **Host**: `smtp.your-provider.com`
@@ -87,7 +87,20 @@ echo "your-app-password" | gcloud secrets create email-password \
   --project=your-project-id
 ```
 
-### 4. Grant Permissions
+### 4. Create Recipient Secrets
+```bash
+# Primary recipient (required)
+echo "your-primary-email@domain.com" | gcloud secrets create email-recipient-primary \
+  --data-file=- \
+  --project=your-project-id
+
+# CC recipient (optional)
+echo "your-cc-email@domain.com" | gcloud secrets create email-recipient-cc \
+  --data-file=- \
+  --project=your-project-id
+```
+
+### 5. Grant Permissions
 ```bash
 CLOUD_FUNCTIONS_SA="your-project-id@appspot.gserviceaccount.com"
 
@@ -97,6 +110,16 @@ gcloud secrets add-iam-policy-binding email-credentials \
   --project=your-project-id
 
 gcloud secrets add-iam-policy-binding email-password \
+  --member="serviceAccount:${CLOUD_FUNCTIONS_SA}" \
+  --role="roles/secretmanager.secretAccessor" \
+  --project=your-project-id
+
+gcloud secrets add-iam-policy-binding email-recipient-primary \
+  --member="serviceAccount:${CLOUD_FUNCTIONS_SA}" \
+  --role="roles/secretmanager.secretAccessor" \
+  --project=your-project-id
+
+gcloud secrets add-iam-policy-binding email-recipient-cc \
   --member="serviceAccount:${CLOUD_FUNCTIONS_SA}" \
   --role="roles/secretmanager.secretAccessor" \
   --project=your-project-id

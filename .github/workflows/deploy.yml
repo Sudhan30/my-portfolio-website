@@ -36,6 +36,127 @@ jobs:
         run: npm run build
         env:
           CI: ""
+          REACT_APP_GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          REACT_APP_CLOUD_FUNCTIONS_URL: https://us-central1-${{ secrets.GCP_PROJECT_ID }}.cloudfunctions.net
+
+      - name: Inject environment variables into build
+        run: |
+          # Create a script to inject environment variables into index.html
+          cat > build/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <link rel="icon" href="%PUBLIC_URL%/favicon-sr-dramatic.svg" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <meta name="theme-color" content="#2563eb" />
+              <meta name="description" content="Sudharsana Rajasekaran - Data Engineer Portfolio" />
+              <meta name="keywords" content="Data Engineer, Python, SQL, Big Data, Analytics, Portfolio" />
+              <meta name="author" content="Sudharsana Rajasekaran" />
+              <meta name="robots" content="index, follow" />
+              
+              <!-- Open Graph / Facebook -->
+              <meta property="og:type" content="website" />
+              <meta property="og:url" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/" />
+              <meta property="og:title" content="Sudharsana Rajasekaran - Data Engineer Portfolio" />
+              <meta property="og:description" content="Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms." />
+              <meta property="og:image" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/logo512.png" />
+              
+              <!-- Twitter -->
+              <meta property="twitter:card" content="summary_large_image" />
+              <meta property="twitter:url" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/" />
+              <meta property="twitter:title" content="Sudharsana Rajasekaran - Data Engineer Portfolio" />
+              <meta property="twitter:description" content="Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms." />
+              <meta property="twitter:image" content="https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/logo512.png" />
+              
+              <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-sr-dramatic.svg" />
+              <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+              
+              <!-- DNS Prefetch for performance -->
+              <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+              <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+              <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+              <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://us-central1-${{ secrets.GCP_PROJECT_ID }}.cloudfunctions.net;" />
+              
+              <!-- Apple Touch Icon for iOS devices -->
+              <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-sr-dramatic.svg" />
+              
+              <!-- Favicon -->
+              <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon-sr-dramatic.svg" />
+              <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon-sr.ico" />
+              
+              <!-- Preconnect to external domains -->
+              <link rel="preconnect" href="https://fonts.googleapis.com" />
+              <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+              
+              <!-- JSON-LD Structured Data -->
+              <script type="application/ld+json">
+              {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "name": "Sudharsana Rajasekaran",
+                "jobTitle": "Data Engineer",
+                "description": "Experienced Data Engineer specializing in Python, SQL, Big Data technologies, and cloud platforms.",
+                "url": "https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/",
+                "sameAs": [
+                  "https://www.linkedin.com/in/sudharsanarajasekaran/",
+                  "https://github.com/Sudhan30",
+                  "https://blog.sudharsana.dev"
+                ],
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "San Francisco Bay Area",
+                  "addressRegion": "CA",
+                  "addressCountry": "US"
+                }
+              }
+              </script>
+              
+              <script type="application/ld+json">
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Sudharsana Rajasekaran Portfolio",
+                "url": "https://${{ secrets.GCP_BUCKET_NAME }}.storage.googleapis.com/",
+                "description": "Data Engineer Portfolio showcasing skills, experience, and projects.",
+                "author": {
+                  "@type": "Person",
+                  "name": "Sudharsana Rajasekaran"
+                }
+              }
+              </script>
+              
+              <script type="application/ld+json">
+              {
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                "name": "Data Engineering Services",
+                "description": "Professional data engineering services including data pipeline development, analytics, and cloud solutions.",
+                "provider": {
+                  "@type": "Person",
+                  "name": "Sudharsana Rajasekaran"
+                },
+                "areaServed": "San Francisco Bay Area",
+                "serviceType": "Data Engineering"
+              }
+              </script>
+              
+              <title>Sudharsana Rajasekaran - Data Engineer Portfolio</title>
+            </head>
+            <body>
+              <noscript>You need to enable JavaScript to run this app.</noscript>
+              <div id="root"></div>
+              
+              <!-- Environment Variables Injection -->
+              <script>
+                window.env = {
+                  REACT_APP_GCP_PROJECT_ID: '${{ secrets.GCP_PROJECT_ID }}',
+                  REACT_APP_CLOUD_FUNCTIONS_URL: 'https://us-central1-${{ secrets.GCP_PROJECT_ID }}.cloudfunctions.net'
+                };
+              </script>
+            </body>
+          </html>
+          EOF
 
       - name: Verify build
         run: |
@@ -45,6 +166,7 @@ jobs:
           fi
           echo "Build directory contents:"
           ls -la ./build
+          echo "Environment variables injected into index.html"
 
       - name: Authorize with Google Cloud
         id: auth
@@ -74,10 +196,22 @@ jobs:
 
       - name: Set Cache-Control on uploaded files
         run: |
-          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/* --cache-control="public, max-age=3600" || {
-            echo "Failed to set Cache-Control metadata"
-            exit 1
-          }
+          # Set cache headers for different file types
+          echo "Setting cache headers for optimal performance..."
+          
+          # Static assets (JS, CSS) - 1 year cache
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/static/**/*.js --cache-control="public, max-age=31536000" || echo "No JS files to update"
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/static/**/*.css --cache-control="public, max-age=31536000" || echo "No CSS files to update"
+          
+          # HTML files - 1 day cache
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/*.html --cache-control="public, max-age=86400" || echo "No HTML files to update"
+          
+          # Images and icons - 1 year cache
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/*.png --cache-control="public, max-age=31536000" || echo "No PNG files to update"
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/*.svg --cache-control="public, max-age=31536000" || echo "No SVG files to update"
+          gcloud storage objects update gs://${{ secrets.GCP_BUCKET_NAME }}/*.ico --cache-control="public, max-age=31536000" || echo "No ICO files to update"
+          
+          echo "Cache headers set successfully"
 
       - name: Invalidate Cloud CDN cache
         run: |

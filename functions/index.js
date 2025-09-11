@@ -18,10 +18,8 @@ try {
             smtpHost: 'smtp.zoho.com',
             smtpPort: 465,
             useSSL: true,
-            recipients: {
-                primary: 'your-primary-email@domain.com',
-                cc: 'your-cc-email@domain.com'
-            }
+            // Note: Recipient email addresses are stored in Google Secret Manager
+            // as 'email-recipient-primary' and 'email-recipient-cc' secrets
         },
         secrets: {
             emailCredentials: 'email-credentials',
@@ -133,11 +131,21 @@ const getSecret = async (secretName) => {
 
 const sendEmail = async (contactData) => {
     try {
-        // Get email credentials from Secret Manager
-        const [email, password] = await Promise.all([
+        // Get email credentials and recipients from Secret Manager
+        const [email, password, primaryRecipient] = await Promise.all([
             getSecret(config.secrets.emailCredentials),
-            getSecret(config.secrets.emailPassword)
+            getSecret(config.secrets.emailPassword),
+            getSecret('email-recipient-primary')
         ]);
+
+        // Get CC recipient if it exists
+        let ccRecipient = null;
+        try {
+            ccRecipient = await getSecret('email-recipient-cc');
+        } catch (error) {
+            // CC recipient is optional, so we ignore the error if it doesn't exist
+            console.log('No CC recipient configured');
+        }
 
         // Create transporter
         const transporter = nodemailer.createTransporter({
@@ -153,8 +161,8 @@ const sendEmail = async (contactData) => {
         // Email content
         const mailOptions = {
             from: email,
-            to: config.email.recipients.primary,
-            cc: config.email.recipients.cc,
+            to: primaryRecipient,
+            ...(ccRecipient && { cc: ccRecipient }),
             subject: `Portfolio Contact: ${contactData.subject}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

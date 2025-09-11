@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Send, Loader2 } from 'lucide-react';
 import './ContactForm.css';
+import { config } from '../utils/env';
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ const ContactForm = () => {
         setError(null);
 
         try {
-            const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/submitContactForm', {
+                    const response = await fetch(config.submitContactFormUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

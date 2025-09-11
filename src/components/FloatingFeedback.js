@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Star, X } from 'lucide-react';
 import './FloatingFeedback.css';
+import { config } from '../utils/env';
 
 const FloatingFeedback = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +61,7 @@ const FloatingFeedback = () => {
         setSubmitting(true);
 
         try {
-            const response = await fetch('https://us-central1-sudhanportfoliowebsite.cloudfunctions.net/submitFeedback', {
+            const response = await fetch(config.submitFeedbackUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
