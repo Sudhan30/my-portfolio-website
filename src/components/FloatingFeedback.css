@@ -41,7 +41,7 @@
 .floating-feedback-button.near-footer {
     background: linear-gradient(135deg, var(--gray-700), var(--gray-800));
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    right: 2rem;
+    right: 2rem !important;
     bottom: 1rem;
     animation: none;
 }
@@ -369,9 +369,14 @@
 @media (max-width: 768px) {
     .floating-feedback-button {
         bottom: 1rem;
-        right: 1rem;
+        right: 1rem !important;
         width: 50px;
         height: 50px;
+    }
+    
+    .floating-feedback-button.near-footer {
+        right: 1rem !important;
+        bottom: 0.5rem;
     }
     
     .floating-feedback-modal {
