@@ -50,11 +50,12 @@ const JobDescriptionAnalyzer = () => {
 
     return (
         <section id="job-analyzer" className="section-padding job-analyzer-section">
-            <div className="job-analyzer-container">
-                <h3 className="job-analyzer-title">
-                    <span className="relative-text">Job Description Analyzer</span>
+            <div className="section-container">
+                <h3 className="section-title">
+                    <span className="relative-text">Job Match Analyzer</span>
                     <span className="underline-effect"></span>
                 </h3>
+                <div className="job-analyzer-content">
                 <p className="job-analyzer-description">
                     Paste a job description below to see if I'm interested in the role and how well my skills match the requirements.
                 </p>
@@ -177,6 +178,7 @@ const JobDescriptionAnalyzer = () => {
                         </div>
                     </div>
                 )}
+                </div>
             </div>
         </section>
     );

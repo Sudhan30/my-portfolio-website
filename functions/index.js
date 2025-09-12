@@ -148,7 +148,7 @@ const sendEmail = async (contactData) => {
         }
 
         // Create transporter
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
             host: config.email.smtpHost,
             port: config.email.smtpPort,
             secure: config.email.useSSL,
@@ -189,6 +189,90 @@ const sendEmail = async (contactData) => {
         return result;
     } catch (error) {
         console.error('Error sending email:', error);
+        throw error;
+    }
+};
+
+// Function to send feedback email notifications
+const sendFeedbackEmail = async (feedbackData) => {
+    try {
+        // Get email credentials from Secret Manager
+        const [emailVersion] = await secretClient.accessSecretVersion({
+            name: `projects/${config.projectId}/secrets/${config.secrets.emailCredentials}/versions/latest`,
+        });
+        const email = emailVersion.payload.data.toString();
+
+        const [passwordVersion] = await secretClient.accessSecretVersion({
+            name: `projects/${config.projectId}/secrets/${config.secrets.emailPassword}/versions/latest`,
+        });
+        const password = passwordVersion.payload.data.toString();
+
+        // Get recipient emails from Secret Manager
+        const [primaryVersion] = await secretClient.accessSecretVersion({
+            name: `projects/${config.projectId}/secrets/email-recipient-primary/versions/latest`,
+        });
+        const primaryRecipient = primaryVersion.payload.data.toString();
+
+        let ccRecipients = [];
+        try {
+            const [ccVersion] = await secretClient.accessSecretVersion({
+                name: `projects/${config.projectId}/secrets/email-recipient-cc/versions/latest`,
+            });
+            ccRecipients = ccVersion.payload.data.toString().split(',').map(email => email.trim());
+        } catch (error) {
+            console.log('No CC recipients configured');
+        }
+
+        // Create transporter
+        const transporter = nodemailer.createTransport({
+            host: config.email.smtpHost,
+            port: config.email.smtpPort,
+            secure: config.email.useSSL,
+            auth: {
+                user: email,
+                pass: password,
+            },
+        });
+
+        // Format rating stars
+        const ratingStars = '★'.repeat(feedbackData.rating) + '☆'.repeat(5 - feedbackData.rating);
+
+        // Email content
+        const mailOptions = {
+            from: email,
+            to: primaryRecipient,
+            cc: ccRecipients,
+            subject: `🌟 New Portfolio Feedback - ${feedbackData.rating}/5 Stars`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #2563eb;">🌟 New Portfolio Feedback</h2>
+                    
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="color: #1e40af; margin-top: 0;">Feedback Details</h3>
+                        <p><strong>Name:</strong> ${feedbackData.name}</p>
+                        <p><strong>Email:</strong> ${feedbackData.email || 'Not provided'}</p>
+                        <p><strong>Rating:</strong> ${ratingStars} (${feedbackData.rating}/5)</p>
+                        <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+                    </div>
+                    
+                    <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="color: #92400e; margin-top: 0;">Feedback Message</h3>
+                        <p style="white-space: pre-wrap; line-height: 1.6;">${feedbackData.feedback}</p>
+                    </div>
+                    
+                    <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                        This feedback was submitted through your portfolio website feedback form.
+                    </p>
+                </div>
+            `
+        };
+
+        // Send email
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Feedback email sent successfully:', result.messageId);
+        return result;
+    } catch (error) {
+        console.error('Error sending feedback email:', error);
         throw error;
     }
 };
@@ -252,6 +336,15 @@ exports.submitFeedback = functions.https.onRequest(async (req, res) => {
 
             // This adds the data to the 'feedbackCollect' collection
             await db.collection('feedbackCollect').add(feedbackEntry);
+
+            // Send email notification for feedback
+            try {
+                await sendFeedbackEmail(feedbackEntry);
+                console.log('Feedback email sent successfully');
+            } catch (emailError) {
+                console.error('Error sending feedback email:', emailError);
+                // Don't fail the request if email fails, feedback was still saved
+            }
 
             res.status(200).send({ message: 'Feedback submitted successfully.' });
 

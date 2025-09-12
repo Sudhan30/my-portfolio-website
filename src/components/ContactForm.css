@@ -3,11 +3,12 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--white);
     border-radius: 16px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--neutral-200);
     animation: slideInUp 0.3s ease-out;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 @keyframes slideInUp {
@@ -27,18 +28,14 @@
 }
 
 .contact-form-header h3 {
-    color: #ffffff;
+    color: var(--neutral-900);
     font-size: 1.875rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #60a5fa, #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .contact-form-header p {
-    color: #d1d5db;
+    color: var(--neutral-600);
     font-size: 1rem;
     line-height: 1.6;
     margin: 0;
@@ -56,7 +53,7 @@
 }
 
 .form-group label {
-    color: #ffffff;
+    color: var(--neutral-700);
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -67,10 +64,10 @@
 .form-group textarea {
     width: 100%;
     padding: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--neutral-300);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    background: var(--white) !important;
+    color: var(--neutral-900) !important;
     font-size: 1rem;
     font-family: inherit;
     transition: all 0.3s ease;
@@ -79,21 +76,33 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-    color: #9ca3af;
+    color: var(--neutral-400);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--blue-500);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-orange-400);
+    background: var(--white) !important;
+    color: var(--neutral-900) !important;
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
 }
 
 .form-group input:disabled,
 .form-group textarea:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Override browser autofill styles */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: var(--neutral-900) !important;
+    background-color: white !important;
+    color: var(--neutral-900) !important;
 }
 
 .form-group textarea {
@@ -107,8 +116,8 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 1rem 2rem;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #ffffff;
+    background: var(--accent-orange-400);
+    color: var(--primary-900);
     border: none;
     border-radius: 12px;
     font-size: 1rem;
@@ -120,9 +129,9 @@
 }
 
 .contact-form-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    background: var(--accent-orange-500);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 25px rgba(251, 146, 60, 0.3);
 }
 
 .contact-form-button:disabled {
@@ -144,27 +153,26 @@
 .contact-form-success {
     text-align: center;
     padding: 3rem 2rem;
-    background: rgba(34, 197, 94, 0.15);
-    border: 2px solid rgba(34, 197, 94, 0.4);
+    background: rgba(16, 185, 129, 0.15);
+    border: 2px solid rgba(16, 185, 129, 0.4);
     border-radius: 16px;
     backdrop-filter: blur(10px);
 }
 
 .success-icon {
-    color: #16a34a;
+    color: var(--accent-success);
     margin-bottom: 1.5rem;
 }
 
 .contact-form-success h3 {
-    color: #000000;
+    color: var(--neutral-900);
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .contact-form-success p {
-    color: #374151;
+    color: var(--neutral-600);
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 2rem;
@@ -205,12 +213,12 @@
     
     .contact-form-success h3 {
         font-size: 1.25rem;
-        color: #000000;
+        color: var(--neutral-900);
     }
     
     .contact-form-success p {
         font-size: 0.9rem;
-        color: #374151;
+        color: var(--neutral-600);
     }
     
     .contact-form-button {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MapPin } from 'lucide-react';
 import { experiences } from '../data';
 import telemetryService from '../services/telemetry';
 
@@ -23,29 +23,47 @@ const JobExperience = ({ job }) => {
     };
 
     return (
-        <div className="job-card animate-fade-in-up" data-job-id={job.company}>
-            <div className="job-card-header" onClick={handleToggle}>
-                <div className="job-card-header-left">
-                    {React.createElement(job.icon, { size: 32, style: { color: 'var(--purple-600)', marginRight: '1rem' } })}
-                    <div>
-                        <h4 className="job-title">{job.title}</h4>
-                        <p className="job-company">{job.company}</p>
-                        <p className="job-duration">{job.duration}</p>
+        <div className="experience-card" data-job-id={job.company}>
+            <div className="experience-card-header" onClick={handleToggle}>
+                <div className="experience-card-main">
+                    <div className="experience-icon">
+                        {React.createElement(job.icon, { size: 24 })}
+                    </div>
+                    <div className="experience-info">
+                        <div className="experience-header-line">
+                            <h4 className="experience-title">{job.title}</h4>
+                            <span className="experience-duration">{job.duration}</span>
+                        </div>
+                        <div className="experience-company">
+                            <span>{job.company}</span>
+                            <span className="experience-location">
+                                <MapPin size={14} />
+                                {job.location}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <ChevronDown className={`job-chevron ${isOpen ? 'rotated' : ''}`} size={24} />
+                <ChevronDown className={`experience-chevron ${isOpen ? 'rotated' : ''}`} size={20} />
             </div>
+            
             {isOpen && (
-                <div className="job-projects-content">
-                    <h5 className="job-projects-title">Key Projects & Contributions:</h5>
-                    <ul className="job-projects-list">
-                        {job.projects.map((project, projectIndex) => (
-                            <li key={projectIndex} className="job-project-item">
-                                <strong>{project.name}:</strong> {project.description}
-                                {project.impact && <span className="impact-text">Impact: {project.impact}</span>}
-                            </li>
-                        ))}
-                    </ul>
+                <div className="experience-details">
+                    <div className="experience-projects">
+                        <h5 className="projects-title">Key Projects & Achievements</h5>
+                        <div className="projects-grid">
+                            {job.projects.map((project, projectIndex) => (
+                                <div key={projectIndex} className="project-card">
+                                    <h6 className="project-name">{project.name}</h6>
+                                    <p className="project-description">{project.description}</p>
+                                    {project.impact && (
+                                        <div className="project-impact">
+                                            <strong>Impact:</strong> {project.impact}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
@@ -60,7 +78,7 @@ const Experience = () => {
                     <span className="relative-text">Professional Experience</span>
                     <span className="underline-effect"></span>
                 </h3>
-                <div className="job-experience-container">
+                <div className="experience-container">
                     {experiences.map((job, jobIndex) => (
                         <JobExperience key={jobIndex} job={job} />
                     ))}

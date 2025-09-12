@@ -1,32 +1,88 @@
-import React from 'react';
-import { User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Menu, X } from 'lucide-react';
 
 const Header = ({ scrollToSection, activeSection }) => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    
+    // Determine header theme based on active section
+    // Dark header only for skills section that has light background
+    const isLightSection = ['skills'].includes(activeSection);
+    const headerClass = isLightSection ? 'header header-dark' : 'header';
+    
+    const handleMobileMenuToggle = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+    
+    const handleMobileNavClick = (section) => {
+        scrollToSection(section);
+        setIsMobileMenuOpen(false);
+    };
+    
+    // Close mobile menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isMobileMenuOpen && !event.target.closest('.mobile-menu-overlay') && !event.target.closest('.mobile-menu-button')) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+        
+        if (isMobileMenuOpen) {
+            document.addEventListener('click', handleClickOutside);
+            return () => document.removeEventListener('click', handleClickOutside);
+        }
+    }, [isMobileMenuOpen]);
+    
     return (
-        <header className="header">
+        <header className={headerClass}>
             <div className="header-left">
-                <User style={{ color: 'var(--purple-600)' }} size={28} />
+                <User 
+                    style={{ 
+                        color: isLightSection ? 'var(--accent-orange-400)' : 'var(--accent-orange-400)' 
+                    }} 
+                    size={28} 
+                />
                 <h1 className="header-title">Sudharsana Rajasekaran</h1>
             </div>
-            <nav className="header-nav">
-                {['home', 'about', 'skills', 'experience', 'contact', 'interest'].map((section) => (
-                    <button
-                        key={section}
-                        onClick={() => scrollToSection(section)}
-                        className={`header-nav-button ${activeSection === section ? 'active' : ''}`}
+            <div className="header-right">
+                <nav className="header-nav">
+                    {['home', 'about', 'skills', 'experience', 'job-analyzer', 'contact'].map((section) => (
+                        <button
+                            key={section}
+                            onClick={() => scrollToSection(section)}
+                            className={`header-nav-button ${activeSection === section ? 'active' : ''}`}
+                        >
+                            {section === 'job-analyzer' ? 'Job Matcher' : section.charAt(0).toUpperCase() + section.slice(1)}
+                        </button>
+                    ))}
+                </nav>
+                {/* Mobile Menu Button */}
+                <div className="mobile-menu-button-wrapper">
+                    <button 
+                        className="mobile-menu-button"
+                        onClick={handleMobileMenuToggle}
+                        aria-label="Toggle mobile menu"
                     >
-                        {section.charAt(0).toUpperCase() + section.slice(1)}
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
-                ))}
-            </nav>
-            {/* Mobile Menu Button - Add a proper mobile menu if needed */}
-            <div className="mobile-menu-button-wrapper">
-                <button className="mobile-menu-button">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
+                </div>
             </div>
+            
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                        <div className="mobile-menu-overlay">
+                            <nav className="mobile-menu-nav">
+                                {['home', 'about', 'skills', 'experience', 'job-analyzer', 'contact'].map((section) => (
+                                    <button
+                                        key={section}
+                                        onClick={() => handleMobileNavClick(section)}
+                                        className={`mobile-menu-nav-button ${activeSection === section ? 'active' : ''}`}
+                                    >
+                                        {section === 'job-analyzer' ? 'Job Matcher' : section.charAt(0).toUpperCase() + section.slice(1)}
+                                    </button>
+                                ))}
+                    </nav>
+                </div>
+            )}
         </header>
     );
 };

@@ -1,4 +1,4 @@
-import { Code, Zap, Database, Cloud, Brain, BarChart, GitBranch, Briefcase, Lightbulb, Settings, Cpu } from 'lucide-react';
+import { Code, Zap, Database, Cloud, Brain, BarChart, GitBranch, Settings, Cpu, Briefcase, Laptop, Database as DatabaseIcon, TrendingUp } from 'lucide-react';
 
 export const skills = [
     { category: 'Programming', icon: Code, skills: ['Python', 'Scala', 'Java'] },
@@ -15,9 +15,10 @@ export const skills = [
 export const experiences = [
     {
         title: 'Senior Data Engineer',
-        company: 'Walmart Global Tech, Sunnyvale',
+        company: 'Walmart Global Tech',
+        location: 'Sunnyvale, CA',
         duration: 'March 2022 - Present',
-        icon: Briefcase,
+        icon: DatabaseIcon,
         projects: [
             {
                 name: 'Automated Data Pipelines & Customer Data Marts',
@@ -53,9 +54,10 @@ export const experiences = [
     },
     {
         title: 'Business Intelligence Engineer',
-        company: 'Google (Contractor), Sunnyvale',
+        company: 'Google (Contractor)',
+        location: 'Sunnyvale, CA',
         duration: 'August 2020 - March 2022',
-        icon: Lightbulb,
+        icon: TrendingUp,
         projects: [
             {
                 name: 'BI Solution for Google Data Center Supply Chain',
@@ -91,9 +93,10 @@ export const experiences = [
     },
     {
         title: 'Data Analyst Intern',
-        company: 'Ericsson, Plano, Texas',
+        company: 'Ericsson',
+        location: 'Plano, TX',
         duration: 'September 2019 - May 2020',
-        icon: Briefcase,
+        icon: Laptop,
         projects: [
             {
                 name: 'Automated Analytical Reports',
@@ -129,7 +132,8 @@ export const experiences = [
     },
     {
         title: 'Business Intelligence Consultant',
-        company: 'Cognizant Technology Solutions, Chennai',
+        company: 'Cognizant Technology Solutions',
+        location: 'Chennai, India',
         duration: 'June 2014 - June 2018',
         icon: Briefcase,
         projects: [

@@ -55,22 +55,66 @@ const App = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    // Add scroll detection to update activeSection
+    useEffect(() => {
+        const handleScroll = () => {
+            const sections = ['home', 'about', 'skills', 'experience', 'job-analyzer', 'contact'];
+            const scrollPosition = window.scrollY + 100; // Offset for header height
+
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const section = document.getElementById(sections[i]);
+                if (section && section.offsetTop <= scrollPosition) {
+                    setActiveSection(sections[i]);
+                    break;
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     useEffect(() => {
         if (specialMessage) {
             Swal.fire({
-                title: 'Special Visit!',
-                text: specialMessage,
-                icon: 'success',
-                confirmButtonText: 'Awesome!',
-                confirmButtonColor: '#2563eb', // Blue-600 to match theme
+                title: 'Welcome!',
+                html: `
+                    <div style="text-align: center; padding: 1rem 0;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                        <p style="color: #374151; font-size: 1.1rem; line-height: 1.6; margin: 0; font-weight: 500;">
+                            ${specialMessage}
+                        </p>
+                    </div>
+                `,
+                width: '420px',
+                padding: '2.5rem',
+                background: '#ffffff',
+                color: '#1f2937',
+                backdrop: false,
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                showConfirmButton: true,
+                confirmButtonText: 'Continue',
+                confirmButtonColor: '#fb923c', // accent-orange-400
                 customClass: {
-                    confirmButton: 'swal-confirm-button'
-                }
+                    popup: 'swal-light-popup',
+                    confirmButton: 'swal-light-button',
+                    title: 'swal-light-title',
+                    closeButton: 'swal-light-close'
+                },
+                buttonsStyling: false,
+                showCloseButton: true,
+                closeButtonHtml: `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `
             });
             setShowConfetti(true);
             const confettiTimer = setTimeout(() => {
                 setShowConfetti(false);
-            }, 10000); // Confetti lasts for 10 seconds
+            }, 8000); // Confetti lasts for 8 seconds
             return () => clearTimeout(confettiTimer);
         }
     }, [specialMessage]);
