@@ -233,6 +233,10 @@ body {
     color: var(--neutral-900);
 }
 
+.mobile-menu-button svg {
+    pointer-events: none;
+}
+
 /* Mobile Menu Overlay */
 .mobile-menu-overlay {
     position: fixed;
@@ -244,7 +248,7 @@ body {
     z-index: 1000;
     display: flex;
     align-items: flex-start;
-    justify-content: flex-end;
+    justify-content: flex-start;
     padding-top: 5rem; /* Account for header height */
     width: 100vw;
     height: 100vh;
