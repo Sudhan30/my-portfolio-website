@@ -248,7 +248,7 @@ body {
     z-index: 1000;
     display: flex;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: flex-end; /* Changed to flex-end */
     padding-top: 5rem; /* Account for header height */
     width: 100vw;
     height: 100vh;
@@ -256,13 +256,14 @@ body {
 
 .mobile-menu-nav {
     background: var(--white);
-    border-radius: 0 0 0 1rem;
-    box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem; /* Updated border-radius */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Updated box-shadow */
     padding: 1rem;
     min-width: 200px;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-right: 1rem; /* Added margin to align with header padding */
 }
 
 .mobile-menu-nav-button {
