@@ -299,7 +299,7 @@ graph LR
     B --> C[Secret Manager]
     C --> D[SMTP Configuration]
     D --> E[Nodemailer]
-    E --> F[Zoho SMTP]
+    E --> F[SMTP Provider]
     F --> G[Email Recipients]
 ```
 
@@ -307,13 +307,13 @@ graph LR
 
 #### Contact Form Emails
 - **Subject:** "New Contact Form Submission"
-- **Recipients:** Primary + CC recipients
+- **Recipients:** Configurable primary + CC recipients
 - **Content:** Formatted HTML with user details
 - **Security:** SMTP authentication via Secret Manager
 
 #### Feedback Emails
 - **Subject:** "🌟 New Portfolio Feedback - X/5 Stars"
-- **Recipients:** Primary + CC recipients
+- **Recipients:** Configurable primary + CC recipients
 - **Content:** Rich HTML with star ratings and feedback
 - **Features:** Professional formatting and styling
 

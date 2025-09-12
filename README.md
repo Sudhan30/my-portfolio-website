@@ -258,11 +258,9 @@ gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow
 ## 📧 Email System
 
 ### Configuration
-- **SMTP Provider:** Zoho Mail
-- **Sender:** sudhan@sudharsana.dev
-- **Recipients:** 
-  - Primary: sudhann.raj@gmail.com
-  - CC: sudhan@sudharsana.dev, palaniappanshuruthi@gmail.com
+- **SMTP Provider:** Configurable email service
+- **Sender:** Configurable sender email
+- **Recipients:** Configurable primary and CC recipients
 
 ### Email Types
 1. **Contact Form:** Professional inquiry notifications
@@ -336,10 +334,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Sudhan Raj** - Data Engineer
+**Portfolio Owner** - Data Engineer
 - Website: [www.sudharsana.dev](https://www.sudharsana.dev)
 - LinkedIn: [linkedin.com/in/sudhan-raj](https://linkedin.com/in/sudhan-raj)
-- Email: sudhan@sudharsana.dev
+- Contact: Available through website contact form
 
 ## 🙏 Acknowledgments
 

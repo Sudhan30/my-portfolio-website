@@ -82,22 +82,22 @@ gcloud functions deploy trackTelemetry \
 
 ### 1. Create Email Credentials Secret
 ```bash
-echo -n "your-email@domain.com" | gcloud secrets create email-credentials --data-file=-
+echo -n "your-sender-email@domain.com" | gcloud secrets create email-credentials --data-file=-
 ```
 
 ### 2. Create Email Password Secret
 ```bash
-echo -n "your-app-password" | gcloud secrets create email-password --data-file=-
+echo -n "your-smtp-app-password" | gcloud secrets create email-password --data-file=-
 ```
 
 ### 3. Create Primary Recipient Secret
 ```bash
-echo -n "primary@recipient.com" | gcloud secrets create email-recipient-primary --data-file=-
+echo -n "primary-recipient@domain.com" | gcloud secrets create email-recipient-primary --data-file=-
 ```
 
 ### 4. Create CC Recipients Secret
 ```bash
-echo -n "cc1@recipient.com,cc2@recipient.com" | gcloud secrets create email-recipient-cc --data-file=-
+echo -n "cc1@domain.com,cc2@domain.com" | gcloud secrets create email-recipient-cc --data-file=-
 ```
 
 ### 5. Grant Permissions
@@ -191,7 +191,7 @@ Create or update the configuration file:
 module.exports = {
     projectId: 'your-project-id',
     email: {
-        smtpHost: 'smtp.zoho.com',
+        smtpHost: 'your-smtp-host.com',
         smtpPort: 465,
         useSSL: true,
     },
