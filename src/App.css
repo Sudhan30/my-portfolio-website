@@ -1368,8 +1368,10 @@ body {
     }
     
     .contact-links {
+        display: flex !important; /* Change from grid to flex for desktop */
         flex-direction: row;
-        gap: 2rem;
+        gap: 1.5rem; /* Reduced gap for better fit */
+        justify-content: center; /* Center the icons */
     }
 
     .contact-link-item {
@@ -1396,6 +1398,13 @@ body {
 
 /* Touch-Friendly Mobile Styles */
 @media (max-width: 768px) {
+    /* Contact links mobile layout - 2 columns */
+    .contact-links {
+        display: grid !important; /* Override desktop flex layout */
+        grid-template-columns: 1fr 1fr !important; /* 2 columns on mobile */
+        gap: 1rem !important;
+    }
+    
     .hero-button,
     .contact-link-item,
     .floating-feedback-button,
