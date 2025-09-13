@@ -697,7 +697,7 @@ body {
     flex-direction: column;
     gap: 1.5rem;
     width: 100%;
-    max-width: 72rem;
+    max-width: 50.8rem; /* Reduced by 10% from 72rem */
     margin: 0 auto;
     align-self: center;
 }
@@ -1398,6 +1398,11 @@ body {
 
 /* Touch-Friendly Mobile Styles */
 @media (max-width: 768px) {
+    /* Experience container mobile layout - full width */
+    .experience-container {
+        max-width: 100% !important; /* Full width on mobile */
+    }
+    
     /* Contact links mobile layout - 2 columns */
     .contact-links {
         display: grid !important; /* Override desktop flex layout */
