@@ -26,7 +26,7 @@ gcloud functions deploy $FUNCTION_NAME \
     --runtime nodejs20 \
     --trigger-http \
     --allow-unauthenticated \
-    --source functions \
+    --source . \
     --entry-point processOtelData \
     --memory 512MB \
     --timeout 60s \
@@ -37,7 +37,7 @@ echo "📡 Deploying batch processor function..."
 gcloud functions deploy $FUNCTION_BATCH_NAME \
     --runtime nodejs20 \
     --trigger-topic otel-data \
-    --source functions \
+    --source . \
     --entry-point processOtelDataBatch \
     --memory 1GB \
     --timeout 300s \
@@ -65,7 +65,7 @@ gcloud pubsub subscriptions create otel-data-subscription \
 
 # 7. Test the deployment
 echo "🧪 Testing the deployment..."
-FUNCTION_URL=$(gcloud functions describe $FUNCTION_NAME --format="value(httpsTrigger.url)")
+FUNCTION_URL="https://us-central1-$PROJECT_ID.cloudfunctions.net/$FUNCTION_NAME"
 
 echo "Testing OpenTelemetry processor function..."
 curl -X POST $FUNCTION_URL \
@@ -90,6 +90,10 @@ curl -X POST $FUNCTION_URL \
             "timestamp": 1640995200000
         }]
     }' || echo "Test failed, but deployment may still be successful"
+
+# 8. Verify BigQuery data
+echo "📊 Verifying BigQuery data..."
+bq query --use_legacy_sql=false "SELECT COUNT(*) as trace_count FROM \`$PROJECT_ID.otel_data.traces\`" || echo "BigQuery verification failed"
 
 echo "✅ OpenTelemetry pipeline deployment complete!"
 echo ""

@@ -22,11 +22,14 @@ A modern, responsive portfolio website showcasing professional experience, skill
 *   **Nodemailer:** Email delivery system
 *   **CORS:** Cross-origin resource sharing
 *   **Rate Limiting:** API abuse prevention
+*   **OpenTelemetry:** Observability and monitoring pipeline
+*   **BigQuery:** Data warehouse for analytics
+*   **Cloud Storage:** Long-term data archival
+*   **Pub/Sub:** Message queuing for telemetry data
 
 ### Deployment & DevOps
 *   **Google Cloud Platform:** Complete cloud infrastructure
-*   **Google Cloud Storage:** Static website hosting
-*   **Google Cloud CDN:** Global content delivery
+*   **Firebase Hosting:** Static website hosting with CDN
 *   **GitHub Actions:** Automated CI/CD pipeline
 *   **Cloudflare:** DNS and security proxy
 
@@ -45,9 +48,12 @@ A modern, responsive portfolio website showcasing professional experience, skill
 *   **Rate Limiting:** Protection against spam and abuse
 
 ### Analytics & Tracking
+*   **OpenTelemetry Pipeline:** Comprehensive observability with traces, metrics, and logs
 *   **Page View Counter:** Dynamic visitor tracking with special milestone messages
 *   **Custom Telemetry System:** CCPA-compliant user interaction tracking
 *   **Privacy-First Analytics:** Optional consent-based data collection
+*   **BigQuery Integration:** Advanced analytics and data warehousing
+*   **Performance Monitoring:** Core Web Vitals and custom metrics
 *   **Session Management:** Unique user and session identification
 
 ### Job Analysis Tool
