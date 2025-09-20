@@ -26,32 +26,35 @@ graph TB
 
     subgraph "CDN & Edge"
         D[Cloudflare DNS]
-        E[Google Cloud CDN]
-        F[Load Balancer]
+        E[Firebase Hosting CDN]
+        F[Global Edge Locations]
     end
 
     subgraph "Application Layer"
         G[React SPA]
         H[Static Assets]
-        I[Service Workers]
+        I[OpenTelemetry SDK]
     end
 
     subgraph "API Layer"
         J[Cloud Functions]
         K[Rate Limiting]
         L[CORS Middleware]
+        M[OpenTelemetry Processors]
     end
 
     subgraph "Data Layer"
-        M[Firestore Database]
-        N[Secret Manager]
-        O[Cloud Storage]
+        N[Firestore Database]
+        O[Secret Manager]
+        P[BigQuery]
+        Q[Cloud Storage]
+        R[Pub/Sub]
     end
 
     subgraph "External Services"
-        P[Zoho SMTP]
-        Q[Email Recipients]
-        R[GitHub Actions]
+        S[SMTP Provider]
+        T[Email Recipients]
+        U[GitHub Actions]
     end
 
     A --> D
@@ -61,14 +64,19 @@ graph TB
     E --> F
     F --> G
     G --> H
+    G --> I
     G --> J
+    I --> M
     J --> K
     K --> L
-    L --> M
     L --> N
-    J --> P
-    P --> Q
-    R --> O
+    L --> O
+    M --> P
+    M --> R
+    R --> Q
+    J --> S
+    S --> T
+    U --> G
 ```
 
 ## 🎨 Frontend Architecture
@@ -91,7 +99,8 @@ src/
 │   ├── Skills.js        # Skills showcase
 │   └── TelemetryConsent.js # Privacy consent banner
 ├── services/            # Business logic services
-│   └── telemetry.js     # Analytics service
+│   ├── telemetry.js     # Custom analytics service
+│   └── opentelemetry.js # OpenTelemetry SDK implementation
 ├── utils/               # Utility functions
 │   └── env.js          # Environment configuration
 ├── data.js             # Static data and resume info
@@ -175,6 +184,26 @@ graph LR
   - Session management
   - Privacy compliance
 
+#### 6. OpenTelemetry Data Processor (`processOtelData`)
+- **Purpose:** Process incoming OpenTelemetry data (traces, metrics, logs)
+- **Trigger:** HTTP POST request from OpenTelemetry SDK
+- **Rate Limit:** 200 requests per minute per IP
+- **Features:**
+  - Real-time data processing
+  - BigQuery integration for analytics
+  - Pub/Sub publishing for batch processing
+  - Cloud Storage archival
+  - Data validation and sanitization
+
+#### 7. OpenTelemetry Batch Processor (`processOtelDataBatch`)
+- **Purpose:** Process batched OpenTelemetry data from Pub/Sub
+- **Trigger:** Pub/Sub message from `otel-data` topic
+- **Features:**
+  - Batch data processing
+  - Cloud Storage archival
+  - Error handling and retry logic
+  - Data compression and optimization
+
 ## 🗄️ Data Architecture
 
 ### Firestore Collections
@@ -223,7 +252,7 @@ graph LR
 }
 ```
 
-#### `telemetry`
+#### `telemetry` (Custom Analytics)
 ```javascript
 {
   userId: string,
@@ -244,6 +273,52 @@ graph LR
   userAgent: string,
   ip: string
 }
+```
+
+#### OpenTelemetry Tables (BigQuery)
+
+##### `traces`
+```sql
+trace_id: STRING,
+span_id: STRING,
+parent_span_id: STRING,
+name: STRING,
+start_time: TIMESTAMP,
+end_time: TIMESTAMP,
+duration_ms: INTEGER,
+status_code: STRING,
+status_message: STRING,
+attributes: JSON,
+events: JSON,
+links: JSON,
+resource_attributes: JSON,
+instrumentation_scope_name: STRING,
+instrumentation_scope_version: STRING,
+created_at: TIMESTAMP
+```
+
+##### `metrics`
+```sql
+metric_name: STRING,
+metric_type: STRING,
+value: FLOAT,
+timestamp: TIMESTAMP,
+attributes: JSON,
+resource_attributes: JSON,
+created_at: TIMESTAMP
+```
+
+##### `logs`
+```sql
+log_id: STRING,
+timestamp: TIMESTAMP,
+severity: STRING,
+body: STRING,
+attributes: JSON,
+resource_attributes: JSON,
+trace_id: STRING,
+span_id: STRING,
+created_at: TIMESTAMP
 ```
 
 ## 🔐 Security Architecture
@@ -319,45 +394,131 @@ graph LR
 
 ## 📊 Analytics Architecture
 
-### Telemetry System Design
+### OpenTelemetry Pipeline
 
 ```mermaid
 graph TD
-    A[User Interaction] --> B[Telemetry Service]
+    A[User Interaction] --> B[OpenTelemetry SDK]
     B --> C{Consent Given?}
-    C -->|Yes| D[Event Collection]
+    C -->|Yes| D[Data Collection]
     C -->|No| E[Skip Tracking]
-    D --> F[Event Batching]
-    F --> G[Cloud Function]
-    G --> H[Data Sanitization]
-    H --> I[Firestore Storage]
+    D --> F[Batch Processing]
+    F --> G[Cloud Function processOtelData]
+    G --> H[BigQuery Storage]
+    G --> I[Pub/Sub Queue otel-data]
+    I --> J[Cloud Function processOtelDataBatch]
+    J --> K[Cloud Storage Archive]
+    J --> L[BigQuery Final Storage]
 ```
 
+### OpenTelemetry Implementation
+
+#### Frontend SDK Integration
+- **Library:** Custom OpenTelemetry SDK implementation
+- **Instrumentation:** Automatic and manual instrumentation
+- **Data Types:** Traces, Metrics, and Logs
+- **Consent Management:** CCPA-compliant opt-in system
+- **Performance:** Non-blocking data collection
+
+#### Data Collection Types
+
+##### Traces (Distributed Tracing)
+- **Page Navigation:** User journey tracking
+- **User Interactions:** Click events, form submissions
+- **Performance Metrics:** Page load times, render performance
+- **API Calls:** Cloud Function request/response timing
+- **Custom Spans:** Business logic instrumentation
+
+##### Metrics (Observability Metrics)
+- **Core Web Vitals:** LCP, FID, CLS measurements
+- **Custom Business Metrics:** User engagement, feature usage
+- **System Performance:** Memory usage, CPU utilization
+- **Error Rates:** JavaScript errors, API failures
+- **User Experience:** Session duration, bounce rate
+
+##### Logs (Structured Logging)
+- **JavaScript Errors:** Unhandled exceptions, promise rejections
+- **User Actions:** Navigation events, form interactions
+- **Debug Information:** Performance bottlenecks, debugging data
+- **Security Events:** Suspicious activities, rate limit violations
+
+### Data Processing Pipeline
+
+#### Real-time Processing (`processOtelData`)
+- **HTTP Trigger:** Receives data from frontend SDK
+- **Data Validation:** Schema validation and sanitization
+- **BigQuery Insert:** Real-time data storage for analytics
+- **Pub/Sub Publishing:** Queues data for batch processing
+- **Error Handling:** Graceful failure handling and retries
+
+#### Batch Processing (`processOtelDataBatch`)
+- **Pub/Sub Trigger:** Processes queued data batches
+- **Data Compression:** Optimizes storage and transfer
+- **Cloud Storage Archive:** Long-term data retention
+- **BigQuery Final Storage:** Processed data for analysis
+- **Cleanup:** Removes processed messages from queue
+
 ### Privacy-First Analytics
-- **Consent Management:** User-controlled tracking
-- **Data Anonymization:** No PII collection
+
+#### CCPA Compliance
+- **Consent Management:** Explicit user opt-in required
+- **Data Minimization:** Only essential data collection
+- **User Rights:** Opt-out and data deletion capabilities
+- **Transparency:** Clear privacy policies and data usage
+
+#### Data Protection
+- **Anonymization:** No PII collection, hashed user IDs
 - **Session Tracking:** Unique session identification
-- **Event Batching:** Efficient data transmission
 - **Data Retention:** Configurable cleanup policies
+- **Encryption:** Data encrypted in transit and at rest
+
+#### Performance Optimization
+- **Event Batching:** Efficient data transmission (5-second intervals)
+- **Sampling:** 10% trace sampling to stay within free tier limits
+- **Async Processing:** Non-blocking data collection
+- **Error Resilience:** Graceful degradation on failures
 
 ## 🚀 Deployment Architecture
 
 ### CI/CD Pipeline
 ```mermaid
 graph LR
-    A[Git Push] --> B[GitHub Actions]
-    B --> C[Build Process]
-    C --> D[Environment Injection]
-    D --> E[GCS Upload]
-    E --> F[CDN Invalidation]
-    F --> G[Deployment Complete]
+    A[Git Push to main] --> B[GitHub Actions]
+    B --> C[Build React App]
+    C --> D[Deploy to Firebase Hosting]
+    B --> E[Deploy Cloud Functions]
+    E --> F[Google Cloud Platform]
+    D --> G[Firebase CDN]
+    G --> H[Global Distribution]
 ```
 
-### Deployment Strategy
-- **Frontend:** Automated deployment via GitHub Actions
-- **Backend:** Manual deployment of Cloud Functions
-- **Infrastructure:** Infrastructure as Code (IaC)
-- **Monitoring:** Cloud Logging and Monitoring
+### Frontend Deployment (Firebase Hosting)
+- **Platform:** Firebase Hosting with global CDN
+- **Process:** Automated via GitHub Actions on `main` branch pushes
+- **Build:** React production build with optimized assets
+- **CDN:** Firebase CDN for global content delivery
+- **Cache Control:** Optimized caching headers for static assets
+- **Custom Domain:** www.sudharsana.dev with SSL/TLS
+- **Features:**
+  - Automatic HTTPS with Let's Encrypt
+  - Global edge locations for fast loading
+  - Instant rollbacks and versioning
+  - A/B testing capabilities
+
+### Backend Deployment (Cloud Functions)
+- **Platform:** Google Cloud Functions (Node.js 20)
+- **Process:** Manual deployment via `gcloud functions deploy`
+- **Runtime:** Node.js 20 (latest LTS)
+- **Scalability:** Serverless, auto-scaling based on demand
+- **Regions:** us-central1 for optimal performance
+- **Memory:** 256MB-1GB depending on function requirements
+- **Timeout:** 60-300 seconds based on processing needs
+
+### Infrastructure as Code
+- **Configuration:** Firebase configuration files
+- **Secrets:** Google Secret Manager integration
+- **Monitoring:** Google Cloud Logging and Monitoring
+- **Security:** IAM roles and service accounts
 
 ## 🔄 Data Flow Architecture
 
@@ -465,15 +626,49 @@ sequenceDiagram
 ## 📚 Technology Stack Summary
 
 ### Frontend
-- React 18, CSS3, Lucide React, SweetAlert2, React Confetti, UUID
+- **React 18:** Modern JavaScript library for building user interfaces
+- **CSS3:** Custom responsive styling with mobile-first design
+- **Lucide React:** Beautiful and consistent icon library
+- **SweetAlert2:** Elegant alerts and notifications
+- **React Confetti:** Celebratory effects for special interactions
+- **UUID:** Unique identifier generation for telemetry
+- **OpenTelemetry SDK:** Custom observability implementation
 
-### Backend
-- Google Cloud Functions (Node.js 20), Firebase Firestore, Google Secret Manager, Nodemailer
+### Backend & Infrastructure
+- **Google Cloud Functions (Node.js 20):** Serverless backend functions
+- **Firebase Firestore:** NoSQL document database
+- **Firebase Hosting:** Static website hosting with global CDN
+- **Google Secret Manager:** Secure credential storage
+- **Nodemailer:** Email delivery system
+- **Google Cloud BigQuery:** Data warehouse for analytics
+- **Google Cloud Storage:** Long-term data archival
+- **Google Cloud Pub/Sub:** Message queuing for telemetry data
 
-### Infrastructure
-- Google Cloud Platform, Cloudflare, GitHub Actions, Google Cloud Storage, Google Cloud CDN
+### DevOps & Deployment
+- **Google Cloud Platform:** Complete cloud infrastructure
+- **Firebase Hosting:** Static website hosting with CDN
+- **GitHub Actions:** Automated CI/CD pipeline
+- **Cloudflare:** DNS and security proxy
 
-### Security
-- CORS, Rate Limiting, CSP, Secret Management, Input Validation, CCPA Compliance
+### Analytics & Observability
+- **OpenTelemetry:** Comprehensive observability with traces, metrics, and logs
+- **Custom Telemetry System:** CCPA-compliant user interaction tracking
+- **BigQuery Analytics:** Advanced analytics and data warehousing
+- **Performance Monitoring:** Core Web Vitals and custom metrics
 
-This architecture provides a robust, scalable, and secure foundation for the portfolio website while maintaining excellent performance and user experience.
+### Security & Privacy
+- **CORS:** Cross-origin resource sharing
+- **Rate Limiting:** API abuse prevention
+- **Content Security Policy (CSP):** XSS protection
+- **Secret Management:** Secure credential storage
+- **Input Validation:** Data sanitization
+- **CCPA Compliance:** Privacy-first analytics
+- **Firebase Security Rules:** Database access control
+
+### Email & Communication
+- **SMTP Provider:** Configurable email service
+- **Nodemailer:** Node.js email delivery
+- **HTML Email Templates:** Professional formatting
+- **Multi-recipient Support:** Primary and CC recipients
+
+This architecture provides a robust, scalable, and secure foundation for the portfolio website while maintaining excellent performance, comprehensive observability, and user experience.
