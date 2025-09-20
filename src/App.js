@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import FloatingFeedback from './components/FloatingFeedback';
 import TelemetryConsent from './components/TelemetryConsent';
 import telemetryService from './services/telemetry';
+import otelService from './services/opentelemetry';
 import { config } from './utils/env';
 
 const App = () => {
@@ -49,8 +50,11 @@ const App = () => {
 
         fetchViewCount();
 
-        // Initialize telemetry tracking
-        telemetryService.trackPageView();
+                // Initialize telemetry tracking
+                telemetryService.trackPageView();
+                
+                // Initialize OpenTelemetry
+                otelService.initialize();
 
         return () => clearTimeout(timer);
     }, []);

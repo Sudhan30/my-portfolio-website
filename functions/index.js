@@ -6,6 +6,9 @@ const { SecretManagerServiceClient } = require("@google-cloud/secret-manager");
 const nodemailer = require("nodemailer");
 const resumeData = require("./resumeData");
 
+// Import OpenTelemetry processor
+const { processOtelData, processOtelDataBatch } = require("./otel-processor");
+
 // Load configuration (if exists)
 let config = {};
 try {
@@ -954,3 +957,7 @@ exports.trackTelemetry = functions.https.onRequest(async (req, res) => {
         }
     });
 });
+
+// OpenTelemetry Data Processing Functions
+exports.processOtelData = processOtelData;
+exports.processOtelDataBatch = processOtelDataBatch;

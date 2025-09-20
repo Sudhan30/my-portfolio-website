@@ -1,0 +1,98 @@
+# OpenTelemetry Collector Configuration for Portfolio Website
+# This configuration collects telemetry data and sends it to GCP Pub/Sub
+
+receivers:
+  # OTLP receiver for traces, metrics, and logs
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  
+  # Jaeger receiver for backward compatibility
+  jaeger:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:14250
+      thrift_http:
+        endpoint: 0.0.0.0:14268
+      thrift_compact:
+        endpoint: 0.0.0.0:6831
+      thrift_binary:
+        endpoint: 0.0.0.0:6832
+  
+  # Zipkin receiver for backward compatibility
+  zipkin:
+    endpoint: 0.0.0.0:9411
+
+processors:
+  # Batch processor for efficient data handling
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+  
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    limit_mib: 512
+    spike_limit_mib: 128
+    check_interval: 5s
+  
+  # Resource processor to add common attributes
+  resource:
+    attributes:
+      - key: service.name
+        value: portfolio-website
+        action: upsert
+      - key: service.version
+        value: 1.0.0
+        action: upsert
+      - key: deployment.environment
+        value: production
+        action: upsert
+  
+  # Span processor for trace sampling
+  probabilistic_sampler:
+    sampling_percentage: 10.0  # Sample 10% of traces to stay within free tier
+
+exporters:
+  # Google Cloud Pub/Sub exporter
+  googlecloudpubsub:
+    project: sudhanportfoliowebsite
+    topic: projects/sudhanportfoliowebsite/topics/otel-data
+    timeout: 30s
+  
+  # Logging exporter for debugging
+  logging:
+    loglevel: info
+  
+  # OTLP exporter for local development
+  otlp:
+    endpoint: http://localhost:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    # Traces pipeline
+    traces:
+      receivers: [otlp, jaeger, zipkin]
+      processors: [memory_limiter, resource, probabilistic_sampler, batch]
+      exporters: [googlecloudpubsub, logging]
+    
+    # Metrics pipeline
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [googlecloudpubsub, logging]
+    
+    # Logs pipeline
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [googlecloudpubsub, logging]
+
+  # Extensions for monitoring
+  extensions: [health_check, pprof, zpages]
+
