@@ -155,6 +155,39 @@ body {
     color: var(--white);
 }
 
+/* Light header theme for dark sections */
+.header-light {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.header-light .header-title {
+    color: var(--neutral-900);
+}
+
+.header-light .header-nav-button {
+    color: var(--neutral-600);
+}
+
+.header-light .header-nav-button:hover {
+    color: var(--neutral-900);
+    background-color: var(--neutral-100);
+}
+
+.header-light .header-nav-button.active {
+    color: var(--neutral-900);
+    border-bottom: 2px solid var(--accent-orange-400);
+}
+
+.header-light .mobile-menu-button {
+    color: var(--neutral-500);
+}
+
+.header-light .mobile-menu-button:hover {
+    color: var(--neutral-900);
+}
+
 .header-left {
     display: flex;
     align-items: center;
@@ -307,6 +340,27 @@ body {
 .header-dark .mobile-menu-nav-button.active {
     background-color: var(--accent-orange-400);
     color: var(--primary-900);
+}
+
+/* Light theme for mobile menu when header is light */
+.header-light .mobile-menu-nav {
+    background: var(--white);
+    border: 1px solid var(--neutral-200);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-light .mobile-menu-nav-button {
+    color: var(--neutral-600);
+}
+
+.header-light .mobile-menu-nav-button:hover {
+    background-color: var(--neutral-100);
+    color: var(--neutral-900);
+}
+
+.header-light .mobile-menu-nav-button.active {
+    background-color: var(--accent-orange-400);
+    color: var(--white);
 }
 
 /* Main Content Area */

@@ -4,8 +4,12 @@ import { User, Menu, X } from 'lucide-react';
 const Header = ({ scrollToSection, activeSection }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
-    // Header should always be dark theme
-    const headerClass = 'header header-dark';
+    // Determine header theme based on active section
+    // Light sections (light background) need dark header
+    // Dark sections (dark background) need light header
+    const lightSections = ['skills', 'experience', 'job-analyzer', 'contact'];
+    const isLightSection = lightSections.includes(activeSection);
+    const headerClass = isLightSection ? 'header header-dark' : 'header header-light';
     
     const handleMobileMenuToggle = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -35,7 +39,7 @@ const Header = ({ scrollToSection, activeSection }) => {
             <div className="header-left">
                 <User 
                     style={{ 
-                        color: 'var(--accent-orange-400)' 
+                        color: isLightSection ? 'var(--accent-orange-400)' : 'var(--accent-orange-400)' 
                     }} 
                     size={28} 
                 />
