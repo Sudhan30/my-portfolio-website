@@ -9,7 +9,7 @@ const Contact = () => {
         <section id="contact" className="section-padding contact-section">
             <div className="contact-container">
                 <h2 className="section-title">
-                    <span className="relative-text">Contact Sudharsana Rajasekaran</span>
+                    <span className="relative-text">Get in Touch</span>
                     <span className="underline-effect"></span>
                 </h2>
                 

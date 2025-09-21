@@ -6,7 +6,7 @@ const About = () => {
         <section id="about" className="section-padding about-section">
             <div className="section-container">
                 <h2 className="section-title">
-                    <span className="relative-text">About Sudharsana Rajasekaran</span>
+                    <span className="relative-text">About Me</span>
                     <span className="underline-effect"></span>
                 </h2>
                 <div className="about-grid">

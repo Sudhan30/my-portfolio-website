@@ -6,7 +6,7 @@ const Skills = () => {
         <section id="skills" className="section-padding skills-section">
             <div className="section-container">
                 <h2 className="section-title">
-                    <span className="relative-text">Sudharsana Rajasekaran - Technical Skills</span>
+                    <span className="relative-text">Technical Skills</span>
                     <span className="underline-effect"></span>
                 </h2>
                 <div className="skills-grid">
