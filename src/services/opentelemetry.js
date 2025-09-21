@@ -525,25 +525,27 @@ class OpenTelemetryService {
             // Timing metrics will be included in the main batch flush
             // No need for separate timing flush
             
-            // Track connection info (if available)
-            if (navigator.connection) {
-                this.recordMetric('connection_effective_type', navigator.connection.effectiveType, {
-                    'page.url': window.location.href,
-                    'metric.type': 'connection'
-                });
-            }
-            
-            // Track viewport size
-            this.recordMetric('viewport_width', window.innerWidth, {
-                'page.url': window.location.href,
-                'metric.type': 'viewport'
-            });
-            
-            this.recordMetric('viewport_height', window.innerHeight, {
-                'page.url': window.location.href,
-                'metric.type': 'viewport'
-            });
+            // Viewport and connection metrics are now recorded immediately during initialization
         });
+        
+        // Track viewport size (immediately available)
+        this.recordMetric('viewport_width', window.innerWidth, {
+            'page.url': window.location.href,
+            'metric.type': 'viewport'
+        });
+        
+        this.recordMetric('viewport_height', window.innerHeight, {
+            'page.url': window.location.href,
+            'metric.type': 'viewport'
+        });
+        
+        // Track connection info (if available)
+        if (navigator.connection) {
+            this.recordMetric('connection_effective_type', navigator.connection.effectiveType, {
+                'page.url': window.location.href,
+                'metric.type': 'connection'
+            });
+        }
         
         // Track if user is on mobile/desktop
         const isMobile = window.innerWidth <= 768;
