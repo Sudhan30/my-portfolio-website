@@ -622,7 +622,7 @@ class OpenTelemetryService {
     setupPerformanceMonitoring() {
         // Resource loading monitoring disabled to prevent continuous data sending
         // Only track essential performance metrics, not every resource
-        console.log('Performance monitoring setup (resource tracking disabled)');
+        // Performance monitoring setup complete (resource tracking disabled)
     }
 
     /**
