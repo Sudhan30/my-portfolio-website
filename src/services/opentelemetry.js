@@ -11,7 +11,7 @@ class OpenTelemetryService {
         this.metrics = [];
         this.logs = [];
         this.batchSize = 5; // Reduced batch size for testing
-        this.minFlushInterval = 10000; // Reduced to 10 seconds for testing
+        this.minFlushInterval = 5000; // Reduced to 5 seconds for testing
         this.lastFlushTime = 0;
         this.pageLoadTime = Date.now();
         this.hasUserEngaged = false; // Track if user has actually interacted
@@ -208,7 +208,13 @@ class OpenTelemetryService {
         };
         
         this.metrics.push(metric);
-        this.checkBatchSize();
+        
+        // Force flush metrics immediately if we have enough (for page load metrics)
+        if (this.metrics.length >= 3) {
+            this.flush();
+        } else {
+            this.checkBatchSize();
+        }
     }
 
     /**
@@ -696,11 +702,12 @@ class OpenTelemetryService {
         const now = Date.now();
         
         // Only flush if:
-        // 1. User has actually engaged with the site
+        // 1. User has actually engaged with the site OR we have metrics (collected on page load)
         // 2. We have enough items OR it's been a long time since last flush
         // 3. Minimum time interval has passed
         const timeSinceLastFlush = now - this.lastFlushTime;
-        const shouldFlush = this.hasUserEngaged && 
+        const hasMetrics = this.metrics.length > 0;
+        const shouldFlush = (this.hasUserEngaged || hasMetrics) && 
                            timeSinceLastFlush >= this.minFlushInterval &&
                            (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
         
