@@ -809,9 +809,15 @@ class OpenTelemetryService {
         }
         
         // For subsequent flushes, use normal logic
-        const shouldFlush = (this.hasUserEngaged || hasMetrics) && 
+        // Allow flush if we have metrics and enough time has passed, or if it's been a long time
+        const shouldFlush = hasMetrics && 
                            (timeSinceLastFlush >= this.minFlushInterval) &&
                            (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
+        
+        // Debug: Log what metrics we have
+        if (hasMetrics) {
+            console.log(`📊 Performance metrics available: ${this.metrics.map(m => m.name).join(', ')}`);
+        }
         
         if (shouldFlush) {
             console.log(`🚀 Flushing due to batch size check: ${totalItems} items, timeSinceLastFlush: ${timeSinceLastFlush}ms`);
