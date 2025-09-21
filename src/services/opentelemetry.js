@@ -78,6 +78,9 @@ class OpenTelemetryService {
         // Start new session for this page load
         this.startNewSession();
         
+        // Collect essential browser/device info immediately
+        this.collectEssentialInfo();
+        
         // Set up automatic instrumentation
         this.setupAutomaticInstrumentation();
         
@@ -244,6 +247,9 @@ class OpenTelemetryService {
         
         // Track essential performance metrics (once only)
         this.trackEssentialPerformance();
+        
+        // Track essential page load metrics
+        this.trackPageLoadMetrics();
     }
 
     /**
@@ -392,6 +398,116 @@ class OpenTelemetryService {
                 this.trackEssentialWebVitals();
             }
         }, 5000); // Wait 5 seconds after initialization
+    }
+
+    /**
+     * Collect essential browser/device info immediately on page load
+     */
+    collectEssentialInfo() {
+        if (!this.consentGiven) return;
+        
+        // Track browser info
+        this.recordMetric('browser_name', this.getBrowserName(), {
+            'page.url': window.location.href,
+            'metric.type': 'browser'
+        });
+        
+        // Track operating system
+        this.recordMetric('operating_system', this.getOperatingSystem(), {
+            'page.url': window.location.href,
+            'metric.type': 'os'
+        });
+        
+        // Track referrer (where user came from)
+        this.recordMetric('referrer', document.referrer || 'direct', {
+            'page.url': window.location.href,
+            'metric.type': 'traffic'
+        });
+        
+        // Track if user has JavaScript enabled (obvious, but good for analytics)
+        this.recordMetric('javascript_enabled', true, {
+            'page.url': window.location.href,
+            'metric.type': 'capability'
+        });
+    }
+
+    /**
+     * Get browser name from user agent
+     */
+    getBrowserName() {
+        const ua = navigator.userAgent;
+        if (ua.includes('Chrome')) return 'Chrome';
+        if (ua.includes('Firefox')) return 'Firefox';
+        if (ua.includes('Safari')) return 'Safari';
+        if (ua.includes('Edge')) return 'Edge';
+        return 'Other';
+    }
+
+    /**
+     * Get operating system from user agent
+     */
+    getOperatingSystem() {
+        const ua = navigator.userAgent;
+        if (ua.includes('Windows')) return 'Windows';
+        if (ua.includes('Mac')) return 'macOS';
+        if (ua.includes('Linux')) return 'Linux';
+        if (ua.includes('Android')) return 'Android';
+        if (ua.includes('iOS')) return 'iOS';
+        return 'Other';
+    }
+
+    /**
+     * Track essential page load metrics (minimal, high-value metrics only)
+     */
+    trackPageLoadMetrics() {
+        if (!this.consentGiven) return;
+        
+        // Track when page load starts
+        const pageLoadStart = Date.now();
+        
+        // Track DOM Content Loaded (when HTML is fully parsed)
+        document.addEventListener('DOMContentLoaded', () => {
+            const domLoadTime = Date.now() - pageLoadStart;
+            this.recordMetric('dom_content_loaded', domLoadTime, {
+                'page.url': window.location.href,
+                'metric.type': 'timing'
+            });
+        });
+        
+        // Track when page is fully loaded (all resources)
+        window.addEventListener('load', () => {
+            const fullLoadTime = Date.now() - pageLoadStart;
+            this.recordMetric('page_full_load', fullLoadTime, {
+                'page.url': window.location.href,
+                'metric.type': 'timing'
+            });
+            
+            // Track connection info (if available)
+            if (navigator.connection) {
+                this.recordMetric('connection_effective_type', navigator.connection.effectiveType, {
+                    'page.url': window.location.href,
+                    'metric.type': 'connection'
+                });
+            }
+            
+            // Track viewport size
+            this.recordMetric('viewport_width', window.innerWidth, {
+                'page.url': window.location.href,
+                'metric.type': 'viewport'
+            });
+            
+            this.recordMetric('viewport_height', window.innerHeight, {
+                'page.url': window.location.href,
+                'metric.type': 'viewport'
+            });
+        });
+        
+        // Track if user is on mobile/desktop
+        const isMobile = window.innerWidth <= 768;
+        this.recordMetric('device_type', isMobile ? 'mobile' : 'desktop', {
+            'page.url': window.location.href,
+            'metric.type': 'device'
+        });
     }
 
     /**
