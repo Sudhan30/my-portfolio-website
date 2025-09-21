@@ -488,6 +488,7 @@ class OpenTelemetryService {
         
         // Track DOM Content Loaded (when HTML is fully parsed)
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('📊 DOMContentLoaded event fired!');
             const domLoadTime = Date.now() - pageLoadStart;
             console.log('📊 DOM Content Loaded recorded:', domLoadTime);
             this.recordMetric('dom_content_loaded', domLoadTime, {
@@ -497,6 +498,7 @@ class OpenTelemetryService {
             
             // Flush after DOM content loaded metric is recorded
             setTimeout(() => {
+                console.log('📊 DOM Content Loaded flush check - metrics available:', this.metrics.map(m => m.name));
                 if (this.metrics.length > 0) {
                     console.log('🚀 Flushing DOM content loaded metric');
                     this.flush();
@@ -506,6 +508,7 @@ class OpenTelemetryService {
         
         // Track when page is fully loaded (all resources)
         window.addEventListener('load', () => {
+            console.log('📊 Window Load event fired!');
             const fullLoadTime = Date.now() - pageLoadStart;
             console.log('📊 Page Full Load recorded:', fullLoadTime);
             this.recordMetric('page_full_load', fullLoadTime, {
@@ -537,6 +540,7 @@ class OpenTelemetryService {
             
             // Flush after performance metrics are recorded
             setTimeout(() => {
+                console.log('📊 Window Load flush check - metrics available:', this.metrics.map(m => m.name));
                 if (this.metrics.length > 0) {
                     console.log('🚀 Flushing performance metrics after window.load');
                     this.flush();
