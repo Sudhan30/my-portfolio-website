@@ -215,10 +215,20 @@ class OpenTelemetryService {
         this.metrics.push(metric);
         console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
         
-        // Force flush metrics immediately if we have enough (for page load metrics)
-        if (this.metrics.length >= 5) {
-            console.log('🚀 Force flushing metrics (5+ collected)');
+        // For page load metrics, collect them all first before flushing
+        // This reduces Cloud Function calls and improves efficiency
+        if (this.metrics.length >= 8) {
+            console.log('🚀 Force flushing metrics (8+ collected)');
             this.flush();
+        } else if (this.metrics.length >= 5) {
+            // If we have 5+ metrics, set a timeout to flush them soon
+            // This ensures we don't wait too long for more metrics
+            setTimeout(() => {
+                if (this.metrics.length > 0) {
+                    console.log('🚀 Timeout flush for collected metrics');
+                    this.flush();
+                }
+            }, 2000); // 2 second timeout
         } else {
             this.checkBatchSize();
         }
@@ -681,9 +691,13 @@ class OpenTelemetryService {
             return;
         }
         
+        // Create consolidated metrics for efficient batching
+        const consolidatedMetrics = this.createConsolidatedMetrics();
+        
         const data = {
             traces: [...this.traces],
             metrics: [...this.metrics],
+            consolidated_metrics: consolidatedMetrics, // Add consolidated metrics
             logs: [...this.logs]
         };
         
@@ -734,6 +748,38 @@ class OpenTelemetryService {
         } else {
             console.log(`⏳ Flush skipped: hasUserEngaged=${this.hasUserEngaged}, hasMetrics=${hasMetrics}, timeSinceLastFlush=${timeSinceLastFlush}ms, totalItems=${totalItems}`);
         }
+    }
+
+    /**
+     * Create consolidated metrics object for efficient batching
+     */
+    createConsolidatedMetrics() {
+        const consolidated = {
+            page_load: {},
+            browser_info: {},
+            device_info: {},
+            performance: {},
+            engagement: {}
+        };
+
+        this.metrics.forEach(metric => {
+            const { name, value, attributes } = metric;
+            
+            // Group metrics by category
+            if (name.includes('browser') || name.includes('os') || name.includes('referrer')) {
+                consolidated.browser_info[name] = value;
+            } else if (name.includes('device') || name.includes('viewport')) {
+                consolidated.device_info[name] = value;
+            } else if (name.includes('load') || name.includes('performance') || name.includes('lcp') || name.includes('fid') || name.includes('cls')) {
+                consolidated.performance[name] = value;
+            } else if (name.includes('engagement') || name.includes('scroll')) {
+                consolidated.engagement[name] = value;
+            } else {
+                consolidated.page_load[name] = value;
+            }
+        });
+
+        return consolidated;
     }
 
     /**

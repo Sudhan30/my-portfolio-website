@@ -41,15 +41,16 @@ exports.processOtelData = async (req, res) => {
         console.log('Processing telemetry data:', JSON.stringify(data, null, 2));
 
         // Process different types of telemetry data
-        const results = await Promise.allSettled([
-            processTraces(data),
-            processMetrics(data),
-            processLogs(data)
-        ]);
+    const results = await Promise.allSettled([
+        processTraces(data),
+        processMetrics(data),
+        processLogs(data),
+        processConsolidatedMetrics(data) // Add consolidated metrics processing
+    ]);
 
         // Check results and handle gracefully
         const processedResults = results.map((result, index) => {
-            const type = ['traces', 'metrics', 'logs'][index];
+            const type = ['traces', 'metrics', 'logs', 'consolidated_metrics'][index];
             if (result.status === 'fulfilled') {
                 return { type, ...result.value };
             } else {
@@ -166,6 +167,57 @@ async function processMetrics(data) {
         return { success: true, count: rows.length };
     } catch (error) {
         console.error('BigQuery metrics insert failed:', error.message);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Process consolidated metrics data
+ */
+async function processConsolidatedMetrics(data) {
+    if (!data.consolidated_metrics) {
+        console.log('No consolidated metrics to process');
+        return { success: true, count: 0 };
+    }
+
+    const consolidatedMetrics = data.consolidated_metrics;
+    const rows = [];
+
+    // Process each category of consolidated metrics
+    Object.keys(consolidatedMetrics).forEach(category => {
+        const categoryData = consolidatedMetrics[category];
+        Object.keys(categoryData).forEach(metricName => {
+            rows.push({
+                metric_name: metricName,
+                metric_type: category,
+                value: categoryData[metricName],
+                timestamp: new Date(),
+                attributes: JSON.stringify({ category, consolidated: true }),
+                resource_attributes: null,
+                created_at: new Date()
+            });
+        });
+    });
+
+    if (rows.length === 0) {
+        console.log('No consolidated metrics to insert');
+        return { success: true, count: 0 };
+    }
+
+    try {
+        console.log(`Processing ${rows.length} consolidated metrics:`, JSON.stringify(rows, null, 2));
+        console.log(`Attempting to insert ${rows.length} rows into BigQuery consolidated metrics table`);
+        
+        const [insertErrors] = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
+        if (insertErrors && insertErrors.length > 0) {
+            console.error('BigQuery consolidated metrics insert errors:', JSON.stringify(insertErrors, null, 2));
+            console.log(`Warning: ${insertErrors.length} consolidated metric insert errors occurred`);
+            return { success: false, errors: insertErrors.length };
+        }
+        console.log(`Successfully inserted ${rows.length} consolidated metrics into BigQuery`);
+        return { success: true, count: rows.length };
+    } catch (error) {
+        console.error('BigQuery consolidated metrics insert failed:', error.message);
         return { success: false, error: error.message };
     }
 }
