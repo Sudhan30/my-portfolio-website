@@ -1,5 +1,14 @@
 const functions = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
+const { setGlobalOptions } = require("firebase-functions/v2");
 const admin = require("firebase-admin");
+
+// Set global options for Cloud Functions Gen 2
+setGlobalOptions({
+  runtime: "nodejs20",
+  memory: "256MiB",
+  timeoutSeconds: 60
+});
 const cors = require("cors")({ origin: true });
 const { FirebaseFunctionsRateLimiter } = require("firebase-functions-rate-limiter");
 const { SecretManagerServiceClient } = require("@google-cloud/secret-manager");
@@ -959,5 +968,5 @@ exports.trackTelemetry = functions.https.onRequest(async (req, res) => {
 });
 
 // OpenTelemetry Data Processing Functions
-exports.processOtelData = processOtelData;
-exports.processOtelDataBatch = processOtelDataBatch;
+exports.processOtelData = onRequest(processOtelData);
+exports.processOtelDataBatch = onRequest(processOtelDataBatch);
