@@ -95,14 +95,14 @@ async function processTraces(data) {
         status_message: trace.status?.message || null,
         attributes: trace.attributes || {},
         events: trace.events || [],
-        links: trace.links && trace.links.length > 0 ? trace.links[0] : {},
+        links: trace.links || [],
         resource_attributes: trace.resource?.attributes || {},
         instrumentation_scope_name: trace.instrumentationScope?.name || null,
         instrumentation_scope_version: trace.instrumentationScope?.version || null,
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID).table('traces').insert(rows);
+    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('traces').insert(rows);
     if (errors.length > 0) {
         console.error('BigQuery insert errors:', JSON.stringify(errors, null, 2));
         console.error('Rows being inserted:', JSON.stringify(rows, null, 2));
@@ -132,7 +132,7 @@ async function processMetrics(data) {
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID).table('metrics').insert(rows);
+    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
     if (errors.length > 0) {
         throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
     }
@@ -162,7 +162,7 @@ async function processLogs(data) {
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID).table('logs').insert(rows);
+    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('logs').insert(rows);
     if (errors.length > 0) {
         throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
     }
