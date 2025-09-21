@@ -18,6 +18,7 @@ class OpenTelemetryService {
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
         this.timeoutId = null; // Track timeout to prevent multiple timeouts
+        this.initialMetricsFlushed = false; // Track if initial page load metrics have been flushed
         this.sessionId = this.getOrCreateSessionId();
         this.sessionTraceId = this.getOrCreateSessionTraceId(); // One trace per session
         this.consentGiven = this.getConsentStatus();
@@ -218,19 +219,38 @@ class OpenTelemetryService {
         
         // For page load metrics, collect them all first before flushing
         // This reduces Cloud Function calls and improves efficiency
-        if (this.metrics.length >= 8) {
+        if (this.metrics.length >= 8 && !this.initialMetricsFlushed) {
             console.log('🚀 Force flushing metrics (8+ collected)');
             this.flush();
-        } else if (this.metrics.length >= 5 && !this.timeoutId) {
+        } else if (this.metrics.length >= 5 && !this.timeoutId && !this.initialMetricsFlushed) {
             // If we have 5+ metrics, set a longer timeout to allow all page load metrics
             // This ensures we collect all essential metrics before flushing
             this.timeoutId = setTimeout(() => {
                 if (this.metrics.length > 0) {
-                    console.log('🚀 Timeout flush for collected metrics');
-                    this.flush();
+                    // Check if we have timing metrics before flushing
+                    const hasTimingMetrics = this.metrics.some(metric => 
+                        metric.name.includes('load') || 
+                        metric.name.includes('time') ||
+                        metric.name.includes('performance')
+                    );
+                    
+                    if (hasTimingMetrics || this.metrics.length >= 8) {
+                        console.log('🚀 Timeout flush for collected metrics (with timing data)');
+                        this.flush();
+                    } else {
+                        console.log('⏳ Waiting for timing metrics before flush');
+                        // Reset timeout to wait a bit more for timing metrics
+                        this.timeoutId = setTimeout(() => {
+                            if (this.metrics.length > 0) {
+                                console.log('🚀 Final timeout flush for collected metrics');
+                                this.flush();
+                            }
+                            this.timeoutId = null;
+                        }, 3000); // Additional 3 seconds for timing metrics
+                    }
                 }
                 this.timeoutId = null;
-            }, 5000); // 5 second timeout to allow all page load metrics
+            }, 8000); // 8 second timeout to allow all page load metrics including timing
         } else {
             this.checkBatchSize();
         }
@@ -736,6 +756,11 @@ class OpenTelemetryService {
         
         // Update last flush time
         this.lastFlushTime = now;
+        
+        // Mark initial metrics as flushed to prevent duplicates
+        if (!this.initialMetricsFlushed) {
+            this.initialMetricsFlushed = true;
+        }
         
         // Send to Cloud Function
         try {
