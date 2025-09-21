@@ -775,7 +775,13 @@ class OpenTelemetryService {
                 console.log('🚀 Force flushing initial metrics (all essential metrics collected)');
                 this.flush();
             } else {
-                console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected`);
+                // If we've been waiting too long, flush what we have
+                if (timeSinceLastFlush > 10000) { // 10 seconds timeout
+                    console.log('🚀 Timeout flush - flushing available metrics after 10 seconds');
+                    this.flush();
+                } else {
+                    console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected`);
+                }
             }
             return;
         }
@@ -797,6 +803,7 @@ class OpenTelemetryService {
      * Check if all essential metrics have been collected
      */
     hasAllEssentialMetrics() {
+        // Only check for metrics that are actually collected during initialization
         const essentialMetricNames = [
             'browser_name',
             'operating_system', 
@@ -805,16 +812,14 @@ class OpenTelemetryService {
             'device_type',
             'viewport_width',
             'viewport_height',
-            'connection_effective_type',
-            'dom_content_loaded',
-            'page_full_load',
-            'page_load_time'
+            'connection_effective_type'
         ];
         
         const collectedMetrics = this.metrics.map(m => m.name);
         const hasAllEssential = essentialMetricNames.every(name => collectedMetrics.includes(name));
         
         console.log(`📊 Essential metrics check: ${collectedMetrics.length} collected, ${essentialMetricNames.filter(name => collectedMetrics.includes(name)).length}/${essentialMetricNames.length} essential`);
+        console.log(`📊 Missing metrics: ${essentialMetricNames.filter(name => !collectedMetrics.includes(name)).join(', ')}`);
         
         return hasAllEssential;
     }
