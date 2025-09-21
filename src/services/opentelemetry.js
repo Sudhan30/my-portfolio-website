@@ -811,39 +811,75 @@ class OpenTelemetryService {
     }
 
     /**
-     * Send telemetry data to Cloud Function
+     * Send telemetry data to Cloud Function with retry logic
      */
-    async sendTelemetryData(data) {
+    async sendTelemetryData(data, retryCount = 0) {
         const url = `${config.CLOUD_FUNCTIONS_URL}/processOtelData`;
         console.log('Sending telemetry data:', {
             traces: data.traces.length,
             metrics: data.metrics.length,
             logs: data.logs.length,
             url: url,
-            config: config
+            config: config,
+            retryCount: retryCount
         });
         
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Telemetry send failed:', {
-                status: response.status,
-                statusText: response.statusText,
-                error: errorText
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                // Add timeout to prevent hanging requests
+                signal: AbortSignal.timeout(10000) // 10 second timeout
             });
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-        }
         
-        const result = await response.json();
-        console.log('Telemetry data sent successfully:', result);
-        return result;
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Telemetry send failed:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    error: errorText
+                });
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+            
+            const result = await response.json();
+            console.log('Telemetry data sent successfully:', result);
+            return result;
+            
+        } catch (error) {
+            console.error('Telemetry send error:', error);
+            
+            // Retry logic for network errors
+            if (retryCount < 2 && (
+                error.name === 'TypeError' || 
+                error.message.includes('Failed to fetch') ||
+                error.message.includes('ERR_NETWORK_CHANGED')
+            )) {
+                console.log(`Retrying telemetry send (attempt ${retryCount + 1}/2)...`);
+                // Wait before retry (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+                return this.sendTelemetryData(data, retryCount + 1);
+            }
+            
+            // If all retries failed, try sendBeacon as fallback
+            if (navigator.sendBeacon) {
+                console.log('Using sendBeacon as fallback for telemetry data');
+                try {
+                    const success = navigator.sendBeacon(url, JSON.stringify(data));
+                    if (success) {
+                        console.log('Telemetry data sent via sendBeacon');
+                        return { success: true, method: 'sendBeacon' };
+                    }
+                } catch (beaconError) {
+                    console.error('sendBeacon also failed:', beaconError);
+                }
+            }
+            
+            throw error;
+        }
     }
 
     /**
