@@ -47,21 +47,31 @@ exports.processOtelData = async (req, res) => {
             processLogs(data)
         ]);
 
-        // Check for any failures
-        const failures = results.filter(result => result.status === 'rejected');
-        if (failures.length > 0) {
-            console.error('Some processing failed:', failures);
-            res.status(500).json({ 
-                success: false, 
-                message: 'Partial processing failure',
-                errors: failures.map(f => f.reason)
-            });
-            return;
-        }
+        // Check results and handle gracefully
+        const processedResults = results.map((result, index) => {
+            const type = ['traces', 'metrics', 'logs'][index];
+            if (result.status === 'fulfilled') {
+                return { type, ...result.value };
+            } else {
+                console.error(`${type} processing failed:`, result.reason);
+                return { type, success: false, error: result.reason.message };
+            }
+        });
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Telemetry data processed successfully' 
+        const failures = processedResults.filter(r => !r.success);
+        const successes = processedResults.filter(r => r.success);
+
+        console.log(`Processing complete: ${successes.length} successful, ${failures.length} failed`);
+
+        // Always return success to prevent infinite loops
+        res.status(200).json({
+            success: true,
+            message: 'Telemetry processing completed',
+            results: {
+                successful: successes.length,
+                failed: failures.length,
+                details: processedResults
+            }
         });
 
     } catch (error) {
@@ -93,20 +103,29 @@ async function processTraces(data) {
         duration_ms: trace.duration || 0,
         status_code: trace.status?.code || 'OK',
         status_message: trace.status?.message || null,
-        attributes: trace.attributes || {},
-        events: trace.events && trace.events.length > 0 ? trace.events[0] : null,
-        links: trace.links && trace.links.length > 0 ? trace.links[0] : null,
-        resource_attributes: trace.resource?.attributes || null,
+        attributes: JSON.stringify(trace.attributes || {}),
+        events: trace.events && trace.events.length > 0 ? JSON.stringify(trace.events[0]) : null,
+        links: trace.links && trace.links.length > 0 ? JSON.stringify(trace.links[0]) : null,
+        resource_attributes: trace.resource?.attributes ? JSON.stringify(trace.resource.attributes) : null,
         instrumentation_scope_name: trace.instrumentationScope?.name || null,
         instrumentation_scope_version: trace.instrumentationScope?.version || null,
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('traces').insert(rows);
-    if (errors.length > 0) {
-        console.error('BigQuery insert errors:', JSON.stringify(errors, null, 2));
-        console.error('Rows being inserted:', JSON.stringify(rows, null, 2));
-        throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
+    try {
+        const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('traces').insert(rows);
+        if (errors.length > 0) {
+            console.error('BigQuery insert errors:', JSON.stringify(errors, null, 2));
+            console.error('Rows being inserted:', JSON.stringify(rows, null, 2));
+            // Don't throw error, just log it to prevent infinite loops
+            console.log(`Warning: ${errors.length} trace insert errors occurred`);
+            return { success: false, errors: errors.length };
+        }
+        console.log(`Successfully inserted ${rows.length} trace records`);
+        return { success: true, count: rows.length };
+    } catch (error) {
+        console.error('BigQuery traces insert failed:', error.message);
+        return { success: false, error: error.message };
     }
 
     console.log(`Inserted ${rows.length} trace records`);
@@ -127,17 +146,24 @@ async function processMetrics(data) {
         metric_type: metric.type,
         value: metric.value,
         timestamp: new Date(metric.timestamp),
-        attributes: metric.attributes || null,
-        resource_attributes: metric.resource?.attributes || null,
+        attributes: metric.attributes ? JSON.stringify(metric.attributes) : null,
+        resource_attributes: metric.resource?.attributes ? JSON.stringify(metric.resource.attributes) : null,
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
-    if (errors.length > 0) {
-        throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
+    try {
+        const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
+        if (errors.length > 0) {
+            console.error('BigQuery metrics insert errors:', JSON.stringify(errors, null, 2));
+            console.log(`Warning: ${errors.length} metric insert errors occurred`);
+            return { success: false, errors: errors.length };
+        }
+        console.log(`Successfully inserted ${rows.length} metric records`);
+        return { success: true, count: rows.length };
+    } catch (error) {
+        console.error('BigQuery metrics insert failed:', error.message);
+        return { success: false, error: error.message };
     }
-
-    console.log(`Inserted ${rows.length} metric records`);
 }
 
 /**
@@ -155,19 +181,26 @@ async function processLogs(data) {
         timestamp: new Date(log.timestamp),
         severity: log.severity || 'INFO',
         body: log.body || '',
-        attributes: log.attributes || null,
-        resource_attributes: log.resource?.attributes || null,
+        attributes: log.attributes ? JSON.stringify(log.attributes) : null,
+        resource_attributes: log.resource?.attributes ? JSON.stringify(log.resource.attributes) : null,
         trace_id: log.traceId || null,
         span_id: log.spanId || null,
         created_at: new Date()
     }));
 
-    const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('logs').insert(rows);
-    if (errors.length > 0) {
-        throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
+    try {
+        const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('logs').insert(rows);
+        if (errors.length > 0) {
+            console.error('BigQuery logs insert errors:', JSON.stringify(errors, null, 2));
+            console.log(`Warning: ${errors.length} log insert errors occurred`);
+            return { success: false, errors: errors.length };
+        }
+        console.log(`Successfully inserted ${rows.length} log records`);
+        return { success: true, count: rows.length };
+    } catch (error) {
+        console.error('BigQuery logs insert failed:', error.message);
+        return { success: false, error: error.message };
     }
-
-    console.log(`Inserted ${rows.length} log records`);
 }
 
 /**
