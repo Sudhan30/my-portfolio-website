@@ -217,43 +217,8 @@ class OpenTelemetryService {
         this.metrics.push(metric);
         console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
         
-        // For page load metrics, collect them all first before flushing
-        // This reduces Cloud Function calls and improves efficiency
-        if (this.metrics.length >= 8 && !this.initialMetricsFlushed) {
-            console.log('🚀 Force flushing metrics (8+ collected)');
-            this.flush();
-        } else if (this.metrics.length >= 5 && !this.timeoutId && !this.initialMetricsFlushed) {
-            // If we have 5+ metrics, set a longer timeout to allow all page load metrics
-            // This ensures we collect all essential metrics before flushing
-            this.timeoutId = setTimeout(() => {
-                if (this.metrics.length > 0) {
-                    // Check if we have timing metrics before flushing
-                    const hasTimingMetrics = this.metrics.some(metric => 
-                        metric.name.includes('load') || 
-                        metric.name.includes('time') ||
-                        metric.name.includes('performance')
-                    );
-                    
-                    if (hasTimingMetrics || this.metrics.length >= 8) {
-                        console.log('🚀 Timeout flush for collected metrics (with timing data)');
-                        this.flush();
-                    } else {
-                        console.log('⏳ Waiting for timing metrics before flush');
-                        // Reset timeout to wait a bit more for timing metrics
-                        this.timeoutId = setTimeout(() => {
-                            if (this.metrics.length > 0) {
-                                console.log('🚀 Final timeout flush for collected metrics');
-                                this.flush();
-                            }
-                            this.timeoutId = null;
-                        }, 3000); // Additional 3 seconds for timing metrics
-                    }
-                }
-                this.timeoutId = null;
-            }, 8000); // 8 second timeout to allow all page load metrics including timing
-        } else {
-            this.checkBatchSize();
-        }
+        // Let checkBatchSize() handle all flushing logic
+        this.checkBatchSize();
     }
 
     /**
@@ -548,13 +513,8 @@ class OpenTelemetryService {
                 }
             }
             
-            // Force flush after timing metrics are recorded
-            this.timingFlushTimeout = setTimeout(() => {
-                if (this.metrics.length > 0 && !this.initialMetricsFlushed) {
-                    console.log('🚀 Force flush after timing metrics collection');
-                    this.flush();
-                }
-            }, 1000); // 1 second delay to ensure all timing metrics are recorded
+            // Timing metrics will be included in the main batch flush
+            // No need for separate timing flush
             
             // Track connection info (if available)
             if (navigator.connection) {
@@ -766,12 +726,6 @@ class OpenTelemetryService {
             this.timeoutId = null;
         }
         
-        // Clear any pending timing flush timeout
-        if (this.timingFlushTimeout) {
-            clearTimeout(this.timingFlushTimeout);
-            this.timingFlushTimeout = null;
-        }
-        
         // Update last flush time
         this.lastFlushTime = now;
         
@@ -801,16 +755,25 @@ class OpenTelemetryService {
         
         const totalItems = this.traces.length + this.metrics.length + this.logs.length;
         const now = Date.now();
-        
-        // Only flush if:
-        // 1. User has actually engaged with the site OR we have metrics (collected on page load)
-        // 2. We have enough items OR it's been a long time since last flush
-        // 3. Minimum time interval has passed (or this is the first flush)
         const timeSinceLastFlush = now - this.lastFlushTime;
         const hasMetrics = this.metrics.length > 0;
         const isFirstFlush = this.lastFlushTime === 0;
+        
+        // For initial metrics, wait for all essential metrics to be collected
+        if (isFirstFlush) {
+            // Wait for at least 8 metrics (all essential metrics) before first flush
+            if (this.metrics.length >= 8) {
+                console.log('🚀 Force flushing initial metrics (8+ collected)');
+                this.flush();
+            } else {
+                console.log(`⏳ Waiting for more metrics: ${this.metrics.length}/8 collected`);
+            }
+            return;
+        }
+        
+        // For subsequent flushes, use normal logic
         const shouldFlush = (this.hasUserEngaged || hasMetrics) && 
-                           (isFirstFlush || timeSinceLastFlush >= this.minFlushInterval) &&
+                           (timeSinceLastFlush >= this.minFlushInterval) &&
                            (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
         
         if (shouldFlush) {
