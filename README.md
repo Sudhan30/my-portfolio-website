@@ -16,16 +16,17 @@ A modern, responsive portfolio website showcasing professional experience, skill
 *   **UUID:** Unique identifier generation for telemetry
 
 ### Backend & Infrastructure
-*   **Google Cloud Functions (Node.js 20):** Serverless backend functions
+*   **Google Cloud Functions (Node.js 20 Gen 2):** Serverless backend functions with dedicated service account
 *   **Firebase Firestore:** NoSQL document database
 *   **Google Secret Manager:** Secure credential storage
 *   **Nodemailer:** Email delivery system
 *   **CORS:** Cross-origin resource sharing
 *   **Rate Limiting:** API abuse prevention
-*   **OpenTelemetry:** Observability and monitoring pipeline
-*   **BigQuery:** Data warehouse for analytics
+*   **OpenTelemetry:** Industry-standard observability and monitoring pipeline
+*   **BigQuery:** Data warehouse for analytics and telemetry storage
 *   **Cloud Storage:** Long-term data archival
-*   **Pub/Sub:** Message queuing for telemetry data
+*   **Pub/Sub:** Message queuing for telemetry data processing
+*   **Dedicated Service Account:** Principle of least privilege security model
 
 ### Deployment & DevOps
 *   **Google Cloud Platform:** Complete cloud infrastructure
@@ -55,6 +56,8 @@ A modern, responsive portfolio website showcasing professional experience, skill
 *   **BigQuery Integration:** Advanced analytics and data warehousing for insights
 *   **Performance Monitoring:** Core Web Vitals, page load times, and custom metrics
 *   **Session Management:** Unique user and session identification with smart batching
+*   **Consolidated Metrics:** Efficient batching of telemetry data for optimal performance
+*   **Real-time Processing:** Pub/Sub-based data pipeline for immediate analytics
 
 ### Job Analysis Tool
 *   **Job Description Analyzer:** AI-powered job matching system
@@ -78,53 +81,62 @@ graph TB
         C[Contact Form]
         D[Feedback Form]
         E[Job Analyzer]
+        F[Privacy Consent]
+    end
+
+    subgraph "Firebase Hosting"
+        G[Firebase CDN]
+        H[Static Assets]
     end
 
     subgraph "Google Cloud Platform"
-        F[Cloud CDN]
-        G[Cloud Storage]
-        H[Load Balancer]
-        
-        subgraph "Cloud Functions"
+        subgraph "Cloud Functions (Node.js 20 Gen 2)"
             I[Page View Tracker]
             J[Contact Form Handler]
             K[Feedback Handler]
             L[Job Analyzer]
             M[OpenTelemetry Processor]
+            N[Telemetry Batch Processor]
         end
         
-        N[Firestore Database]
-        O[Secret Manager]
-        P[SMTP Service]
+        O[Firestore Database]
+        P[Secret Manager]
+        Q[BigQuery Data Warehouse]
+        R[Cloud Storage]
+        S[Pub/Sub Messaging]
+        T[SMTP Service]
     end
 
     subgraph "External Services"
-        Q[Cloudflare]
-        R[GitHub Actions]
-        S[Email Recipients]
+        U[Cloudflare DNS]
+        V[GitHub Actions]
+        W[Email Recipients]
     end
 
-    A --> F
-    F --> G
-    Q --> H
-    H --> F
-    
+    A --> G
+    F --> B
+    B --> M
     C --> J
     D --> K
     E --> L
-    B --> M
     
-    J --> N
+    G --> H
+    U --> G
+    
     J --> O
     J --> P
-    K --> N
+    J --> T
     K --> O
     K --> P
-    L --> N
-    M --> N
+    K --> T
+    L --> O
+    M --> Q
+    M --> S
+    N --> Q
+    S --> R
     
-    P --> S
-    R --> G
+    T --> W
+    V --> G
 ```
 
 ## 🔄 User Interaction Flow
@@ -217,22 +229,25 @@ Automated deployment via GitHub Actions on push to `main` branch:
 
 1. **Build Process:** React app built for production
 2. **Environment Injection:** Dynamic environment variables injected
-3. **GCS Upload:** Static files uploaded to `www.sudharsana.dev` bucket
-4. **CDN Invalidation:** Cloud CDN cache cleared for immediate updates
+3. **Firebase Hosting:** Static files deployed to Firebase Hosting
+4. **CDN Acceleration:** Global CDN for fast content delivery
 5. **Security Headers:** CSP and security headers applied
+6. **Custom Domain:** Automatic SSL certificate management
 
 ### Backend Deployment
-Manual deployment of Cloud Functions:
+Deploy Cloud Functions using Firebase CLI:
 
 ```bash
-# Deploy all functions
-cd functions
-gcloud functions deploy pageView --runtime nodejs20 --trigger-http --allow-unauthenticated
-gcloud functions deploy submitFeedback --runtime nodejs20 --trigger-http --allow-unauthenticated
-gcloud functions deploy submitContactForm --runtime nodejs20 --trigger-http --allow-unauthenticated
-gcloud functions deploy analyzeJobDescription --runtime nodejs20 --trigger-http --allow-unauthenticated
-gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow-unauthenticated
+# Deploy all functions (Node.js 20 Gen 2)
+firebase deploy --only functions
+
+# Or deploy specific functions
+firebase deploy --only functions:pageView
+firebase deploy --only functions:submitContactForm
+firebase deploy --only functions:processOtelData
 ```
+
+**Security Note:** All functions use a dedicated service account (`portfolio-functions-sa`) with minimal permissions following the principle of least privilege.
 
 ## 🔧 Backend Architecture
 
@@ -245,13 +260,17 @@ gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow
 | `submitContactForm` | Process contact form | Email notifications, validation |
 | `analyzeJobDescription` | AI job analysis | Resume matching, scoring system |
 | `trackTelemetry` | User interaction tracking | CCPA compliance, batched events |
+| `processOtelData` | OpenTelemetry data processing | BigQuery storage, real-time analytics |
+| `processOtelDataBatch` | Batch telemetry processing | Efficient data batching, Pub/Sub integration |
 
 ### Security Features
+- **Dedicated Service Account:** Principle of least privilege with minimal permissions
 - **Rate Limiting:** Prevents API abuse
 - **Secret Manager:** Secure credential storage
 - **CORS Protection:** Cross-origin security
 - **Input Validation:** Sanitized user inputs
 - **Email Security:** SMTP with authentication
+- **Node.js 20 Gen 2:** Latest runtime with enhanced security
 
 ### Database Collections
 - `pageViews`: Visitor counter and milestones
@@ -260,6 +279,12 @@ gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow
 - `jobAnalyses`: Job description analyses
 - `telemetry`: User interaction events
 - `telemetry_sessions`: Session metadata
+
+### BigQuery Tables
+- `otel_data.traces`: OpenTelemetry trace data
+- `otel_data.metrics`: Performance and engagement metrics
+- `otel_data.logs`: Application logs and events
+- `otel_data.consolidated_metrics`: Batched telemetry data
 
 ## 📧 Email System
 
@@ -273,17 +298,37 @@ gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow
 2. **Feedback:** Star-rated feedback with detailed formatting
 3. **Security:** All credentials stored in Google Secret Manager
 
-## 📊 Analytics & Privacy
+## 📊 OpenTelemetry System
 
-### Telemetry System
+### Industry-Standard Observability
+The portfolio website implements a comprehensive OpenTelemetry system for monitoring, analytics, and performance tracking:
+
+#### **Data Collection**
+- **Traces:** User session tracking with unique trace IDs
+- **Metrics:** Performance metrics, engagement tracking, and custom KPIs
+- **Logs:** Application events and error tracking
+- **Consolidated Metrics:** Efficient batching for optimal performance
+
+#### **Privacy & Compliance**
 - **CCPA Compliant:** Optional consent-based tracking
 - **Privacy-First:** No PII collection, anonymized data
-- **Event Tracking:** Clicks, navigation, form submissions
+- **User Control:** Easy opt-out mechanism with consent banner
+- **Data Minimization:** Only essential data collected
+
+#### **Data Pipeline**
+- **Real-time Processing:** Pub/Sub-based data pipeline
+- **BigQuery Storage:** Data warehouse for analytics and insights
 - **Session Management:** Unique user and session IDs
-- **Data Storage:** Firestore with automatic cleanup
+- **Performance Monitoring:** Core Web Vitals and custom metrics
+
+#### **Technical Implementation**
+- **Frontend SDK:** Custom OpenTelemetry service for React
+- **Cloud Functions:** Node.js 20 Gen 2 processors
+- **Dedicated Service Account:** Principle of least privilege
+- **Batch Processing:** Efficient data batching and consolidation
 
 ### Privacy Features
-- **Consent Banner:** Clear privacy options
+- **Consent Banner:** Clear privacy options with CCPA compliance
 - **Data Minimization:** Only essential data collected
 - **User Control:** Easy opt-out mechanism
 - **Transparency:** Clear data usage policies
@@ -305,12 +350,14 @@ gcloud functions deploy trackTelemetry --runtime nodejs20 --trigger-http --allow
 ## 🔒 Security
 
 ### Implemented Security Measures
+- **Dedicated Service Account:** Principle of least privilege with minimal IAM permissions
 - **Content Security Policy (CSP):** XSS protection
 - **Rate Limiting:** API abuse prevention
 - **Input Validation:** Sanitized user inputs
 - **Secret Management:** Encrypted credential storage
 - **CORS Protection:** Cross-origin security
 - **HTTPS Only:** Secure data transmission
+- **Node.js 20 Gen 2:** Latest runtime with enhanced security features
 
 ### Compliance
 - **CCPA:** California Consumer Privacy Act compliance
