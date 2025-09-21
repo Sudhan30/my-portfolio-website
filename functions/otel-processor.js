@@ -183,20 +183,19 @@ async function processConsolidatedMetrics(data) {
     const consolidatedMetrics = data.consolidated_metrics;
     const rows = [];
 
-    // Process each category of consolidated metrics
-    Object.keys(consolidatedMetrics).forEach(category => {
-        const categoryData = consolidatedMetrics[category];
-        Object.keys(categoryData).forEach(metricName => {
-            rows.push({
-                metric_name: metricName,
-                metric_type: category,
-                value: categoryData[metricName],
-                timestamp: new Date(),
-                attributes: JSON.stringify({ category, consolidated: true }),
-                resource_attributes: null,
-                created_at: new Date()
-            });
-        });
+    // Store consolidated metrics as a single JSON object
+    rows.push({
+        metric_name: 'consolidated_metrics',
+        metric_type: 'consolidated',
+        value: JSON.stringify(consolidatedMetrics),
+        timestamp: new Date(),
+        attributes: JSON.stringify({ 
+            total_categories: Object.keys(consolidatedMetrics).length,
+            categories: Object.keys(consolidatedMetrics),
+            consolidated: true 
+        }),
+        resource_attributes: null,
+        created_at: new Date()
     });
 
     if (rows.length === 0) {
