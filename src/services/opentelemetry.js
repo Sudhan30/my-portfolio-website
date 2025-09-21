@@ -224,7 +224,8 @@ class OpenTelemetryService {
             console.log(`🚀 Force flushing performance metric: ${name}`);
             setTimeout(() => {
                 console.log(`🚀 Flushing performance metric: ${name}, metrics count: ${this.metrics.length}`);
-                this.flush();
+                // Force flush by bypassing all conditions
+                this.forceFlush();
             }, 100); // Small delay to ensure metric is recorded
         }
         
@@ -539,7 +540,7 @@ class OpenTelemetryService {
             // Force flush immediately for DOMContentLoaded
             setTimeout(() => {
                 console.log('🚀 Force flushing DOMContentLoaded (immediate)');
-                this.flush();
+                this.forceFlush();
             }, 100);
         }
         
@@ -621,7 +622,7 @@ class OpenTelemetryService {
             // Force flush immediately for window.load
             setTimeout(() => {
                 console.log('🚀 Force flushing window.load (immediate)');
-                this.flush();
+                this.forceFlush();
             }, 100);
             
         // Flush after performance metrics are recorded
@@ -634,7 +635,7 @@ class OpenTelemetryService {
                 console.log('⚠️ No metrics available for immediate flush');
                 // Force flush anyway to ensure performance metrics are sent
                 console.log('🚀 Force flushing anyway to ensure performance metrics are sent');
-                this.flush();
+                this.forceFlush();
             }
         }, 1000); // 1 second delay to ensure all performance metrics are recorded
         }
@@ -806,6 +807,21 @@ class OpenTelemetryService {
         if (!this.hasUserEngaged && this.metrics.length === 0) {
             console.log('Flush skipped - no user engagement and no metrics');
             return;
+        }
+        
+        // Force flush performance metrics regardless of conditions
+        const hasPerformanceMetrics = this.metrics.some(m => 
+            m.name === 'dom_content_loaded' || 
+            m.name === 'page_full_load' || 
+            m.name === 'page_load_time' ||
+            m.name === 'fid' ||
+            m.name === 'lcp' ||
+            m.name === 'cls_final'
+        );
+        
+        if (hasPerformanceMetrics) {
+            console.log('🚀 Force flushing performance metrics (bypassing conditions)');
+            // Don't return, continue with flush
         }
         
         if (this.traces.length === 0 && this.metrics.length === 0 && this.logs.length === 0) {
