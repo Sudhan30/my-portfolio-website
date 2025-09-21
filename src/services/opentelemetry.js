@@ -11,13 +11,36 @@ class OpenTelemetryService {
         this.metrics = [];
         this.logs = [];
         this.batchSize = 10;
-        this.flushInterval = 5000; // 5 seconds
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
         this.sessionId = this.getOrCreateSessionId();
+        this.consentGiven = this.getConsentStatus();
+    }
+
+    /**
+     * Get consent status from localStorage
+     */
+    getConsentStatus() {
+        const consent = localStorage.getItem('telemetry_consent');
+        return consent === 'true';
+    }
+
+    /**
+     * Set consent status
+     */
+    setConsentStatus(consent) {
+        localStorage.setItem('telemetry_consent', consent.toString());
+        this.consentGiven = consent;
         
-        // Start batch processing
-        this.startBatchProcessor();
+        if (consent) {
+            // Initialize if consent is given
+            if (!this.isInitialized) {
+                this.initialize();
+            }
+        } else {
+            // Clear data if consent is withdrawn
+            this.clearStoredData();
+        }
     }
 
     /**
@@ -25,6 +48,12 @@ class OpenTelemetryService {
      */
     initialize() {
         if (this.isInitialized) return;
+        
+        // Only initialize if consent is given
+        if (!this.consentGiven) {
+            console.log('🔍 OpenTelemetry service not initialized - no consent given');
+            return;
+        }
         
         console.log('🔍 Initializing OpenTelemetry service');
         
@@ -36,6 +65,9 @@ class OpenTelemetryService {
         
         // Set up error tracking
         this.setupErrorTracking();
+        
+        // Flush data on page unload
+        this.setupPageUnloadFlush();
         
         this.isInitialized = true;
         console.log('✅ OpenTelemetry service initialized');
@@ -76,6 +108,8 @@ class OpenTelemetryService {
      * Start a new trace
      */
     startTrace(name, attributes = {}) {
+        if (!this.consentGiven) return null;
+        
         const traceId = this.generateId();
         const spanId = this.generateId();
         
@@ -94,6 +128,7 @@ class OpenTelemetryService {
         };
         
         this.traces.push(trace);
+        this.checkBatchSize();
         return { traceId, spanId };
     }
 
@@ -119,6 +154,8 @@ class OpenTelemetryService {
      * Record a metric
      */
     recordMetric(name, value, attributes = {}) {
+        if (!this.consentGiven) return;
+        
         const metric = {
             name,
             value,
@@ -132,12 +169,15 @@ class OpenTelemetryService {
         };
         
         this.metrics.push(metric);
+        this.checkBatchSize();
     }
 
     /**
      * Log an event
      */
     log(level, message, attributes = {}) {
+        if (!this.consentGiven) return;
+        
         const log = {
             level,
             message,
@@ -151,6 +191,7 @@ class OpenTelemetryService {
         };
         
         this.logs.push(log);
+        this.checkBatchSize();
     }
 
     /**
@@ -340,18 +381,48 @@ class OpenTelemetryService {
     }
 
     /**
-     * Start batch processor
+     * Set up page unload flush
      */
-    startBatchProcessor() {
-        setInterval(() => {
-            this.flush();
-        }, this.flushInterval);
+    setupPageUnloadFlush() {
+        // Flush data when page is about to unload
+        window.addEventListener('beforeunload', () => {
+            if (this.consentGiven && (this.traces.length > 0 || this.metrics.length > 0 || this.logs.length > 0)) {
+                // Use sendBeacon for reliable data sending on page unload
+                this.sendBeaconFlush();
+            }
+        });
     }
 
     /**
-     * Flush all telemetry data
+     * Send data using sendBeacon for page unload
+     */
+    sendBeaconFlush() {
+        const data = {
+            traces: this.traces,
+            metrics: this.metrics,
+            logs: this.logs
+        };
+
+        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+        navigator.sendBeacon(`${config.cloudFunctionsUrl}/processOtelData`, blob);
+    }
+
+
+    /**
+     * Clear stored data
+     */
+    clearStoredData() {
+        this.traces = [];
+        this.metrics = [];
+        this.logs = [];
+    }
+
+    /**
+     * Flush all telemetry data (only when explicitly called or when batch size is reached)
      */
     async flush() {
+        if (!this.consentGiven) return;
+        
         if (this.traces.length === 0 && this.metrics.length === 0 && this.logs.length === 0) {
             return;
         }
@@ -376,6 +447,18 @@ class OpenTelemetryService {
             this.traces.push(...data.traces);
             this.metrics.push(...data.metrics);
             this.logs.push(...data.logs);
+        }
+    }
+
+    /**
+     * Check if batch size is reached and flush if needed
+     */
+    checkBatchSize() {
+        if (!this.consentGiven) return;
+        
+        const totalItems = this.traces.length + this.metrics.length + this.logs.length;
+        if (totalItems >= this.batchSize) {
+            this.flush();
         }
     }
 
