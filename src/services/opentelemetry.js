@@ -10,8 +10,8 @@ class OpenTelemetryService {
         this.traces = [];
         this.metrics = [];
         this.logs = [];
-        this.batchSize = 20; // Increased batch size to reduce frequency
-        this.minFlushInterval = 60000; // Minimum 1 minute between flushes
+        this.batchSize = 5; // Reduced batch size for testing
+        this.minFlushInterval = 10000; // Reduced to 10 seconds for testing
         this.lastFlushTime = 0;
         this.pageLoadTime = Date.now();
         this.hasUserEngaged = false; // Track if user has actually interacted
@@ -565,6 +565,13 @@ class OpenTelemetryService {
      * Send telemetry data to Cloud Function
      */
     async sendTelemetryData(data) {
+        console.log('Sending telemetry data:', {
+            traces: data.traces.length,
+            metrics: data.metrics.length,
+            logs: data.logs.length,
+            url: `${config.cloudFunctionsUrl}/processOtelData`
+        });
+        
         const response = await fetch(`${config.cloudFunctionsUrl}/processOtelData`, {
             method: 'POST',
             headers: {
@@ -574,10 +581,18 @@ class OpenTelemetryService {
         });
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Telemetry send failed:', {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorText
+            });
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
         }
         
-        return await response.json();
+        const result = await response.json();
+        console.log('Telemetry data sent successfully:', result);
+        return result;
     }
 
     /**
@@ -717,6 +732,32 @@ class OpenTelemetryService {
      */
     setConsentStatusCompat(consent) {
         this.setConsentStatus(consent);
+    }
+
+    /**
+     * Force flush data for testing (bypasses engagement requirements)
+     */
+    async forceFlush() {
+        console.log('Force flushing telemetry data for testing...');
+        this.hasUserEngaged = true; // Mark as engaged
+        this.lastFlushTime = 0; // Reset flush time
+        await this.flush();
+    }
+
+    /**
+     * Get current data status for debugging
+     */
+    getDataStatus() {
+        return {
+            consentGiven: this.consentGiven,
+            hasUserEngaged: this.hasUserEngaged,
+            tracesCount: this.traces.length,
+            metricsCount: this.metrics.length,
+            logsCount: this.logs.length,
+            lastFlushTime: this.lastFlushTime,
+            timeSinceLastFlush: Date.now() - this.lastFlushTime,
+            minFlushInterval: this.minFlushInterval
+        };
     }
 }
 
