@@ -18,6 +18,7 @@ class OpenTelemetryService {
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
         this.sessionId = this.getOrCreateSessionId();
+        this.sessionTraceId = this.getOrCreateSessionTraceId(); // One trace per session
         this.consentGiven = this.getConsentStatus();
     }
 
@@ -48,6 +49,19 @@ class OpenTelemetryService {
     }
 
     /**
+     * Start a new session (call when page loads)
+     */
+    startNewSession() {
+        // Generate new session ID and trace ID for new session
+        this.sessionId = this.generateId();
+        this.sessionTraceId = this.generateId();
+        sessionStorage.setItem('otel_session_id', this.sessionId);
+        sessionStorage.setItem('otel_session_trace_id', this.sessionTraceId);
+        
+        console.log(`New session started: ${this.sessionId}, trace: ${this.sessionTraceId}`);
+    }
+
+    /**
      * Initialize OpenTelemetry service
      */
     initialize() {
@@ -60,6 +74,9 @@ class OpenTelemetryService {
         }
         
         console.log('🔍 Initializing OpenTelemetry service');
+        
+        // Start new session for this page load
+        this.startNewSession();
         
         // Set up automatic instrumentation
         this.setupAutomaticInstrumentation();
@@ -102,6 +119,18 @@ class OpenTelemetryService {
     }
 
     /**
+     * Get or create session trace ID (one trace per session)
+     */
+    getOrCreateSessionTraceId() {
+        let sessionTraceId = sessionStorage.getItem('otel_session_trace_id');
+        if (!sessionTraceId) {
+            sessionTraceId = this.generateId();
+            sessionStorage.setItem('otel_session_trace_id', sessionTraceId);
+        }
+        return sessionTraceId;
+    }
+
+    /**
      * Generate unique ID
      */
     generateId() {
@@ -109,12 +138,14 @@ class OpenTelemetryService {
     }
 
     /**
-     * Start a new trace
+     * Start a new span within the session trace
      */
     startTrace(name, attributes = {}) {
         if (!this.consentGiven) return null;
         
-        const traceId = this.generateId();
+        // Use session trace ID (same for entire session)
+        const traceId = this.sessionTraceId;
+        // Generate new span ID for each action
         const spanId = this.generateId();
         
         const trace = {
