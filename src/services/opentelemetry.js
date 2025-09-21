@@ -494,6 +494,14 @@ class OpenTelemetryService {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
             });
+            
+            // Flush after DOM content loaded metric is recorded
+            setTimeout(() => {
+                if (this.metrics.length > 0) {
+                    console.log('🚀 Flushing DOM content loaded metric');
+                    this.flush();
+                }
+            }, 500); // 0.5 second delay
         });
         
         // Track when page is fully loaded (all resources)
@@ -527,8 +535,13 @@ class OpenTelemetryService {
                 }
             }
             
-            // Timing metrics will be included in the main batch flush
-            // No need for separate timing flush
+            // Flush after performance metrics are recorded
+            setTimeout(() => {
+                if (this.metrics.length > 0) {
+                    console.log('🚀 Flushing performance metrics after window.load');
+                    this.flush();
+                }
+            }, 1000); // 1 second delay to ensure all performance metrics are recorded
             
             // Viewport and connection metrics are now recorded immediately during initialization
         });
