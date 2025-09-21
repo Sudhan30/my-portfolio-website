@@ -151,14 +151,17 @@ async function processMetrics(data) {
         created_at: new Date()
     }));
 
+    console.log(`Processing ${rows.length} metrics:`, JSON.stringify(rows, null, 2));
+
     try {
-        const errors = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
-        if (errors.length > 0) {
-            console.error('BigQuery metrics insert errors:', JSON.stringify(errors, null, 2));
-            console.log(`Warning: ${errors.length} metric insert errors occurred`);
-            return { success: false, errors: errors.length };
+        console.log(`Attempting to insert ${rows.length} rows into BigQuery metrics table`);
+        const [insertErrors] = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
+        if (insertErrors && insertErrors.length > 0) {
+            console.error('BigQuery metrics insert errors:', JSON.stringify(insertErrors, null, 2));
+            console.log(`Warning: ${insertErrors.length} metric insert errors occurred`);
+            return { success: false, errors: insertErrors.length };
         }
-        console.log(`Successfully inserted ${rows.length} metric records`);
+        console.log(`Successfully inserted ${rows.length} metrics into BigQuery`);
         return { success: true, count: rows.length };
     } catch (error) {
         console.error('BigQuery metrics insert failed:', error.message);
