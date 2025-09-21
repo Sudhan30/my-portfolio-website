@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Star, X } from 'lucide-react';
 import './FloatingFeedback.css';
 import { config } from '../utils/env';
-import telemetryService from '../services/telemetry';
+import otelService from '../services/opentelemetry';
 
 const FloatingFeedback = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +93,7 @@ const FloatingFeedback = () => {
         setRating(0);
         
         // Track close button click
-        telemetryService.trackClose(document.querySelector('.floating-feedback-close'), {
+        otelService.trackClose(document.querySelector('.floating-feedback-close'), {
             context: 'feedback_modal'
         });
         setHoveredRating(0);
@@ -131,7 +131,7 @@ const FloatingFeedback = () => {
                     className="floating-feedback-button"
                     onClick={() => {
                         setIsOpen(true);
-                        telemetryService.trackButtonClick('Open Feedback', 'floating_button');
+                        otelService.trackButtonClick('Open Feedback', 'floating_button');
                     }}
                     title="Give Feedback"
                 >
@@ -164,7 +164,7 @@ const FloatingFeedback = () => {
                     className={`floating-feedback-button ${isNearFooter ? 'near-footer' : ''}`}
                     onClick={() => {
                         setIsOpen(true);
-                        telemetryService.trackButtonClick('Open Feedback', 'floating_button');
+                        otelService.trackButtonClick('Open Feedback', 'floating_button');
                     }}
                     title="Give Feedback"
                 >

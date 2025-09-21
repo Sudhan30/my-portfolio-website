@@ -504,6 +504,121 @@ class OpenTelemetryService {
         const data = { traces: [], metrics: [], logs };
         await this.sendTelemetryData(data);
     }
+
+    /**
+     * Track button click (from telemetry.js)
+     */
+    trackButtonClick(buttonText, buttonContext = '') {
+        const trace = this.startTrace('button_click', {
+            'button.text': buttonText.substring(0, 50),
+            'button.context': buttonContext,
+            'page.url': window.location.href
+        });
+        
+        if (trace) {
+            this.endTrace(trace.traceId, trace.spanId);
+        }
+    }
+
+    /**
+     * Track dropdown interaction (from telemetry.js)
+     */
+    trackDropdown(action, element, additionalData = {}) {
+        const trace = this.startTrace('dropdown_interaction', {
+            'dropdown.action': action,
+            'element.tag': element?.tagName || 'unknown',
+            'element.id': element?.id || '',
+            'element.class': element?.className || '',
+            'page.url': window.location.href,
+            ...additionalData
+        });
+        
+        if (trace) {
+            this.endTrace(trace.traceId, trace.spanId);
+        }
+    }
+
+    /**
+     * Track form submission (from telemetry.js)
+     */
+    trackFormSubmit(form, additionalData = {}) {
+        const formData = this.extractFormData(form);
+        const trace = this.startTrace('form_submit', {
+            'form.id': form?.id || '',
+            'form.class': form?.className || '',
+            'form.action': form?.action || '',
+            'form.method': form?.method || 'POST',
+            'form.fieldCount': formData.fieldCount,
+            'page.url': window.location.href,
+            ...additionalData
+        });
+        
+        if (trace) {
+            this.endTrace(trace.traceId, trace.spanId);
+        }
+    }
+
+    /**
+     * Track close button click (from telemetry.js)
+     */
+    trackClose(element, additionalData = {}) {
+        const trace = this.startTrace('close_action', {
+            'element.tag': element?.tagName || 'unknown',
+            'element.id': element?.id || '',
+            'element.class': element?.className || '',
+            'page.url': window.location.href,
+            ...additionalData
+        });
+        
+        if (trace) {
+            this.endTrace(trace.traceId, trace.spanId);
+        }
+    }
+
+    /**
+     * Track navigation (from telemetry.js)
+     */
+    trackNavigationCompat(fromSection, toSection) {
+        const trace = this.startTrace('navigation', {
+            'navigation.from': fromSection,
+            'navigation.to': toSection,
+            'page.url': window.location.href
+        });
+        
+        if (trace) {
+            this.endTrace(trace.traceId, trace.spanId);
+        }
+    }
+
+    /**
+     * Extract form data helper (from telemetry.js)
+     */
+    extractFormData(form) {
+        const formData = new FormData(form);
+        const data = {};
+        let fieldCount = 0;
+        
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+            fieldCount++;
+        }
+        
+        return { ...data, fieldCount };
+    }
+
+    /**
+     * Get consent status (compatibility method)
+     */
+    getConsentStatusCompat() {
+        return this.consentGiven;
+    }
+
+    /**
+     * Set consent status (compatibility method)
+     */
+    setConsentStatusCompat(consent) {
+        this.setConsentStatus(consent);
+    }
 }
 
 // Create singleton instance

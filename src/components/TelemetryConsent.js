@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Shield, Eye, Database, Settings } from 'lucide-react';
-import telemetryService from '../services/telemetry';
+import otelService from '../services/opentelemetry';
 import './TelemetryConsent.css';
 
 const TelemetryConsent = () => {
@@ -11,7 +11,7 @@ const TelemetryConsent = () => {
     useEffect(() => {
         // Check if user has already made a consent decision
         const hasConsentDecision = localStorage.getItem('telemetry_consent_decision_made');
-        const consent = telemetryService.getConsentStatus();
+        const consent = otelService.getConsentStatusCompat();
         
         setConsentGiven(consent);
         
@@ -22,26 +22,26 @@ const TelemetryConsent = () => {
     }, []);
 
     const handleAccept = () => {
-        telemetryService.setConsentStatus(true);
+        otelService.setConsentStatusCompat(true);
         setConsentGiven(true);
         setShowBanner(false);
         localStorage.setItem('telemetry_consent_decision_made', 'true');
         
         // Track the consent acceptance
-        telemetryService.trackEvent('consent_accepted', {
+        otelService.log('info', 'Consent accepted', {
             consentType: 'telemetry',
             timestamp: new Date().toISOString()
         });
     };
 
     const handleDecline = () => {
-        telemetryService.setConsentStatus(false);
+        otelService.setConsentStatusCompat(false);
         setConsentGiven(false);
         setShowBanner(false);
         localStorage.setItem('telemetry_consent_decision_made', 'true');
         
         // Track the consent decline (this is the last event we'll track)
-        telemetryService.trackEvent('consent_declined', {
+        otelService.log('info', 'Consent declined', {
             consentType: 'telemetry',
             timestamp: new Date().toISOString()
         });

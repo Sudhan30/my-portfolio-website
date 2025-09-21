@@ -13,7 +13,6 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingFeedback from './components/FloatingFeedback';
 import TelemetryConsent from './components/TelemetryConsent';
-import telemetryService from './services/telemetry';
 import otelService from './services/opentelemetry';
 import { config } from './utils/env';
 
@@ -50,10 +49,7 @@ const App = () => {
 
         fetchViewCount();
 
-                // Initialize telemetry tracking
-                telemetryService.trackPageView();
-                
-                // Initialize OpenTelemetry
+                // Initialize OpenTelemetry tracking
                 otelService.initialize();
 
         return () => clearTimeout(timer);
@@ -130,7 +126,7 @@ const App = () => {
             setActiveSection(id);
             
             // Track navigation
-            telemetryService.trackNavigation(activeSection, id);
+            otelService.trackNavigationCompat(activeSection, id);
         }
     };
 

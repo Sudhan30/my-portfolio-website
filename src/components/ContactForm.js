@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Send, Loader2 } from 'lucide-react';
 import './ContactForm.css';
 import { config } from '../utils/env';
-import telemetryService from '../services/telemetry';
+import otelService from '../services/opentelemetry';
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const ContactForm = () => {
         setError(null);
 
         // Track form submission
-        telemetryService.trackFormSubmit(e.target, {
+        otelService.trackFormSubmit(e.target, {
             formType: 'contact',
             hasName: !!formData.name,
             hasEmail: !!formData.email,

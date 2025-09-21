@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, MapPin } from 'lucide-react';
 import { experiences } from '../data';
-import telemetryService from '../services/telemetry';
+import otelService from '../services/opentelemetry';
 
 const JobExperience = ({ job }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +11,7 @@ const JobExperience = ({ job }) => {
         setIsOpen(newIsOpen);
         
         // Track dropdown interaction
-        telemetryService.trackDropdown(
+        otelService.trackDropdown(
             newIsOpen ? 'open' : 'close',
             document.querySelector(`[data-job-id="${job.company}"]`),
             {
