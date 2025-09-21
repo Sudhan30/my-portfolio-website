@@ -17,6 +17,7 @@ class OpenTelemetryService {
         this.hasUserEngaged = false; // Track if user has actually interacted
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
+        this.timeoutId = null; // Track timeout to prevent multiple timeouts
         this.sessionId = this.getOrCreateSessionId();
         this.sessionTraceId = this.getOrCreateSessionTraceId(); // One trace per session
         this.consentGiven = this.getConsentStatus();
@@ -220,15 +221,16 @@ class OpenTelemetryService {
         if (this.metrics.length >= 8) {
             console.log('🚀 Force flushing metrics (8+ collected)');
             this.flush();
-        } else if (this.metrics.length >= 5) {
-            // If we have 5+ metrics, set a timeout to flush them soon
-            // This ensures we don't wait too long for more metrics
-            setTimeout(() => {
+        } else if (this.metrics.length >= 5 && !this.timeoutId) {
+            // If we have 5+ metrics, set a longer timeout to allow all page load metrics
+            // This ensures we collect all essential metrics before flushing
+            this.timeoutId = setTimeout(() => {
                 if (this.metrics.length > 0) {
                     console.log('🚀 Timeout flush for collected metrics');
                     this.flush();
                 }
-            }, 2000); // 2 second timeout
+                this.timeoutId = null;
+            }, 5000); // 5 second timeout to allow all page load metrics
         } else {
             this.checkBatchSize();
         }
@@ -705,6 +707,12 @@ class OpenTelemetryService {
         this.traces = [];
         this.metrics = [];
         this.logs = [];
+        
+        // Clear any pending timeout
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+        }
         
         // Update last flush time
         this.lastFlushTime = now;
