@@ -8,9 +8,9 @@ const { Storage } = require('@google-cloud/storage');
 const { PubSub } = require('@google-cloud/pubsub');
 
 // Initialize clients
-const bigquery = new BigQuery();
-const storage = new Storage();
-const pubsub = new PubSub();
+const bigquery = new BigQuery({ projectId: 'sudhanportfoliowebsite' });
+const storage = new Storage({ projectId: 'sudhanportfoliowebsite' });
+const pubsub = new PubSub({ projectId: 'sudhanportfoliowebsite' });
 
 // Configuration
 const PROJECT_ID = 'sudhanportfoliowebsite';
@@ -155,6 +155,7 @@ async function processMetrics(data) {
 
     try {
         console.log(`Attempting to insert ${rows.length} rows into BigQuery metrics table`);
+        console.log(`Using project ID: ${PROJECT_ID}, dataset: ${DATASET_ID}`);
         const [insertErrors] = await bigquery.dataset(DATASET_ID, { projectId: PROJECT_ID }).table('metrics').insert(rows);
         if (insertErrors && insertErrors.length > 0) {
             console.error('BigQuery metrics insert errors:', JSON.stringify(insertErrors, null, 2));
