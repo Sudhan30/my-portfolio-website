@@ -10,7 +10,9 @@ class OpenTelemetryService {
         this.traces = [];
         this.metrics = [];
         this.logs = [];
-        this.batchSize = 10;
+        this.batchSize = 20; // Increased batch size to reduce frequency
+        this.minFlushInterval = 30000; // Minimum 30 seconds between flushes
+        this.lastFlushTime = 0;
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
         this.sessionId = this.getOrCreateSessionId();
@@ -271,16 +273,24 @@ class OpenTelemetryService {
             this.endTrace(trace.traceId, trace.spanId);
         });
         
-        // Track scroll depth
+        // Track scroll depth (throttled to prevent spam)
         let maxScrollDepth = 0;
+        let scrollTimeout = null;
+        
         window.addEventListener('scroll', () => {
-            const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            if (scrollDepth > maxScrollDepth) {
-                maxScrollDepth = scrollDepth;
-                this.recordMetric('scroll_depth', scrollDepth, {
-                    'page.url': window.location.href
-                });
-            }
+            // Throttle scroll events to prevent spam
+            if (scrollTimeout) return;
+            
+            scrollTimeout = setTimeout(() => {
+                const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                if (scrollDepth > maxScrollDepth && scrollDepth % 25 === 0) { // Only track at 25%, 50%, 75%, 100%
+                    maxScrollDepth = scrollDepth;
+                    this.recordMetric('scroll_depth', scrollDepth, {
+                        'page.url': window.location.href
+                    });
+                }
+                scrollTimeout = null;
+            }, 2000); // Throttle to once every 2 seconds
         });
     }
 
@@ -301,30 +311,37 @@ class OpenTelemetryService {
     }
 
     /**
-     * Track Core Web Vitals
+     * Track Core Web Vitals (throttled to prevent spam)
      */
     trackCoreWebVitals() {
-        // Largest Contentful Paint (LCP)
+        // Largest Contentful Paint (LCP) - only track once
+        let lcpTracked = false;
         new PerformanceObserver((list) => {
+            if (lcpTracked) return;
             const entries = list.getEntries();
             const lastEntry = entries[entries.length - 1];
             this.recordMetric('lcp', lastEntry.startTime, {
                 'page.url': window.location.href
             });
+            lcpTracked = true;
         }).observe({ entryTypes: ['largest-contentful-paint'] });
         
-        // First Input Delay (FID)
+        // First Input Delay (FID) - only track once
+        let fidTracked = false;
         new PerformanceObserver((list) => {
+            if (fidTracked) return;
             const entries = list.getEntries();
             entries.forEach(entry => {
                 this.recordMetric('fid', entry.processingStart - entry.startTime, {
                     'page.url': window.location.href
                 });
+                fidTracked = true;
             });
         }).observe({ entryTypes: ['first-input'] });
         
-        // Cumulative Layout Shift (CLS)
+        // Cumulative Layout Shift (CLS) - throttled
         let clsValue = 0;
+        let clsTimeout = null;
         new PerformanceObserver((list) => {
             const entries = list.getEntries();
             entries.forEach(entry => {
@@ -332,28 +349,25 @@ class OpenTelemetryService {
                     clsValue += entry.value;
                 }
             });
-            this.recordMetric('cls', clsValue, {
-                'page.url': window.location.href
-            });
+            
+            // Throttle CLS updates
+            if (clsTimeout) return;
+            clsTimeout = setTimeout(() => {
+                this.recordMetric('cls', clsValue, {
+                    'page.url': window.location.href
+                });
+                clsTimeout = null;
+            }, 5000); // Update CLS every 5 seconds max
         }).observe({ entryTypes: ['layout-shift'] });
     }
 
     /**
-     * Set up performance monitoring
+     * Set up performance monitoring (disabled to prevent spam)
      */
     setupPerformanceMonitoring() {
-        // Monitor resource loading
-        const resourceObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries();
-            entries.forEach(entry => {
-                this.recordMetric('resource_load_time', entry.duration, {
-                    'resource.name': entry.name,
-                    'resource.type': entry.initiatorType
-                });
-            });
-        });
-        
-        resourceObserver.observe({ entryTypes: ['resource'] });
+        // Resource loading monitoring disabled to prevent continuous data sending
+        // Only track essential performance metrics, not every resource
+        console.log('Performance monitoring setup (resource tracking disabled)');
     }
 
     /**
@@ -427,6 +441,14 @@ class OpenTelemetryService {
             return;
         }
         
+        const now = Date.now();
+        
+        // Check minimum interval
+        if ((now - this.lastFlushTime) < this.minFlushInterval) {
+            console.log('Flush skipped - minimum interval not reached');
+            return;
+        }
+        
         const data = {
             traces: [...this.traces],
             metrics: [...this.metrics],
@@ -438,9 +460,13 @@ class OpenTelemetryService {
         this.metrics = [];
         this.logs = [];
         
+        // Update last flush time
+        this.lastFlushTime = now;
+        
         // Send to Cloud Function
         try {
             await this.sendTelemetryData(data);
+            console.log('Telemetry data flushed successfully');
         } catch (error) {
             console.error('Failed to send telemetry data:', error);
             // Re-add data to arrays for retry
@@ -451,13 +477,16 @@ class OpenTelemetryService {
     }
 
     /**
-     * Check if batch size is reached and flush if needed
+     * Check if batch size is reached and flush if needed (with minimum interval)
      */
     checkBatchSize() {
         if (!this.consentGiven) return;
         
         const totalItems = this.traces.length + this.metrics.length + this.logs.length;
-        if (totalItems >= this.batchSize) {
+        const now = Date.now();
+        
+        // Only flush if we have enough items AND enough time has passed
+        if (totalItems >= this.batchSize && (now - this.lastFlushTime) >= this.minFlushInterval) {
             this.flush();
         }
     }
