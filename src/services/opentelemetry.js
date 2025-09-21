@@ -19,6 +19,7 @@ class OpenTelemetryService {
         this.userId = this.getOrCreateUserId();
         this.timeoutId = null; // Track timeout to prevent multiple timeouts
         this.initialMetricsFlushed = false; // Track if initial page load metrics have been flushed
+        this.initialMetricsStartTime = Date.now(); // Track when initial metrics collection started
         this.sessionId = this.getOrCreateSessionId();
         this.sessionTraceId = this.getOrCreateSessionTraceId(); // One trace per session
         this.consentGiven = this.getConsentStatus();
@@ -776,11 +777,12 @@ class OpenTelemetryService {
                 this.flush();
             } else {
                 // If we've been waiting too long, flush what we have
-                if (timeSinceLastFlush > 10000) { // 10 seconds timeout
-                    console.log('🚀 Timeout flush - flushing available metrics after 10 seconds');
+                const timeSinceStart = now - this.initialMetricsStartTime;
+                if (timeSinceStart > 10000) { // 10 seconds timeout from start
+                    console.log(`🚀 Timeout flush - flushing available metrics after ${timeSinceStart}ms`);
                     this.flush();
                 } else {
-                    console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected`);
+                    console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected (${timeSinceStart}ms elapsed)`);
                 }
             }
             return;
