@@ -219,6 +219,12 @@ class OpenTelemetryService {
         this.metrics.push(metric);
         console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
         
+        // Force flush performance metrics immediately
+        if (name === 'dom_content_loaded' || name === 'page_full_load' || name === 'page_load_time') {
+            console.log(`🚀 Force flushing performance metric: ${name}`);
+            setTimeout(() => this.flush(), 100); // Small delay to ensure metric is recorded
+        }
+        
         // Let checkBatchSize() handle all flushing logic
         this.checkBatchSize();
     }
@@ -598,14 +604,16 @@ class OpenTelemetryService {
                 }
             }
             
-            // Flush after performance metrics are recorded
-            setTimeout(() => {
-                console.log('📊 Window Load flush check (immediate) - metrics available:', this.metrics.map(m => m.name));
-                if (this.metrics.length > 0) {
-                    console.log('🚀 Flushing performance metrics (immediate)');
-                    this.flush();
-                }
-            }, 1000); // 1 second delay to ensure all performance metrics are recorded
+        // Flush after performance metrics are recorded
+        setTimeout(() => {
+            console.log('📊 Window Load flush check (immediate) - metrics available:', this.metrics.map(m => m.name));
+            if (this.metrics.length > 0) {
+                console.log('🚀 Flushing performance metrics (immediate)');
+                this.flush();
+            } else {
+                console.log('⚠️ No metrics available for immediate flush');
+            }
+        }, 1000); // 1 second delay to ensure all performance metrics are recorded
         }
         
         // Track viewport size (immediately available)
@@ -875,6 +883,22 @@ class OpenTelemetryService {
         const shouldFlush = hasMetrics && 
                            (timeSinceLastFlush >= this.minFlushInterval) &&
                            (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
+        
+        // Special case: Force flush performance metrics after 5 seconds
+        const hasPerformanceMetrics = this.metrics.some(m => 
+            m.name === 'dom_content_loaded' || 
+            m.name === 'page_full_load' || 
+            m.name === 'page_load_time' ||
+            m.name === 'fid' ||
+            m.name === 'lcp' ||
+            m.name === 'cls_final'
+        );
+        
+        if (hasPerformanceMetrics && timeSinceLastFlush >= 5000) {
+            console.log(`🚀 Force flushing performance metrics after 5 seconds`);
+            this.flush();
+            return;
+        }
         
         // Debug: Log what metrics we have
         if (hasMetrics) {
