@@ -94,9 +94,9 @@ async function processTraces(data) {
         status_code: trace.status?.code || 'OK',
         status_message: trace.status?.message || null,
         attributes: trace.attributes || {},
-        events: trace.events && trace.events.length > 0 ? trace.events[0] : {},
-        links: trace.links && trace.links.length > 0 ? trace.links[0] : {},
-        resource_attributes: trace.resource?.attributes || {},
+        events: trace.events && trace.events.length > 0 ? trace.events[0] : null,
+        links: trace.links && trace.links.length > 0 ? trace.links[0] : null,
+        resource_attributes: trace.resource?.attributes || null,
         instrumentation_scope_name: trace.instrumentationScope?.name || null,
         instrumentation_scope_version: trace.instrumentationScope?.version || null,
         created_at: new Date()
@@ -127,8 +127,8 @@ async function processMetrics(data) {
         metric_type: metric.type,
         value: metric.value,
         timestamp: new Date(metric.timestamp),
-        attributes: metric.attributes || {},
-        resource_attributes: metric.resource?.attributes || {},
+        attributes: metric.attributes || null,
+        resource_attributes: metric.resource?.attributes || null,
         created_at: new Date()
     }));
 
@@ -155,8 +155,8 @@ async function processLogs(data) {
         timestamp: new Date(log.timestamp),
         severity: log.severity || 'INFO',
         body: log.body || '',
-        attributes: log.attributes || {},
-        resource_attributes: log.resource?.attributes || {},
+        attributes: log.attributes || null,
+        resource_attributes: log.resource?.attributes || null,
         trace_id: log.traceId || null,
         span_id: log.spanId || null,
         created_at: new Date()
