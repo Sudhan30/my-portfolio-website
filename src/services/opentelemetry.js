@@ -222,7 +222,10 @@ class OpenTelemetryService {
         // Force flush performance metrics immediately
         if (name === 'dom_content_loaded' || name === 'page_full_load' || name === 'page_load_time') {
             console.log(`🚀 Force flushing performance metric: ${name}`);
-            setTimeout(() => this.flush(), 100); // Small delay to ensure metric is recorded
+            setTimeout(() => {
+                console.log(`🚀 Flushing performance metric: ${name}, metrics count: ${this.metrics.length}`);
+                this.flush();
+            }, 100); // Small delay to ensure metric is recorded
         }
         
         // Let checkBatchSize() handle all flushing logic
@@ -516,6 +519,11 @@ class OpenTelemetryService {
                     if (this.metrics.length > 0) {
                         console.log('🚀 Flushing DOM content loaded metric');
                         this.flush();
+                    } else {
+                        console.log('⚠️ No metrics available for DOM flush');
+                        // Force flush anyway to ensure performance metrics are sent
+                        console.log('🚀 Force flushing anyway to ensure DOM metrics are sent');
+                        this.flush();
                     }
                 }, 500); // 0.5 second delay
             });
@@ -527,6 +535,12 @@ class OpenTelemetryService {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
             });
+            
+            // Force flush immediately for DOMContentLoaded
+            setTimeout(() => {
+                console.log('🚀 Force flushing DOMContentLoaded (immediate)');
+                this.flush();
+            }, 100);
         }
         
         // Check if window.load has already fired
@@ -604,6 +618,12 @@ class OpenTelemetryService {
                 }
             }
             
+            // Force flush immediately for window.load
+            setTimeout(() => {
+                console.log('🚀 Force flushing window.load (immediate)');
+                this.flush();
+            }, 100);
+            
         // Flush after performance metrics are recorded
         setTimeout(() => {
             console.log('📊 Window Load flush check (immediate) - metrics available:', this.metrics.map(m => m.name));
@@ -612,6 +632,9 @@ class OpenTelemetryService {
                 this.flush();
             } else {
                 console.log('⚠️ No metrics available for immediate flush');
+                // Force flush anyway to ensure performance metrics are sent
+                console.log('🚀 Force flushing anyway to ensure performance metrics are sent');
+                this.flush();
             }
         }, 1000); // 1 second delay to ensure all performance metrics are recorded
         }
