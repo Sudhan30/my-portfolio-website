@@ -488,6 +488,7 @@ class OpenTelemetryService {
         // Track DOM Content Loaded (when HTML is fully parsed)
         document.addEventListener('DOMContentLoaded', () => {
             const domLoadTime = Date.now() - pageLoadStart;
+            console.log('📊 DOM Content Loaded recorded:', domLoadTime);
             this.recordMetric('dom_content_loaded', domLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
@@ -497,6 +498,7 @@ class OpenTelemetryService {
         // Track when page is fully loaded (all resources)
         window.addEventListener('load', () => {
             const fullLoadTime = Date.now() - pageLoadStart;
+            console.log('📊 Page Full Load recorded:', fullLoadTime);
             this.recordMetric('page_full_load', fullLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
@@ -505,6 +507,7 @@ class OpenTelemetryService {
             // Track page load time using Performance API (more accurate)
             if (performance.timing) {
                 const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log('📊 Page Load Time recorded (performance.timing):', loadTime);
                 this.recordMetric('page_load_time', loadTime, {
                     'page.url': window.location.href,
                     'metric.type': 'timing'
@@ -515,6 +518,7 @@ class OpenTelemetryService {
                 if (navigationEntries.length > 0) {
                     const navigation = navigationEntries[0];
                     const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+                    console.log('📊 Page Load Time recorded (navigation API):', loadTime);
                     this.recordMetric('page_load_time', loadTime, {
                         'page.url': window.location.href,
                         'metric.type': 'timing'
