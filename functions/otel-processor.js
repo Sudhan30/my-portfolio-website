@@ -93,10 +93,10 @@ async function processTraces(data) {
         duration_ms: trace.duration || 0,
         status_code: trace.status?.code || 'OK',
         status_message: trace.status?.message || null,
-        attributes: JSON.stringify(trace.attributes || {}),
-        events: JSON.stringify(trace.events || []),
-        links: JSON.stringify(trace.links || []),
-        resource_attributes: JSON.stringify(trace.resource?.attributes || {}),
+        attributes: trace.attributes || {},
+        events: trace.events || [],
+        links: trace.links || [],
+        resource_attributes: trace.resource?.attributes || {},
         instrumentation_scope_name: trace.instrumentationScope?.name || null,
         instrumentation_scope_version: trace.instrumentationScope?.version || null,
         created_at: new Date()
@@ -127,8 +127,8 @@ async function processMetrics(data) {
         metric_type: metric.type,
         value: metric.value,
         timestamp: new Date(metric.timestamp),
-        attributes: JSON.stringify(metric.attributes || {}),
-        resource_attributes: JSON.stringify(metric.resource?.attributes || {}),
+        attributes: metric.attributes || {},
+        resource_attributes: metric.resource?.attributes || {},
         created_at: new Date()
     }));
 
@@ -155,8 +155,8 @@ async function processLogs(data) {
         timestamp: new Date(log.timestamp),
         severity: log.severity || 'INFO',
         body: log.body || '',
-        attributes: JSON.stringify(log.attributes || {}),
-        resource_attributes: JSON.stringify(log.resource?.attributes || {}),
+        attributes: log.attributes || {},
+        resource_attributes: log.resource?.attributes || {},
         trace_id: log.traceId || null,
         span_id: log.spanId || null,
         created_at: new Date()
