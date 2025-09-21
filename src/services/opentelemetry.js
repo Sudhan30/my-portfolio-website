@@ -216,33 +216,67 @@ class OpenTelemetryService {
     }
 
     /**
-     * Track page view
+     * Track page view (delayed to prevent immediate spam)
      */
     trackPageView() {
-        const trace = this.startTrace('page_view', {
-            'page.url': window.location.href,
-            'page.title': document.title,
-            'page.referrer': document.referrer
-        });
-        
-        this.endTrace(trace.traceId, trace.spanId);
+        // Delay page view tracking to prevent immediate spam
+        setTimeout(() => {
+            if (this.consentGiven) {
+                const trace = this.startTrace('page_view', {
+                    'page.url': window.location.href,
+                    'page.title': document.title,
+                    'page.referrer': document.referrer
+                });
+                
+                if (trace) {
+                    this.endTrace(trace.traceId, trace.spanId);
+                }
+            }
+        }, 2000); // Wait 2 seconds after page load
     }
 
     /**
-     * Track navigation
+     * Track navigation (only on actual URL changes)
      */
     trackNavigation() {
-        // Track navigation changes
+        // Track navigation changes (only on actual URL changes, not DOM mutations)
         let lastUrl = window.location.href;
         
-        const observer = new MutationObserver(() => {
+        // Use popstate for browser back/forward navigation
+        window.addEventListener('popstate', () => {
             if (window.location.href !== lastUrl) {
                 this.trackPageView();
                 lastUrl = window.location.href;
             }
         });
         
-        observer.observe(document, { subtree: true, childList: true });
+        // Use pushstate/replacestate for programmatic navigation
+        const originalPushState = window.history.pushState;
+        const originalReplaceState = window.history.replaceState;
+        
+        window.history.pushState = function(...args) {
+            originalPushState.apply(window.history, args);
+            if (window.location.href !== lastUrl) {
+                setTimeout(() => {
+                    if (window.location.href !== lastUrl) {
+                        this.trackPageView();
+                        lastUrl = window.location.href;
+                    }
+                }, 100);
+            }
+        }.bind(this);
+        
+        window.history.replaceState = function(...args) {
+            originalReplaceState.apply(window.history, args);
+            if (window.location.href !== lastUrl) {
+                setTimeout(() => {
+                    if (window.location.href !== lastUrl) {
+                        this.trackPageView();
+                        lastUrl = window.location.href;
+                    }
+                }, 100);
+            }
+        }.bind(this);
     }
 
     /**
@@ -306,29 +340,37 @@ class OpenTelemetryService {
     }
 
     /**
-     * Track essential performance metrics only (once per page load)
+     * Track essential performance metrics only (once per page load, delayed)
      */
     trackEssentialPerformance() {
-        // Track page load time (once only)
+        // Track page load time (once only, delayed)
         window.addEventListener('load', () => {
-            const loadTime = performance.now();
-            this.recordMetric('page_load_time', loadTime, {
-                'page.url': window.location.href
-            });
+            setTimeout(() => {
+                if (this.consentGiven) {
+                    const loadTime = performance.now();
+                    this.recordMetric('page_load_time', loadTime, {
+                        'page.url': window.location.href
+                    });
+                }
+            }, 3000); // Wait 3 seconds after page load
         });
         
-        // Track essential Core Web Vitals (once only)
-        this.trackEssentialWebVitals();
+        // Track essential Core Web Vitals (once only, delayed)
+        setTimeout(() => {
+            if (this.consentGiven) {
+                this.trackEssentialWebVitals();
+            }
+        }, 5000); // Wait 5 seconds after initialization
     }
 
     /**
-     * Track essential Core Web Vitals (once per page load only)
+     * Track essential Core Web Vitals (once per page load only, engagement-based)
      */
     trackEssentialWebVitals() {
-        // Largest Contentful Paint (LCP) - only track once
+        // Largest Contentful Paint (LCP) - only track once, only if user engaged
         let lcpTracked = false;
         new PerformanceObserver((list) => {
-            if (lcpTracked) return;
+            if (lcpTracked || !this.hasUserEngaged) return;
             const entries = list.getEntries();
             const lastEntry = entries[entries.length - 1];
             this.recordMetric('lcp', lastEntry.startTime, {
@@ -350,12 +392,14 @@ class OpenTelemetryService {
             });
         }).observe({ entryTypes: ['first-input'] });
         
-        // Cumulative Layout Shift (CLS) - only track final value, not continuous updates
+        // Cumulative Layout Shift (CLS) - only track final value after engagement
         let clsValue = 0;
         let clsFinalValue = 0;
         let clsTimeout = null;
         
         new PerformanceObserver((list) => {
+            if (!this.hasUserEngaged) return; // Only track if user has engaged
+            
             const entries = list.getEntries();
             entries.forEach(entry => {
                 if (!entry.hadRecentInput) {
@@ -366,13 +410,13 @@ class OpenTelemetryService {
             // Only track final CLS value after user engagement stops
             clearTimeout(clsTimeout);
             clsTimeout = setTimeout(() => {
-                if (clsValue !== clsFinalValue) {
+                if (clsValue !== clsFinalValue && clsValue > 0) { // Only track if there's actual layout shift
                     clsFinalValue = clsValue;
                     this.recordMetric('cls_final', clsValue, {
                         'page.url': window.location.href
                     });
                 }
-            }, 10000); // Track final CLS after 10 seconds of no layout shifts
+            }, 15000); // Track final CLS after 15 seconds of no layout shifts
         }).observe({ entryTypes: ['layout-shift'] });
     }
 
