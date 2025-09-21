@@ -491,31 +491,86 @@ class OpenTelemetryService {
         // Track when page load starts
         const pageLoadStart = Date.now();
         
-        // Track DOM Content Loaded (when HTML is fully parsed)
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('📊 DOMContentLoaded event fired!');
+        // Check if DOMContentLoaded has already fired
+        if (document.readyState === 'loading') {
+            console.log('📊 DOMContentLoaded not yet fired, setting up listener');
+            // Track DOM Content Loaded (when HTML is fully parsed)
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('📊 DOMContentLoaded event fired!');
+                const domLoadTime = Date.now() - pageLoadStart;
+                console.log('📊 DOM Content Loaded recorded:', domLoadTime);
+                this.recordMetric('dom_content_loaded', domLoadTime, {
+                    'page.url': window.location.href,
+                    'metric.type': 'timing'
+                });
+                
+                // Flush after DOM content loaded metric is recorded
+                setTimeout(() => {
+                    console.log('📊 DOM Content Loaded flush check - metrics available:', this.metrics.map(m => m.name));
+                    if (this.metrics.length > 0) {
+                        console.log('🚀 Flushing DOM content loaded metric');
+                        this.flush();
+                    }
+                }, 500); // 0.5 second delay
+            });
+        } else {
+            console.log('📊 DOMContentLoaded already fired, recording immediately');
             const domLoadTime = Date.now() - pageLoadStart;
-            console.log('📊 DOM Content Loaded recorded:', domLoadTime);
+            console.log('📊 DOM Content Loaded recorded (immediate):', domLoadTime);
             this.recordMetric('dom_content_loaded', domLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
             });
-            
-            // Flush after DOM content loaded metric is recorded
-            setTimeout(() => {
-                console.log('📊 DOM Content Loaded flush check - metrics available:', this.metrics.map(m => m.name));
-                if (this.metrics.length > 0) {
-                    console.log('🚀 Flushing DOM content loaded metric');
-                    this.flush();
-                }
-            }, 500); // 0.5 second delay
-        });
+        }
         
-        // Track when page is fully loaded (all resources)
-        window.addEventListener('load', () => {
-            console.log('📊 Window Load event fired!');
+        // Check if window.load has already fired
+        if (document.readyState !== 'complete') {
+            console.log('📊 Window Load not yet fired, setting up listener');
+            // Track when page is fully loaded (all resources)
+            window.addEventListener('load', () => {
+                console.log('📊 Window Load event fired!');
+                const fullLoadTime = Date.now() - pageLoadStart;
+                console.log('📊 Page Full Load recorded:', fullLoadTime);
+                this.recordMetric('page_full_load', fullLoadTime, {
+                    'page.url': window.location.href,
+                    'metric.type': 'timing'
+                });
+                
+                // Track page load time using Performance API (more accurate)
+                if (performance.timing) {
+                    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                    console.log('📊 Page Load Time recorded (performance.timing):', loadTime);
+                    this.recordMetric('page_load_time', loadTime, {
+                        'page.url': window.location.href,
+                        'metric.type': 'timing'
+                    });
+                } else if (performance.getEntriesByType) {
+                    // Fallback for modern browsers using Navigation Timing API
+                    const navigationEntries = performance.getEntriesByType('navigation');
+                    if (navigationEntries.length > 0) {
+                        const navigation = navigationEntries[0];
+                        const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+                        console.log('📊 Page Load Time recorded (navigation API):', loadTime);
+                        this.recordMetric('page_load_time', loadTime, {
+                            'page.url': window.location.href,
+                            'metric.type': 'timing'
+                        });
+                    }
+                }
+                
+                // Flush after performance metrics are recorded
+                setTimeout(() => {
+                    console.log('📊 Window Load flush check - metrics available:', this.metrics.map(m => m.name));
+                    if (this.metrics.length > 0) {
+                        console.log('🚀 Flushing performance metrics after window.load');
+                        this.flush();
+                    }
+                }, 1000); // 1 second delay to ensure all performance metrics are recorded
+            });
+        } else {
+            console.log('📊 Window Load already fired, recording immediately');
             const fullLoadTime = Date.now() - pageLoadStart;
-            console.log('📊 Page Full Load recorded:', fullLoadTime);
+            console.log('📊 Page Full Load recorded (immediate):', fullLoadTime);
             this.recordMetric('page_full_load', fullLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
@@ -524,7 +579,7 @@ class OpenTelemetryService {
             // Track page load time using Performance API (more accurate)
             if (performance.timing) {
                 const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                console.log('📊 Page Load Time recorded (performance.timing):', loadTime);
+                console.log('📊 Page Load Time recorded (performance.timing, immediate):', loadTime);
                 this.recordMetric('page_load_time', loadTime, {
                     'page.url': window.location.href,
                     'metric.type': 'timing'
@@ -535,7 +590,7 @@ class OpenTelemetryService {
                 if (navigationEntries.length > 0) {
                     const navigation = navigationEntries[0];
                     const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
-                    console.log('📊 Page Load Time recorded (navigation API):', loadTime);
+                    console.log('📊 Page Load Time recorded (navigation API, immediate):', loadTime);
                     this.recordMetric('page_load_time', loadTime, {
                         'page.url': window.location.href,
                         'metric.type': 'timing'
@@ -545,15 +600,13 @@ class OpenTelemetryService {
             
             // Flush after performance metrics are recorded
             setTimeout(() => {
-                console.log('📊 Window Load flush check - metrics available:', this.metrics.map(m => m.name));
+                console.log('📊 Window Load flush check (immediate) - metrics available:', this.metrics.map(m => m.name));
                 if (this.metrics.length > 0) {
-                    console.log('🚀 Flushing performance metrics after window.load');
+                    console.log('🚀 Flushing performance metrics (immediate)');
                     this.flush();
                 }
             }, 1000); // 1 second delay to ensure all performance metrics are recorded
-            
-            // Viewport and connection metrics are now recorded immediately during initialization
-        });
+        }
         
         // Track viewport size (immediately available)
         this.recordMetric('viewport_width', window.innerWidth, {
