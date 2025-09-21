@@ -249,6 +249,7 @@ class OpenTelemetryService {
      * Set up automatic instrumentation (engagement-focused only)
      */
     setupAutomaticInstrumentation() {
+        console.log('🔧 Setting up automatic instrumentation');
         // Track page views (only once per page load)
         this.trackPageView();
         
@@ -262,7 +263,9 @@ class OpenTelemetryService {
         this.trackEssentialPerformance();
         
         // Track essential page load metrics
+        console.log('🔧 Setting up page load metrics tracking');
         this.trackPageLoadMetrics();
+        console.log('🔧 Page load metrics tracking setup complete');
     }
 
     /**
@@ -481,8 +484,10 @@ class OpenTelemetryService {
      * Track essential page load metrics (minimal, high-value metrics only)
      */
     trackPageLoadMetrics() {
+        console.log('🔧 trackPageLoadMetrics called, consent given:', this.consentGiven);
         if (!this.consentGiven) return;
         
+        console.log('🔧 Setting up DOMContentLoaded and window.load event listeners');
         // Track when page load starts
         const pageLoadStart = Date.now();
         
