@@ -7,7 +7,8 @@ const admin = require("firebase-admin");
 setGlobalOptions({
   runtime: "nodejs20",
   memory: "256MiB",
-  timeoutSeconds: 60
+  timeoutSeconds: 60,
+  serviceAccount: "portfolio-functions-sa@sudhanportfoliowebsite.iam.gserviceaccount.com"
 });
 const cors = require("cors")({ origin: true });
 const { FirebaseFunctionsRateLimiter } = require("firebase-functions-rate-limiter");
