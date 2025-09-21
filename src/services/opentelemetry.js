@@ -508,6 +508,26 @@ class OpenTelemetryService {
                 'metric.type': 'timing'
             });
             
+            // Track page load time using Performance API (more accurate)
+            if (performance.timing) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                this.recordMetric('page_load_time', loadTime, {
+                    'page.url': window.location.href,
+                    'metric.type': 'timing'
+                });
+            } else if (performance.getEntriesByType) {
+                // Fallback for modern browsers using Navigation Timing API
+                const navigationEntries = performance.getEntriesByType('navigation');
+                if (navigationEntries.length > 0) {
+                    const navigation = navigationEntries[0];
+                    const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+                    this.recordMetric('page_load_time', loadTime, {
+                        'page.url': window.location.href,
+                        'metric.type': 'timing'
+                    });
+                }
+            }
+            
             // Track connection info (if available)
             if (navigator.connection) {
                 this.recordMetric('connection_effective_type', navigator.connection.effectiveType, {
