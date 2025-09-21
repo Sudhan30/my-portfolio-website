@@ -11,8 +11,10 @@ class OpenTelemetryService {
         this.metrics = [];
         this.logs = [];
         this.batchSize = 20; // Increased batch size to reduce frequency
-        this.minFlushInterval = 30000; // Minimum 30 seconds between flushes
+        this.minFlushInterval = 60000; // Minimum 1 minute between flushes
         this.lastFlushTime = 0;
+        this.pageLoadTime = Date.now();
+        this.hasUserEngaged = false; // Track if user has actually interacted
         this.isInitialized = false;
         this.userId = this.getOrCreateUserId();
         this.sessionId = this.getOrCreateSessionId();
@@ -197,20 +199,20 @@ class OpenTelemetryService {
     }
 
     /**
-     * Set up automatic instrumentation
+     * Set up automatic instrumentation (engagement-focused only)
      */
     setupAutomaticInstrumentation() {
-        // Track page views
+        // Track page views (only once per page load)
         this.trackPageView();
         
-        // Track navigation
+        // Track navigation (only on actual navigation)
         this.trackNavigation();
         
-        // Track user interactions
-        this.trackUserInteractions();
+        // Track meaningful user interactions only
+        this.trackEngagementEvents();
         
-        // Track performance
-        this.trackPerformance();
+        // Track essential performance metrics (once only)
+        this.trackEssentialPerformance();
     }
 
     /**
@@ -244,61 +246,70 @@ class OpenTelemetryService {
     }
 
     /**
-     * Track user interactions
+     * Track engagement events only (meaningful interactions)
      */
-    trackUserInteractions() {
-        // Track clicks
+    trackEngagementEvents() {
+        // Track meaningful clicks (buttons, links, forms)
         document.addEventListener('click', (event) => {
-            const trace = this.startTrace('user_click', {
-                'element.tag': event.target.tagName,
-                'element.id': event.target.id,
-                'element.class': event.target.className,
-                'element.text': event.target.textContent?.substring(0, 100),
-                'click.x': event.clientX,
-                'click.y': event.clientY
-            });
+            const target = event.target;
+            const isEngagement = target.tagName === 'BUTTON' || 
+                               target.tagName === 'A' || 
+                               target.closest('form') ||
+                               target.closest('[role="button"]') ||
+                               target.closest('.btn') ||
+                               target.closest('button');
             
-            this.endTrace(trace.traceId, trace.spanId);
+            if (isEngagement) {
+                this.hasUserEngaged = true;
+                const trace = this.startTrace('user_engagement', {
+                    'element.tag': target.tagName,
+                    'element.id': target.id || 'no-id',
+                    'element.text': target.textContent?.substring(0, 50) || 'no-text',
+                    'engagement.type': 'click'
+                });
+                
+                this.endTrace(trace.traceId, trace.spanId);
+            }
         });
         
-        // Track form submissions
+        // Track form submissions (meaningful engagement)
         document.addEventListener('submit', (event) => {
+            this.hasUserEngaged = true;
             const trace = this.startTrace('form_submit', {
-                'form.id': event.target.id,
-                'form.class': event.target.className,
-                'form.action': event.target.action,
-                'form.method': event.target.method
+                'form.id': event.target.id || 'no-id',
+                'form.action': event.target.action || 'no-action'
             });
             
             this.endTrace(trace.traceId, trace.spanId);
         });
         
-        // Track scroll depth (throttled to prevent spam)
+        // Track scroll depth (only meaningful scroll milestones)
         let maxScrollDepth = 0;
         let scrollTimeout = null;
         
         window.addEventListener('scroll', () => {
-            // Throttle scroll events to prevent spam
-            if (scrollTimeout) return;
+            // Only track if user has engaged and throttle heavily
+            if (!this.hasUserEngaged || scrollTimeout) return;
             
             scrollTimeout = setTimeout(() => {
                 const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-                if (scrollDepth > maxScrollDepth && scrollDepth % 25 === 0) { // Only track at 25%, 50%, 75%, 100%
+                if (scrollDepth > maxScrollDepth && scrollDepth % 50 === 0) { // Only track at 50%, 100%
                     maxScrollDepth = scrollDepth;
+                    this.hasUserEngaged = true; // Mark engagement
                     this.recordMetric('scroll_depth', scrollDepth, {
                         'page.url': window.location.href
                     });
                 }
                 scrollTimeout = null;
-            }, 2000); // Throttle to once every 2 seconds
+            }, 5000); // Throttle to once every 5 seconds
         });
     }
 
     /**
-     * Track performance metrics
+     * Track essential performance metrics only (once per page load)
      */
-    trackPerformance() {
-        // Track page load time
+    trackEssentialPerformance() {
+        // Track page load time (once only)
         window.addEventListener('load', () => {
             const loadTime = performance.now();
             this.recordMetric('page_load_time', loadTime, {
@@ -306,14 +317,14 @@ class OpenTelemetryService {
             });
         });
         
-        // Track Core Web Vitals
-        this.trackCoreWebVitals();
+        // Track essential Core Web Vitals (once only)
+        this.trackEssentialWebVitals();
     }
 
     /**
-     * Track Core Web Vitals (throttled to prevent spam)
+     * Track essential Core Web Vitals (once per page load only)
      */
-    trackCoreWebVitals() {
+    trackEssentialWebVitals() {
         // Largest Contentful Paint (LCP) - only track once
         let lcpTracked = false;
         new PerformanceObserver((list) => {
@@ -326,10 +337,10 @@ class OpenTelemetryService {
             lcpTracked = true;
         }).observe({ entryTypes: ['largest-contentful-paint'] });
         
-        // First Input Delay (FID) - only track once
+        // First Input Delay (FID) - only track once, only if user actually interacts
         let fidTracked = false;
         new PerformanceObserver((list) => {
-            if (fidTracked) return;
+            if (fidTracked || !this.hasUserEngaged) return;
             const entries = list.getEntries();
             entries.forEach(entry => {
                 this.recordMetric('fid', entry.processingStart - entry.startTime, {
@@ -339,9 +350,11 @@ class OpenTelemetryService {
             });
         }).observe({ entryTypes: ['first-input'] });
         
-        // Cumulative Layout Shift (CLS) - throttled
+        // Cumulative Layout Shift (CLS) - only track final value, not continuous updates
         let clsValue = 0;
+        let clsFinalValue = 0;
         let clsTimeout = null;
+        
         new PerformanceObserver((list) => {
             const entries = list.getEntries();
             entries.forEach(entry => {
@@ -350,14 +363,16 @@ class OpenTelemetryService {
                 }
             });
             
-            // Throttle CLS updates
-            if (clsTimeout) return;
+            // Only track final CLS value after user engagement stops
+            clearTimeout(clsTimeout);
             clsTimeout = setTimeout(() => {
-                this.recordMetric('cls', clsValue, {
-                    'page.url': window.location.href
-                });
-                clsTimeout = null;
-            }, 5000); // Update CLS every 5 seconds max
+                if (clsValue !== clsFinalValue) {
+                    clsFinalValue = clsValue;
+                    this.recordMetric('cls_final', clsValue, {
+                        'page.url': window.location.href
+                    });
+                }
+            }, 10000); // Track final CLS after 10 seconds of no layout shifts
         }).observe({ entryTypes: ['layout-shift'] });
     }
 
@@ -432,10 +447,13 @@ class OpenTelemetryService {
     }
 
     /**
-     * Flush all telemetry data (only when explicitly called or when batch size is reached)
+     * Flush all telemetry data (engagement-based only)
      */
     async flush() {
-        if (!this.consentGiven) return;
+        if (!this.consentGiven || !this.hasUserEngaged) {
+            console.log('Flush skipped - no consent or no user engagement');
+            return;
+        }
         
         if (this.traces.length === 0 && this.metrics.length === 0 && this.logs.length === 0) {
             return;
@@ -466,7 +484,7 @@ class OpenTelemetryService {
         // Send to Cloud Function
         try {
             await this.sendTelemetryData(data);
-            console.log('Telemetry data flushed successfully');
+            console.log('Telemetry data flushed successfully (engagement-based)');
         } catch (error) {
             console.error('Failed to send telemetry data:', error);
             // Re-add data to arrays for retry
@@ -477,7 +495,7 @@ class OpenTelemetryService {
     }
 
     /**
-     * Check if batch size is reached and flush if needed (with minimum interval)
+     * Check if batch size is reached and flush if needed (engagement-based only)
      */
     checkBatchSize() {
         if (!this.consentGiven) return;
@@ -485,8 +503,16 @@ class OpenTelemetryService {
         const totalItems = this.traces.length + this.metrics.length + this.logs.length;
         const now = Date.now();
         
-        // Only flush if we have enough items AND enough time has passed
-        if (totalItems >= this.batchSize && (now - this.lastFlushTime) >= this.minFlushInterval) {
+        // Only flush if:
+        // 1. User has actually engaged with the site
+        // 2. We have enough items OR it's been a long time since last flush
+        // 3. Minimum time interval has passed
+        const timeSinceLastFlush = now - this.lastFlushTime;
+        const shouldFlush = this.hasUserEngaged && 
+                           timeSinceLastFlush >= this.minFlushInterval &&
+                           (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
+        
+        if (shouldFlush) {
             this.flush();
         }
     }
