@@ -720,15 +720,19 @@ class OpenTelemetryService {
         // Only flush if:
         // 1. User has actually engaged with the site OR we have metrics (collected on page load)
         // 2. We have enough items OR it's been a long time since last flush
-        // 3. Minimum time interval has passed
+        // 3. Minimum time interval has passed (or this is the first flush)
         const timeSinceLastFlush = now - this.lastFlushTime;
         const hasMetrics = this.metrics.length > 0;
+        const isFirstFlush = this.lastFlushTime === 0;
         const shouldFlush = (this.hasUserEngaged || hasMetrics) && 
-                           timeSinceLastFlush >= this.minFlushInterval &&
+                           (isFirstFlush || timeSinceLastFlush >= this.minFlushInterval) &&
                            (totalItems >= this.batchSize || timeSinceLastFlush >= 300000); // 5 minutes max
         
         if (shouldFlush) {
+            console.log(`🚀 Flushing due to batch size check: ${totalItems} items, timeSinceLastFlush: ${timeSinceLastFlush}ms`);
             this.flush();
+        } else {
+            console.log(`⏳ Flush skipped: hasUserEngaged=${this.hasUserEngaged}, hasMetrics=${hasMetrics}, timeSinceLastFlush=${timeSinceLastFlush}ms, totalItems=${totalItems}`);
         }
     }
 
