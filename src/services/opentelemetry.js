@@ -196,6 +196,7 @@ class OpenTelemetryService {
         
         const metric = {
             name,
+            type: attributes['metric.type'] || 'custom', // Extract metric type from attributes
             value,
             timestamp: Date.now(),
             attributes: {
