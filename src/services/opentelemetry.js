@@ -61,7 +61,7 @@ class OpenTelemetryService {
         sessionStorage.setItem('otel_session_id', this.sessionId);
         sessionStorage.setItem('otel_session_trace_id', this.sessionTraceId);
         
-        console.log(`New session started: ${this.sessionId}, trace: ${this.sessionTraceId}`);
+        // New session started
     }
 
     /**
@@ -72,11 +72,11 @@ class OpenTelemetryService {
         
         // Only initialize if consent is given
         if (!this.consentGiven) {
-            console.log('🔍 OpenTelemetry service not initialized - no consent given');
+            // OpenTelemetry service not initialized - no consent given
             return;
         }
         
-        console.log('🔍 Initializing OpenTelemetry service');
+        // Initialize OpenTelemetry service
         
         // Start new session for this page load
         this.startNewSession();
@@ -89,7 +89,7 @@ class OpenTelemetryService {
             // Set up automatic instrumentation
             this.setupAutomaticInstrumentation();
         } else {
-            console.log('🔍 OpenTelemetry service initialized but no consent given - data collection disabled');
+            // OpenTelemetry service initialized but no consent given - data collection disabled
         }
         
         // Set up performance monitoring
@@ -102,7 +102,7 @@ class OpenTelemetryService {
         this.setupPageUnloadFlush();
         
         this.isInitialized = true;
-        console.log('✅ OpenTelemetry service initialized');
+        // OpenTelemetry service initialized
     }
 
     /**
@@ -217,7 +217,7 @@ class OpenTelemetryService {
         };
         
         this.metrics.push(metric);
-        console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
+        // Metric recorded
         
         // Don't force flush performance metrics immediately - let them be flushed with the initial batch
         // The performance metrics will be flushed with the initial essential metrics batch
@@ -252,7 +252,7 @@ class OpenTelemetryService {
      * Set up automatic instrumentation (engagement-focused only)
      */
     setupAutomaticInstrumentation() {
-        console.log('🔧 Setting up automatic instrumentation');
+        // Setting up automatic instrumentation
         // Track page views (only once per page load)
         this.trackPageView();
         
@@ -266,9 +266,8 @@ class OpenTelemetryService {
         this.trackEssentialPerformance();
         
         // Track essential page load metrics
-        console.log('🔧 Setting up page load metrics tracking');
+        // Setting up page load metrics tracking
         this.trackPageLoadMetrics();
-        console.log('🔧 Page load metrics tracking setup complete');
     }
 
     /**
@@ -487,21 +486,16 @@ class OpenTelemetryService {
      * Track essential page load metrics (minimal, high-value metrics only)
      */
     trackPageLoadMetrics() {
-        console.log('🔧 trackPageLoadMetrics called, consent given:', this.consentGiven);
         if (!this.consentGiven) return;
-        
-        console.log('🔧 Setting up DOMContentLoaded and window.load event listeners');
         // Track when page load starts
         const pageLoadStart = Date.now();
         
         // Check if DOMContentLoaded has already fired
         if (document.readyState === 'loading') {
-            console.log('📊 DOMContentLoaded not yet fired, setting up listener');
+            // DOMContentLoaded not yet fired, setting up listener
             // Track DOM Content Loaded (when HTML is fully parsed)
             document.addEventListener('DOMContentLoaded', () => {
-                console.log('📊 DOMContentLoaded event fired!');
                 const domLoadTime = Date.now() - pageLoadStart;
-                console.log('📊 DOM Content Loaded recorded:', domLoadTime);
                 this.recordMetric('dom_content_loaded', domLoadTime, {
                     'page.url': window.location.href,
                     'metric.type': 'timing'
@@ -509,20 +503,14 @@ class OpenTelemetryService {
                 
                 // Flush after DOM content loaded metric is recorded
                 setTimeout(() => {
-                    console.log('📊 DOM Content Loaded flush check - metrics available:', this.metrics.map(m => m.name));
                     if (this.metrics.length > 0) {
-                        console.log('🚀 Flushing DOM content loaded metric');
                         this.flush();
-                    } else {
-                        console.log('⚠️ No metrics available for DOM flush');
-                        // Don't force flush - let the normal flush logic handle it
                     }
                 }, 500); // 0.5 second delay
             });
         } else {
-            console.log('📊 DOMContentLoaded already fired, recording immediately');
+            // DOMContentLoaded already fired, recording immediately
             const domLoadTime = Date.now() - pageLoadStart;
-            console.log('📊 DOM Content Loaded recorded (immediate):', domLoadTime);
             this.recordMetric('dom_content_loaded', domLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
@@ -533,12 +521,10 @@ class OpenTelemetryService {
         
         // Check if window.load has already fired
         if (document.readyState !== 'complete') {
-            console.log('📊 Window Load not yet fired, setting up listener');
+            // Window Load not yet fired, setting up listener
             // Track when page is fully loaded (all resources)
             window.addEventListener('load', () => {
-                console.log('📊 Window Load event fired!');
                 const fullLoadTime = Date.now() - pageLoadStart;
-                console.log('📊 Page Full Load recorded:', fullLoadTime);
                 this.recordMetric('page_full_load', fullLoadTime, {
                     'page.url': window.location.href,
                     'metric.type': 'timing'
@@ -547,7 +533,7 @@ class OpenTelemetryService {
                 // Track page load time using Performance API (more accurate)
                 if (performance.timing) {
                     const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                    console.log('📊 Page Load Time recorded (performance.timing):', loadTime);
+                    // Page Load Time recorded (performance.timing)
                     this.recordMetric('page_load_time', loadTime, {
                         'page.url': window.location.href,
                         'metric.type': 'timing'
@@ -558,7 +544,7 @@ class OpenTelemetryService {
                     if (navigationEntries.length > 0) {
                         const navigation = navigationEntries[0];
                         const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
-                        console.log('📊 Page Load Time recorded (navigation API):', loadTime);
+                        // Page Load Time recorded (navigation API)
                         this.recordMetric('page_load_time', loadTime, {
                             'page.url': window.location.href,
                             'metric.type': 'timing'
@@ -569,9 +555,8 @@ class OpenTelemetryService {
                 // Don't flush immediately - let the normal flush logic handle it
             });
         } else {
-            console.log('📊 Window Load already fired, recording immediately');
+            // Window Load already fired, recording immediately
             const fullLoadTime = Date.now() - pageLoadStart;
-            console.log('📊 Page Full Load recorded (immediate):', fullLoadTime);
             this.recordMetric('page_full_load', fullLoadTime, {
                 'page.url': window.location.href,
                 'metric.type': 'timing'
@@ -580,7 +565,7 @@ class OpenTelemetryService {
             // Track page load time using Performance API (more accurate)
             if (performance.timing) {
                 const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                console.log('📊 Page Load Time recorded (performance.timing, immediate):', loadTime);
+                // Page Load Time recorded (performance.timing, immediate)
                 this.recordMetric('page_load_time', loadTime, {
                     'page.url': window.location.href,
                     'metric.type': 'timing'
@@ -591,7 +576,7 @@ class OpenTelemetryService {
                 if (navigationEntries.length > 0) {
                     const navigation = navigationEntries[0];
                     const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
-                    console.log('📊 Page Load Time recorded (navigation API, immediate):', loadTime);
+                        // Page Load Time recorded (navigation API, immediate)
                     this.recordMetric('page_load_time', loadTime, {
                         'page.url': window.location.href,
                         'metric.type': 'timing'
@@ -603,13 +588,8 @@ class OpenTelemetryService {
             
         // Flush after performance metrics are recorded
         setTimeout(() => {
-            console.log('📊 Window Load flush check (immediate) - metrics available:', this.metrics.map(m => m.name));
             if (this.metrics.length > 0) {
-                console.log('🚀 Flushing performance metrics (immediate)');
                 this.flush();
-            } else {
-                console.log('⚠️ No metrics available for immediate flush');
-                // Don't force flush - let the normal flush logic handle it
             }
         }, 1000); // 1 second delay to ensure all performance metrics are recorded
         }
@@ -773,13 +753,13 @@ class OpenTelemetryService {
      */
     async flush() {
         if (!this.consentGiven) {
-            console.log('Flush skipped - no consent given');
+            // Flush skipped - no consent given
             return;
         }
         
         // Allow flush if user has engaged OR if we have metrics (page load data)
         if (!this.hasUserEngaged && this.metrics.length === 0) {
-            console.log('Flush skipped - no user engagement and no metrics');
+            // Flush skipped - no user engagement and no metrics
             return;
         }
         
@@ -794,22 +774,22 @@ class OpenTelemetryService {
         );
         
         if (hasPerformanceMetrics) {
-            console.log('🚀 Force flushing performance metrics (bypassing conditions)');
+            // Force flushing performance metrics (bypassing conditions)
             // Don't return, continue with flush
         }
         
         if (this.traces.length === 0 && this.metrics.length === 0 && this.logs.length === 0) {
-            console.log('Flush skipped - no data to send');
+            // Flush skipped - no data to send
             return;
         }
         
-        console.log(`📤 Flushing data: ${this.traces.length} traces, ${this.metrics.length} metrics, ${this.logs.length} logs`);
+        // Flushing data
         
         const now = Date.now();
         
         // Check minimum interval
         if ((now - this.lastFlushTime) < this.minFlushInterval) {
-            console.log('Flush skipped - minimum interval not reached');
+            // Flush skipped - minimum interval not reached
             return;
         }
         
@@ -817,8 +797,7 @@ class OpenTelemetryService {
         const consolidatedMetrics = this.createConsolidatedMetrics();
         
         // Debug: Log all metrics being collected
-        console.log('📊 All metrics being flushed:', this.metrics.map(m => ({ name: m.name, value: m.value, type: m.type })));
-        console.log('📊 Consolidated metrics:', consolidatedMetrics);
+        // All metrics being flushed
         
         const data = {
             traces: [...this.traces],
@@ -849,7 +828,7 @@ class OpenTelemetryService {
         // Send to Cloud Function
         try {
             await this.sendTelemetryData(data);
-            console.log('Telemetry data flushed successfully (engagement-based)');
+            // Telemetry data flushed successfully
         } catch (error) {
             console.error('Failed to send telemetry data:', error);
             // Re-add data to arrays for retry
@@ -876,16 +855,16 @@ class OpenTelemetryService {
             // Check if we have all essential metrics (not just any 8 metrics)
             const hasEssentialMetrics = this.hasAllEssentialMetrics();
             if (hasEssentialMetrics) {
-                console.log('🚀 Force flushing initial metrics (all essential metrics collected)');
+                // Force flushing initial metrics (all essential metrics collected)
                 this.flush();
             } else {
                 // If we've been waiting too long, flush what we have
                 const timeSinceStart = now - this.initialMetricsStartTime;
                 if (timeSinceStart > 10000) { // 10 seconds timeout from start
-                    console.log(`🚀 Timeout flush - flushing available metrics after ${timeSinceStart}ms`);
+                    // Timeout flush - flushing available metrics
                     this.flush();
                 } else {
-                    console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected (${timeSinceStart}ms elapsed)`);
+                    // Waiting for essential metrics
                 }
             }
             return;
@@ -908,21 +887,18 @@ class OpenTelemetryService {
         );
         
         if (hasPerformanceMetrics && timeSinceLastFlush >= 5000) {
-            console.log(`🚀 Force flushing performance metrics after 5 seconds`);
+            // Force flushing performance metrics after 5 seconds
             this.flush();
             return;
         }
         
         // Debug: Log what metrics we have
-        if (hasMetrics) {
-            console.log(`📊 Performance metrics available: ${this.metrics.map(m => m.name).join(', ')}`);
-        }
         
         if (shouldFlush) {
-            console.log(`🚀 Flushing due to batch size check: ${totalItems} items, timeSinceLastFlush: ${timeSinceLastFlush}ms`);
+            // Flushing due to batch size check
             this.flush();
         } else {
-            console.log(`⏳ Flush skipped: hasUserEngaged=${this.hasUserEngaged}, hasMetrics=${hasMetrics}, timeSinceLastFlush=${timeSinceLastFlush}ms, totalItems=${totalItems}`);
+            // Flush skipped
         }
     }
 
@@ -945,8 +921,7 @@ class OpenTelemetryService {
         const collectedMetrics = this.metrics.map(m => m.name);
         const hasAllEssential = essentialMetricNames.every(name => collectedMetrics.includes(name));
         
-        console.log(`📊 Essential metrics check: ${collectedMetrics.length} collected, ${essentialMetricNames.filter(name => collectedMetrics.includes(name)).length}/${essentialMetricNames.length} essential`);
-        console.log(`📊 Missing metrics: ${essentialMetricNames.filter(name => !collectedMetrics.includes(name)).join(', ')}`);
+        // Essential metrics check
         
         return hasAllEssential;
     }
@@ -988,14 +963,7 @@ class OpenTelemetryService {
      */
     async sendTelemetryData(data, retryCount = 0) {
         const url = `${config.CLOUD_FUNCTIONS_URL}/processOtelData`;
-        console.log('Sending telemetry data:', {
-            traces: data.traces.length,
-            metrics: data.metrics.length,
-            logs: data.logs.length,
-            url: url,
-            config: config,
-            retryCount: retryCount
-        });
+        // Sending telemetry data
         
         try {
             const response = await fetch(url, {
@@ -1019,7 +987,7 @@ class OpenTelemetryService {
             }
             
             const result = await response.json();
-            console.log('Telemetry data sent successfully:', result);
+            // Telemetry data sent successfully
             return result;
             
         } catch (error) {
@@ -1031,7 +999,7 @@ class OpenTelemetryService {
                 error.message.includes('Failed to fetch') ||
                 error.message.includes('ERR_NETWORK_CHANGED')
             )) {
-                console.log(`Retrying telemetry send (attempt ${retryCount + 1}/2)...`);
+                // Retrying telemetry send
                 // Wait before retry (exponential backoff)
                 await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
                 return this.sendTelemetryData(data, retryCount + 1);
@@ -1039,11 +1007,11 @@ class OpenTelemetryService {
             
             // If all retries failed, try sendBeacon as fallback
             if (navigator.sendBeacon) {
-                console.log('Using sendBeacon as fallback for telemetry data');
+                // Using sendBeacon as fallback for telemetry data
                 try {
                     const success = navigator.sendBeacon(url, JSON.stringify(data));
                     if (success) {
-                        console.log('Telemetry data sent via sendBeacon');
+                        // Telemetry data sent via sendBeacon
                         return { success: true, method: 'sendBeacon' };
                     }
                 } catch (beaconError) {
@@ -1198,7 +1166,7 @@ class OpenTelemetryService {
      * Force flush data for testing (bypasses engagement requirements)
      */
     async forceFlush() {
-        console.log('Force flushing telemetry data for testing...');
+        // Force flushing telemetry data for testing
         this.hasUserEngaged = true; // Mark as engaged
         this.lastFlushTime = 0; // Reset flush time
         await this.flush();
