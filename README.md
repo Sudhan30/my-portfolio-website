@@ -389,7 +389,7 @@ This project is **free to use** with no license restrictions. Feel free to use, 
 
 **Portfolio Owner** - Data Engineer
 - Website: [www.sudharsana.dev](https://www.sudharsana.dev)
-- LinkedIn: [linkedin.com/in/sudhan-raj](https://linkedin.com/in/sudhan-raj)
+- LinkedIn: [linkedin.com/in/sudharsanarajasekaran](https://www.linkedin.com/in/sudharsanarajasekaran/)
 - Contact: Available through website contact form
 
 ## 🙏 Acknowledgments
