@@ -368,18 +368,26 @@ class OpenTelemetryService {
         // Track scroll depth (only meaningful scroll milestones)
         let maxScrollDepth = 0;
         let scrollTimeout = null;
+        let hasActuallyScrolled = false;
         
         window.addEventListener('scroll', () => {
             // Only track if user has engaged and throttle heavily
             if (!this.hasUserEngaged || scrollTimeout) return;
             
+            // Mark that user has actually scrolled
+            hasActuallyScrolled = true;
+            
             scrollTimeout = setTimeout(() => {
+                // Only record if user has actually scrolled and reached a milestone
+                if (!hasActuallyScrolled) return;
+                
                 const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
                 if (scrollDepth > maxScrollDepth && scrollDepth % 50 === 0) { // Only track at 50%, 100%
                     maxScrollDepth = scrollDepth;
                     this.hasUserEngaged = true; // Mark engagement
                     this.recordMetric('scroll_depth', scrollDepth, {
-                        'page.url': window.location.href
+                        'page.url': window.location.href,
+                        'metric.type': 'engagement'
                     });
                 }
                 scrollTimeout = null;
@@ -761,12 +769,13 @@ class OpenTelemetryService {
         
         // For initial metrics, wait for all essential metrics to be collected
         if (isFirstFlush) {
-            // Wait for at least 8 metrics (all essential metrics) before first flush
-            if (this.metrics.length >= 8) {
-                console.log('🚀 Force flushing initial metrics (8+ collected)');
+            // Check if we have all essential metrics (not just any 8 metrics)
+            const hasEssentialMetrics = this.hasAllEssentialMetrics();
+            if (hasEssentialMetrics) {
+                console.log('🚀 Force flushing initial metrics (all essential metrics collected)');
                 this.flush();
             } else {
-                console.log(`⏳ Waiting for more metrics: ${this.metrics.length}/8 collected`);
+                console.log(`⏳ Waiting for essential metrics: ${this.metrics.length} collected`);
             }
             return;
         }
@@ -782,6 +791,32 @@ class OpenTelemetryService {
         } else {
             console.log(`⏳ Flush skipped: hasUserEngaged=${this.hasUserEngaged}, hasMetrics=${hasMetrics}, timeSinceLastFlush=${timeSinceLastFlush}ms, totalItems=${totalItems}`);
         }
+    }
+
+    /**
+     * Check if all essential metrics have been collected
+     */
+    hasAllEssentialMetrics() {
+        const essentialMetricNames = [
+            'browser_name',
+            'operating_system', 
+            'referrer',
+            'javascript_enabled',
+            'device_type',
+            'viewport_width',
+            'viewport_height',
+            'connection_effective_type',
+            'dom_content_loaded',
+            'page_full_load',
+            'page_load_time'
+        ];
+        
+        const collectedMetrics = this.metrics.map(m => m.name);
+        const hasAllEssential = essentialMetricNames.every(name => collectedMetrics.includes(name));
+        
+        console.log(`📊 Essential metrics check: ${collectedMetrics.length} collected, ${essentialMetricNames.filter(name => collectedMetrics.includes(name)).length}/${essentialMetricNames.length} essential`);
+        
+        return hasAllEssential;
     }
 
     /**
