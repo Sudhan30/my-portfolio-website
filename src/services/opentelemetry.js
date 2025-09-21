@@ -11,7 +11,7 @@ class OpenTelemetryService {
         this.metrics = [];
         this.logs = [];
         this.batchSize = 5; // Reduced batch size for testing
-        this.minFlushInterval = 5000; // Reduced to 5 seconds for testing
+        this.minFlushInterval = 1000; // Reduced to 1 second for testing
         this.lastFlushTime = 0;
         this.pageLoadTime = Date.now();
         this.hasUserEngaged = false; // Track if user has actually interacted
@@ -216,8 +216,8 @@ class OpenTelemetryService {
         console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
         
         // Force flush metrics immediately if we have enough (for page load metrics)
-        if (this.metrics.length >= 3) {
-            console.log('🚀 Force flushing metrics (3+ collected)');
+        if (this.metrics.length >= 5) {
+            console.log('🚀 Force flushing metrics (5+ collected)');
             this.flush();
         } else {
             this.checkBatchSize();
