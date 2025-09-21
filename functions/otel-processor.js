@@ -88,9 +88,9 @@ async function processTraces(data) {
         span_id: trace.spanId,
         parent_span_id: trace.parentSpanId || null,
         name: trace.name,
-        start_time: new Date(trace.startTimeUnixNano / 1000000),
-        end_time: new Date(trace.endTimeUnixNano / 1000000),
-        duration_ms: Math.round((trace.endTimeUnixNano - trace.startTimeUnixNano) / 1000000),
+        start_time: new Date(trace.startTime),
+        end_time: new Date(trace.endTime),
+        duration_ms: trace.duration || 0,
         status_code: trace.status?.code || 'OK',
         status_message: trace.status?.message || null,
         attributes: JSON.stringify(trace.attributes || {}),
@@ -114,7 +114,8 @@ async function processTraces(data) {
  * Process metrics data
  */
 async function processMetrics(data) {
-    if (!data.metrics || !Array.isArray(data.metrics)) {
+    if (!data.metrics || !Array.isArray(data.metrics) || data.metrics.length === 0) {
+        console.log('No metrics to process');
         return;
     }
 
@@ -141,7 +142,8 @@ async function processMetrics(data) {
  * Process logs data
  */
 async function processLogs(data) {
-    if (!data.logs || !Array.isArray(data.logs)) {
+    if (!data.logs || !Array.isArray(data.logs) || data.logs.length === 0) {
+        console.log('No logs to process');
         return;
     }
 
