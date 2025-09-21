@@ -95,7 +95,7 @@ async function processTraces(data) {
         status_message: trace.status?.message || null,
         attributes: trace.attributes || {},
         events: trace.events || [],
-        links: trace.links || [],
+        links: trace.links && trace.links.length > 0 ? trace.links[0] : {},
         resource_attributes: trace.resource?.attributes || {},
         instrumentation_scope_name: trace.instrumentationScope?.name || null,
         instrumentation_scope_version: trace.instrumentationScope?.version || null,
