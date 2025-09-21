@@ -89,7 +89,7 @@ async function processTraces(data) {
         parent_span_id: trace.parentSpanId || null,
         name: trace.name,
         start_time: new Date(trace.startTime),
-        end_time: new Date(trace.endTime),
+        end_time: trace.endTime ? new Date(trace.endTime) : new Date(trace.startTime + (trace.duration || 0)),
         duration_ms: trace.duration || 0,
         status_code: trace.status?.code || 'OK',
         status_message: trace.status?.message || null,
@@ -104,6 +104,8 @@ async function processTraces(data) {
 
     const errors = await bigquery.dataset(DATASET_ID).table('traces').insert(rows);
     if (errors.length > 0) {
+        console.error('BigQuery insert errors:', JSON.stringify(errors, null, 2));
+        console.error('Rows being inserted:', JSON.stringify(rows, null, 2));
         throw new Error(`BigQuery insert errors: ${JSON.stringify(errors)}`);
     }
 
