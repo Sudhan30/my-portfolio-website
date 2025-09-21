@@ -208,9 +208,11 @@ class OpenTelemetryService {
         };
         
         this.metrics.push(metric);
+        console.log(`📊 Metric recorded: ${name} = ${value}, total metrics: ${this.metrics.length}`);
         
         // Force flush metrics immediately if we have enough (for page load metrics)
         if (this.metrics.length >= 3) {
+            console.log('🚀 Force flushing metrics (3+ collected)');
             this.flush();
         } else {
             this.checkBatchSize();
@@ -648,14 +650,23 @@ class OpenTelemetryService {
      * Flush all telemetry data (engagement-based only)
      */
     async flush() {
-        if (!this.consentGiven || !this.hasUserEngaged) {
-            console.log('Flush skipped - no consent or no user engagement');
+        if (!this.consentGiven) {
+            console.log('Flush skipped - no consent given');
+            return;
+        }
+        
+        // Allow flush if user has engaged OR if we have metrics (page load data)
+        if (!this.hasUserEngaged && this.metrics.length === 0) {
+            console.log('Flush skipped - no user engagement and no metrics');
             return;
         }
         
         if (this.traces.length === 0 && this.metrics.length === 0 && this.logs.length === 0) {
+            console.log('Flush skipped - no data to send');
             return;
         }
+        
+        console.log(`📤 Flushing data: ${this.traces.length} traces, ${this.metrics.length} metrics, ${this.logs.length} logs`);
         
         const now = Date.now();
         
