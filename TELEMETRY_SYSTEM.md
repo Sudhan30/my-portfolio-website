@@ -1,8 +1,8 @@
-# Telemetry System Documentation
+# OpenTelemetry System Documentation
 
 ## Overview
 
-This portfolio website includes a comprehensive telemetry system that tracks user interactions while maintaining CCPA compliance. The system collects anonymous usage data to understand how visitors interact with the portfolio and improve the user experience.
+This portfolio website uses a unified OpenTelemetry system that provides comprehensive observability and user interaction tracking while maintaining CCPA compliance. The system collects anonymous usage data following industry standards to understand how visitors interact with the portfolio and improve the user experience.
 
 ## Features
 
@@ -30,11 +30,12 @@ This portfolio website includes a comprehensive telemetry system that tracks use
 
 ### Frontend Components
 
-#### 1. **TelemetryService** (`src/services/telemetry.js`)
-- Core telemetry service with event tracking capabilities
+#### 1. **OpenTelemetryService** (`src/services/opentelemetry.js`)
+- Industry-standard OpenTelemetry implementation with comprehensive tracking
 - Automatic user/session ID generation and management
-- Batch processing and offline support
-- CCPA-compliant consent management
+- Smart batching (no automatic intervals) with offline support
+- CCPA-compliant consent management with dynamic control
+- Traces, metrics, and logs collection with BigQuery integration
 
 #### 2. **TelemetryConsent** (`src/components/TelemetryConsent.js`)
 - CCPA-compliant consent banner
@@ -43,22 +44,28 @@ This portfolio website includes a comprehensive telemetry system that tracks use
 - Beautiful, responsive design
 
 #### 3. **Integration Points**
-- **App.js**: Page view tracking and navigation
+- **App.js**: Page view tracking and navigation with OpenTelemetry
 - **Experience.js**: Dropdown interaction tracking
 - **ContactForm.js**: Form submission tracking
 - **FloatingFeedback.js**: Button clicks and close events
+- **All Components**: Unified under single OpenTelemetry system
 
 ### Backend Infrastructure
 
-#### 1. **Cloud Function** (`functions/index.js`)
-- **trackTelemetry**: HTTP endpoint for receiving telemetry data
+#### 1. **Cloud Functions**
+- **processOtelData** (`functions/otel-processor.js`): HTTP endpoint for receiving OpenTelemetry data
+- **processOtelDataBatch** (`functions/otel-processor.js`): Pub/Sub-triggered batch processor
 - Data validation and sanitization
+- BigQuery integration for advanced analytics
+- Cloud Storage archival for long-term retention
 - Firestore storage with batch operations
 - Session metadata tracking
 
-#### 2. **Firestore Collections**
-- **telemetry**: Individual event records
-- **telemetry_sessions**: Session metadata and statistics
+#### 2. **Data Storage Systems**
+- **BigQuery**: Primary analytics data warehouse with traces, metrics, and logs
+- **Cloud Storage**: Long-term archival of telemetry data
+- **Firestore**: Real-time event storage and session management
+- **Pub/Sub**: Message queuing for batch processing
 
 ## Data Collection
 
@@ -75,7 +82,9 @@ This portfolio website includes a comprehensive telemetry system that tracks use
 - **Biometric Data**: Fingerprints, face recognition, voice data
 
 ### Data Storage
-- **Firestore**: Secure cloud database with automatic backups
+- **BigQuery**: Primary analytics data warehouse with industry-standard schemas
+- **Cloud Storage**: Long-term archival with configurable retention policies
+- **Firestore**: Real-time event storage with automatic backups
 - **Retention**: Data retained for analytics purposes (configurable)
 - **Access**: Only authorized personnel can access telemetry data
 - **Encryption**: All data encrypted in transit and at rest

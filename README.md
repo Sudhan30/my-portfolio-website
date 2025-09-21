@@ -48,13 +48,13 @@ A modern, responsive portfolio website showcasing professional experience, skill
 *   **Rate Limiting:** Protection against spam and abuse
 
 ### Analytics & Tracking
-*   **OpenTelemetry Pipeline:** Comprehensive observability with traces, metrics, and logs
+*   **OpenTelemetry System:** Industry-standard comprehensive observability with traces, metrics, and logs
 *   **Page View Counter:** Dynamic visitor tracking with special milestone messages
-*   **Custom Telemetry System:** CCPA-compliant user interaction tracking
-*   **Privacy-First Analytics:** Optional consent-based data collection
-*   **BigQuery Integration:** Advanced analytics and data warehousing
-*   **Performance Monitoring:** Core Web Vitals and custom metrics
-*   **Session Management:** Unique user and session identification
+*   **User Interaction Tracking:** CCPA-compliant tracking of clicks, navigation, form submissions
+*   **Privacy-First Analytics:** Optional consent-based data collection with user control
+*   **BigQuery Integration:** Advanced analytics and data warehousing for insights
+*   **Performance Monitoring:** Core Web Vitals, page load times, and custom metrics
+*   **Session Management:** Unique user and session identification with smart batching
 
 ### Job Analysis Tool
 *   **Job Description Analyzer:** AI-powered job matching system
@@ -74,7 +74,7 @@ A modern, responsive portfolio website showcasing professional experience, skill
 graph TB
     subgraph "Client Side"
         A[React App]
-        B[Telemetry Service]
+        B[OpenTelemetry Service]
         C[Contact Form]
         D[Feedback Form]
         E[Job Analyzer]
@@ -90,7 +90,7 @@ graph TB
             J[Contact Form Handler]
             K[Feedback Handler]
             L[Job Analyzer]
-            M[Telemetry Tracker]
+            M[OpenTelemetry Processor]
         end
         
         N[Firestore Database]

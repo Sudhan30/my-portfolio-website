@@ -12,7 +12,7 @@ Frontend (React) → OpenTelemetry SDK → Cloud Function → Pub/Sub → BigQue
 
 ### Components:
 
-1. **Frontend OpenTelemetry SDK** - Custom implementation in `src/services/opentelemetry.js`
+1. **Frontend OpenTelemetry SDK** - Unified implementation in `src/services/opentelemetry.js` (replaces dual telemetry systems)
 2. **Cloud Function Processor** - `functions/otel-processor.js` for data processing
 3. **GCP Pub/Sub** - Message queue for telemetry data
 4. **BigQuery** - Data warehouse for analytics and querying

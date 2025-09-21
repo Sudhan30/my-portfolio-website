@@ -99,8 +99,7 @@ src/
 │   ├── Skills.js        # Skills showcase
 │   └── TelemetryConsent.js # Privacy consent banner
 ├── services/            # Business logic services
-│   ├── telemetry.js     # Custom analytics service
-│   └── opentelemetry.js # OpenTelemetry SDK implementation
+│   └── opentelemetry.js # OpenTelemetry implementation with full tracking
 ├── utils/               # Utility functions
 │   └── env.js          # Environment configuration
 ├── data.js             # Static data and resume info
@@ -174,17 +173,7 @@ graph LR
   - Interest scoring system
   - Qualification reasoning
 
-#### 5. Telemetry Tracker (`trackTelemetry`)
-- **Purpose:** CCPA-compliant user interaction tracking
-- **Trigger:** HTTP POST request
-- **Rate Limit:** 100 requests per hour per IP
-- **Features:**
-  - Batched event processing
-  - Data sanitization
-  - Session management
-  - Privacy compliance
-
-#### 6. OpenTelemetry Data Processor (`processOtelData`)
+#### 5. OpenTelemetry Data Processor (`processOtelData`)
 - **Purpose:** Process incoming OpenTelemetry data (traces, metrics, logs)
 - **Trigger:** HTTP POST request from OpenTelemetry SDK
 - **Rate Limit:** 200 requests per minute per IP
@@ -195,7 +184,7 @@ graph LR
   - Cloud Storage archival
   - Data validation and sanitization
 
-#### 7. OpenTelemetry Batch Processor (`processOtelDataBatch`)
+#### 6. OpenTelemetry Batch Processor (`processOtelDataBatch`)
 - **Purpose:** Process batched OpenTelemetry data from Pub/Sub
 - **Trigger:** Pub/Sub message from `otel-data` topic
 - **Features:**
@@ -414,11 +403,11 @@ graph TD
 ### OpenTelemetry Implementation
 
 #### Frontend SDK Integration
-- **Library:** Custom OpenTelemetry SDK implementation
-- **Instrumentation:** Automatic and manual instrumentation
-- **Data Types:** Traces, Metrics, and Logs
-- **Consent Management:** CCPA-compliant opt-in system
-- **Performance:** Non-blocking data collection
+- **Library:** Unified OpenTelemetry implementation (replaces dual telemetry systems)
+- **Instrumentation:** Automatic and manual instrumentation with user interaction tracking
+- **Data Types:** Traces, Metrics, and Logs with comprehensive event coverage
+- **Consent Management:** CCPA-compliant opt-in system with dynamic consent control
+- **Performance:** Non-blocking data collection with smart batching (no automatic intervals)
 
 #### Data Collection Types
 
