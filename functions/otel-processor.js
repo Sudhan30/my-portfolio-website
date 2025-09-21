@@ -149,6 +149,7 @@ async function processMetrics(data) {
         timestamp: new Date(metric.timestamp),
         attributes: metric.attributes ? JSON.stringify(metric.attributes) : null,
         resource_attributes: metric.resource?.attributes ? JSON.stringify(metric.resource.attributes) : null,
+        trace_id: metric.attributes?.['trace.id'] || metric.attributes?.['session.id'] || 'unknown',
         created_at: new Date()
     }));
 
@@ -195,6 +196,7 @@ async function processConsolidatedMetrics(data) {
             consolidated: true 
         }),
         resource_attributes: null,
+        trace_id: data.traces?.[0]?.traceId || data.metrics?.[0]?.attributes?.['trace.id'] || 'unknown',
         created_at: new Date()
     });
 

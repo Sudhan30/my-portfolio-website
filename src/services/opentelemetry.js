@@ -211,7 +211,8 @@ class OpenTelemetryService {
                 ...attributes,
                 'service.name': 'portfolio-website',
                 'user.id': this.userId,
-                'session.id': this.sessionId
+                'session.id': this.sessionId,
+                'trace.id': this.sessionTraceId // Add trace ID for session tracking
             }
         };
         
