@@ -433,7 +433,9 @@ class OpenTelemetryService {
         if (!this.consentGiven) return;
         
         // Track browser info
-        this.recordMetric('browser_name', this.getBrowserName(), {
+        const browserName = this.getBrowserName();
+        console.log('Browser detected:', browserName, 'User Agent:', navigator.userAgent);
+        this.recordMetric('browser_name', browserName, {
             'page.url': window.location.href,
             'metric.type': 'browser'
         });
@@ -462,8 +464,8 @@ class OpenTelemetryService {
      */
     getBrowserName() {
         const ua = navigator.userAgent;
-        if (ua.includes('Chrome')) return 'Chrome';
         if (ua.includes('Firefox')) return 'Firefox';
+        if (ua.includes('Chrome')) return 'Chrome';
         if (ua.includes('Safari')) return 'Safari';
         if (ua.includes('Edge')) return 'Edge';
         return 'Other';
