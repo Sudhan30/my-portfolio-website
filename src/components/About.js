@@ -5,20 +5,20 @@ const About = () => {
     return (
         <section id="about" className="section-padding about-section">
             <div className="section-container">
-                <h3 className="section-title">
-                    <span className="relative-text">About Me</span>
+                <h2 className="section-title">
+                    <span className="relative-text">About Sudharsana Rajasekaran</span>
                     <span className="underline-effect"></span>
-                </h3>
+                </h2>
                 <div className="about-grid">
                     <div className="about-text animate-fade-in-left">
                         <p>
-                            I am a highly accomplished Senior Data Engineer with a proven track record of architecting and implementing robust data pipelines that drive significant business impact. My expertise lies in transforming complex data into actionable insights, leading to tangible improvements in revenue, operational efficiency, and fraud prevention.
+                            <strong>Sudharsana Rajasekaran</strong> is a highly accomplished Senior Data Engineer with a proven track record of architecting and implementing robust data pipelines that drive significant business impact. My expertise lies in transforming complex data into actionable insights, leading to tangible improvements in revenue, operational efficiency, and fraud prevention.
                         </p>
                         <p>
-                            With a Master's in Business Analytics (Data Science) and a background in Electronics & Communication Engineering, I bring a unique blend of technical prowess and business acumen. I thrive in collaborative environments, ensuring seamless synergy between engineering and product development to achieve broader organizational objectives.
+                            With a Master's in Business Analytics (Data Science) and a background in Electronics & Communication Engineering, <strong>Sudharsana Rajasekaran</strong> brings a unique blend of technical prowess and business acumen. I thrive in collaborative environments, ensuring seamless synergy between engineering and product development to achieve broader organizational objectives.
                         </p>
                         <p>
-                            My career highlights include spearheading data initiatives at Walmart Global Tech and building critical BI solutions for Google's global data center operations. I am passionate about leveraging cutting-edge technologies and data science techniques to solve real-world problems.
+                            My career highlights include spearheading data initiatives at <strong>Walmart Global Tech</strong> and building critical BI solutions for Google's global data center operations. I am passionate about leveraging cutting-edge technologies including <strong>Python, Apache Spark, Hadoop, Kafka, Airflow, Big Data, ETL, Cloud Computing, AWS, GCP, Azure, Machine Learning, and Data Science</strong> to solve real-world problems.
                         </p>
                     </div>
                     <div className="education-card animate-fade-in-right">

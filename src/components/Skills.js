@@ -5,10 +5,10 @@ const Skills = () => {
     return (
         <section id="skills" className="section-padding skills-section">
             <div className="section-container">
-                <h3 className="section-title">
-                    <span className="relative-text">Technical Skills</span>
+                <h2 className="section-title">
+                    <span className="relative-text">Sudharsana Rajasekaran - Technical Skills</span>
                     <span className="underline-effect"></span>
-                </h3>
+                </h2>
                 <div className="skills-grid">
                     {skills.map((skillCategory, index) => (
                         <div key={index} className="skill-category-card animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>

@@ -8,10 +8,10 @@ const Contact = () => {
     return (
         <section id="contact" className="section-padding contact-section">
             <div className="contact-container">
-                <h3 className="section-title">
-                    <span className="relative-text">Get in Touch</span>
+                <h2 className="section-title">
+                    <span className="relative-text">Contact Sudharsana Rajasekaran</span>
                     <span className="underline-effect"></span>
-                </h3>
+                </h2>
                 
                 <div className={`contact-form-wrapper ${showContactForm ? 'show' : 'hide'}`}>
                     {showContactForm && <ContactForm />}
