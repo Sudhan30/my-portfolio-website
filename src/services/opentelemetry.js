@@ -78,11 +78,16 @@ class OpenTelemetryService {
         // Start new session for this page load
         this.startNewSession();
         
-        // Collect essential browser/device info immediately
-        this.collectEssentialInfo();
-        
-        // Set up automatic instrumentation
-        this.setupAutomaticInstrumentation();
+        // Only collect data if consent is given
+        if (this.consentGiven) {
+            // Collect essential browser/device info immediately
+            this.collectEssentialInfo();
+            
+            // Set up automatic instrumentation
+            this.setupAutomaticInstrumentation();
+        } else {
+            console.log('🔍 OpenTelemetry service initialized but no consent given - data collection disabled');
+        }
         
         // Set up performance monitoring
         this.setupPerformanceMonitoring();

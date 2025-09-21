@@ -13,16 +13,27 @@ const TelemetryConsent = () => {
         const hasConsentDecision = localStorage.getItem('telemetry_consent_decision_made');
         const consent = localStorage.getItem('telemetry_consent') === 'true';
         
+        console.log('🔍 TelemetryConsent Debug:', {
+            hasConsentDecision,
+            consent,
+            decisionMade: hasConsentDecision,
+            consentValue: localStorage.getItem('telemetry_consent')
+        });
+        
         setConsentGiven(consent);
         
         // If consent was already given, initialize the service
         if (consent) {
+            console.log('✅ Consent already given, initializing OpenTelemetry');
             otelService.initialize();
         }
         
         // Show banner if no decision has been made
         if (!hasConsentDecision) {
+            console.log('🚨 No consent decision made, showing banner');
             setShowBanner(true);
+        } else {
+            console.log('ℹ️ Consent decision already made, not showing banner');
         }
     }, []);
 
