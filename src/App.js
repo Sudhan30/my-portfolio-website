@@ -49,8 +49,8 @@ const App = () => {
 
         fetchViewCount();
 
-                // Initialize OpenTelemetry tracking
-                otelService.initialize();
+        // Don't initialize OpenTelemetry here - let TelemetryConsent handle it
+        // otelService.initialize();
 
         return () => clearTimeout(timer);
     }, []);

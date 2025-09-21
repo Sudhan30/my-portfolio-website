@@ -11,9 +11,14 @@ const TelemetryConsent = () => {
     useEffect(() => {
         // Check if user has already made a consent decision
         const hasConsentDecision = localStorage.getItem('telemetry_consent_decision_made');
-        const consent = otelService.getConsentStatusCompat();
+        const consent = localStorage.getItem('telemetry_consent') === 'true';
         
         setConsentGiven(consent);
+        
+        // If consent was already given, initialize the service
+        if (consent) {
+            otelService.initialize();
+        }
         
         // Show banner if no decision has been made
         if (!hasConsentDecision) {
@@ -26,6 +31,9 @@ const TelemetryConsent = () => {
         setConsentGiven(true);
         setShowBanner(false);
         localStorage.setItem('telemetry_consent_decision_made', 'true');
+        
+        // Initialize OpenTelemetry service only after consent is given
+        otelService.initialize();
         
         // Track the consent acceptance
         otelService.log('info', 'Consent accepted', {
