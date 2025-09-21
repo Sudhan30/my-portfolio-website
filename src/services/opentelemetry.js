@@ -477,7 +477,7 @@ class OpenTelemetryService {
         };
 
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-        navigator.sendBeacon(`${config.cloudFunctionsUrl}/processOtelData`, blob);
+        navigator.sendBeacon(`${config.CLOUD_FUNCTIONS_URL}/processOtelData`, blob);
     }
 
 
@@ -565,14 +565,16 @@ class OpenTelemetryService {
      * Send telemetry data to Cloud Function
      */
     async sendTelemetryData(data) {
+        const url = `${config.CLOUD_FUNCTIONS_URL}/processOtelData`;
         console.log('Sending telemetry data:', {
             traces: data.traces.length,
             metrics: data.metrics.length,
             logs: data.logs.length,
-            url: `${config.cloudFunctionsUrl}/processOtelData`
+            url: url,
+            config: config
         });
         
-        const response = await fetch(`${config.cloudFunctionsUrl}/processOtelData`, {
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
