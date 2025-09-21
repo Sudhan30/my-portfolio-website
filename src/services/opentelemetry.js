@@ -548,6 +548,14 @@ class OpenTelemetryService {
                 }
             }
             
+            // Force flush after timing metrics are recorded
+            this.timingFlushTimeout = setTimeout(() => {
+                if (this.metrics.length > 0 && !this.initialMetricsFlushed) {
+                    console.log('🚀 Force flush after timing metrics collection');
+                    this.flush();
+                }
+            }, 1000); // 1 second delay to ensure all timing metrics are recorded
+            
             // Track connection info (if available)
             if (navigator.connection) {
                 this.recordMetric('connection_effective_type', navigator.connection.effectiveType, {
@@ -736,6 +744,10 @@ class OpenTelemetryService {
         // Create consolidated metrics for efficient batching
         const consolidatedMetrics = this.createConsolidatedMetrics();
         
+        // Debug: Log all metrics being collected
+        console.log('📊 All metrics being flushed:', this.metrics.map(m => ({ name: m.name, value: m.value, type: m.type })));
+        console.log('📊 Consolidated metrics:', consolidatedMetrics);
+        
         const data = {
             traces: [...this.traces],
             metrics: [...this.metrics],
@@ -752,6 +764,12 @@ class OpenTelemetryService {
         if (this.timeoutId) {
             clearTimeout(this.timeoutId);
             this.timeoutId = null;
+        }
+        
+        // Clear any pending timing flush timeout
+        if (this.timingFlushTimeout) {
+            clearTimeout(this.timingFlushTimeout);
+            this.timingFlushTimeout = null;
         }
         
         // Update last flush time
