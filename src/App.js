@@ -147,7 +147,7 @@ const App = () => {
                 <About />
                 <Skills />
                 <Experience />
-                <section id="ai-job-fit">
+                <section id="ai-job-fit" className="section-padding" style={{ backgroundColor: 'var(--neutral-50)' }}>
                     <JobFitEvaluator />
                 </section>
                 <Contact />
