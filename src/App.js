@@ -8,7 +8,6 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
-import JobDescriptionAnalyzer from './components/JobDescriptionAnalyzer';
 import JobFitEvaluator from './components/JobFitEvaluator';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -59,7 +58,7 @@ const App = () => {
     // Add scroll detection to update activeSection
     useEffect(() => {
         const handleScroll = () => {
-            const sections = ['home', 'about', 'skills', 'experience', 'job-analyzer', 'contact'];
+            const sections = ['home', 'about', 'skills', 'experience', 'ai-job-fit', 'contact'];
             const scrollPosition = window.scrollY + 100; // Offset for header height
 
             for (let i = sections.length - 1; i >= 0; i--) {
@@ -148,7 +147,7 @@ const App = () => {
                 <About />
                 <Skills />
                 <Experience />
-                <section id="job-analyzer">
+                <section id="ai-job-fit">
                     <JobFitEvaluator />
                 </section>
                 <Contact />
