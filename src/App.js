@@ -9,6 +9,7 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
 import JobDescriptionAnalyzer from './components/JobDescriptionAnalyzer';
+import JobFitEvaluator from './components/JobFitEvaluator';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingFeedback from './components/FloatingFeedback';
@@ -124,7 +125,7 @@ const App = () => {
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
             setActiveSection(id);
-            
+
             // Track navigation
             otelService.trackNavigationCompat(activeSection, id);
         }
@@ -148,6 +149,7 @@ const App = () => {
                 <Skills />
                 <Experience />
                 <JobDescriptionAnalyzer />
+                <JobFitEvaluator />
                 <Contact />
             </main>
             <Footer />
