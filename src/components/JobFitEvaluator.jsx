@@ -17,8 +17,8 @@ const JobFitEvaluator = () => {
 
         try {
             const resumeString = JSON.stringify(resumeData, null, 2);
-            // Public NodePort URL (user's server IP)
-            const API_URL = "http://192.168.1.129:30080/job-fit";
+            // Public Global Secure Endpoint
+            const API_URL = "https://api.sudharsana.dev/job-fit";
 
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -86,8 +86,8 @@ const JobFitEvaluator = () => {
                         onClick={handleAnalyze}
                         disabled={loading || !jobDescription.trim()}
                         className={`w-full py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center ${loading || !jobDescription.trim()
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl'
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl'
                             }`}
                     >
                         {loading ? (
