@@ -148,8 +148,9 @@ const App = () => {
                 <About />
                 <Skills />
                 <Experience />
-                <JobDescriptionAnalyzer />
-                <JobFitEvaluator />
+                <section id="job-analyzer">
+                    <JobFitEvaluator />
+                </section>
                 <Contact />
             </main>
             <Footer />
