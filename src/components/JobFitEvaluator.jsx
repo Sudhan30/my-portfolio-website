@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { resumeData } from '../resumeData';
+import { useState } from 'react';
 import { Send, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 
 const JobFitEvaluator = () => {
@@ -16,8 +15,8 @@ const JobFitEvaluator = () => {
         setResult(null);
 
         try {
-            const resumeString = JSON.stringify(resumeData, null, 2);
             // Public Global Secure Endpoint
+            // Resume and preferences are loaded from server (private)
             const API_URL = "https://api.sudharsana.dev/job-fit";
 
             const response = await fetch(API_URL, {
@@ -26,14 +25,7 @@ const JobFitEvaluator = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    job: jobDescription,
-                    resume: resumeString,
-                    preferences: {
-                        interests: resumeData.interests,
-                        disinterests: resumeData.disinterests,
-                        locations: [resumeData.personalInfo.preferredLocation],
-                        salary: resumeData.personalInfo.salaryRequirements
-                    }
+                    job: jobDescription
                 }),
             });
 
