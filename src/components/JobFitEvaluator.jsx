@@ -1,11 +1,34 @@
-import { useState } from 'react';
-import { Send, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Send, Loader2, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 const JobFitEvaluator = () => {
     const [jobDescription, setJobDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [finalTime, setFinalTime] = useState(null);
+    const timerRef = useRef(null);
+
+    useEffect(() => {
+        if (loading) {
+            setElapsedTime(0);
+            const startTime = Date.now();
+            timerRef.current = setInterval(() => {
+                setElapsedTime(((Date.now() - startTime) / 1000).toFixed(1));
+            }, 100);
+        } else {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+            }
+        }
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [loading]);
 
     const handleAnalyze = async () => {
         if (!jobDescription.trim()) return;
@@ -13,6 +36,8 @@ const JobFitEvaluator = () => {
         setLoading(true);
         setError(null);
         setResult(null);
+        setFinalTime(null);
+        const startTime = Date.now();
 
         try {
             // Public Global Secure Endpoint
@@ -35,9 +60,11 @@ const JobFitEvaluator = () => {
 
             const data = await response.json();
             setResult(data);
+            setFinalTime(((Date.now() - startTime) / 1000).toFixed(1));
         } catch (err) {
             console.error(err);
             setError("Failed to analyze job fit. Ensure the backend server is running and accessible.");
+            setFinalTime(((Date.now() - startTime) / 1000).toFixed(1));
         } finally {
             setLoading(false);
         }
@@ -63,9 +90,16 @@ const JobFitEvaluator = () => {
                     </p>
 
                     <div className="mb-8">
-                        <label className="block text-gray-700 font-semibold mb-3">
-                            Job Description
-                        </label>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-gray-700 font-semibold">
+                                Job Description
+                            </label>
+                            {finalTime && (
+                                <span className="flex items-center text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                    <Clock className="w-4 h-4 mr-1" /> {finalTime}s
+                                </span>
+                            )}
+                        </div>
                         <textarea
                             className="w-full h-48 p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 resize-none"
                             placeholder="Paste the job requirements here..."
@@ -84,7 +118,7 @@ const JobFitEvaluator = () => {
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="animate-spin mr-2" /> Analyzing Fit...
+                                <Loader2 className="animate-spin mr-2" /> Analyzing... {elapsedTime}s
                             </>
                         ) : (
                             <>
