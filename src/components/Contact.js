@@ -27,7 +27,7 @@ const Contact = () => {
                         <span>GitHub Profile</span>
                     </a>
                     <a href="https://blog.sudharsana.dev" target="_blank" rel="noopener noreferrer" className="contact-link-item">
-                        <BookOpen style={{ color: 'var(--purple-600)' }} size={32} />
+                        <BookOpen style={{ color: 'var(--accent-orange-500)' }} size={32} />
                         <span>My Blog</span>
                     </a>
                     <button 
