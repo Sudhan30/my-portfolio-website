@@ -14,7 +14,7 @@ export const skills = [
 
 export const experiences = [
     {
-        title: 'Senior Data Engineer',
+        title: 'Staff Data Engineer',
         company: 'Walmart Global Tech',
         location: 'Sunnyvale, CA',
         duration: 'March 2022 - Present',

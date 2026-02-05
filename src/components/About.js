@@ -12,7 +12,7 @@ const About = () => {
                 <div className="about-grid">
                     <div className="about-text animate-fade-in-left">
                         <p>
-                            <strong>Sudharsana Rajasekaran</strong> is a highly accomplished Senior Data Engineer with a proven track record of architecting and implementing robust data pipelines that drive significant business impact. My expertise lies in transforming complex data into actionable insights, leading to tangible improvements in revenue, operational efficiency, and fraud prevention.
+                            <strong>Sudharsana Rajasekaran</strong> is a highly accomplished Staff Data Engineer with a proven track record of architecting and implementing robust data pipelines that drive significant business impact. My expertise lies in transforming complex data into actionable insights, leading to tangible improvements in revenue, operational efficiency, and fraud prevention.
                         </p>
                         <p>
                             With a Master's in Business Analytics (Data Science) and a background in Electronics & Communication Engineering, <strong>Sudharsana Rajasekaran</strong> brings a unique blend of technical prowess and business acumen. I thrive in collaborative environments, ensuring seamless synergy between engineering and product development to achieve broader organizational objectives.

@@ -2,7 +2,7 @@
 const resumeData = {
     personalInfo: {
         name: "Sudharsana Rajasekaran",
-        title: "Senior Data Engineer",
+        title: "Staff Data Engineer",
         experience: "5+ years",
         location: "San Francisco Bay Area",
         preferredLocation: "San Francisco Bay Area",
@@ -12,7 +12,7 @@ const resumeData = {
         }
     },
     
-    summary: "Experienced Senior Data Engineer with 5+ years of expertise in building scalable data solutions, ETL pipelines, and driving business insights. Passionate about leveraging big data technologies to solve complex business problems and optimize data workflows.",
+    summary: "Experienced Staff Data Engineer with 5+ years of expertise in building scalable data solutions, ETL pipelines, and driving business insights. Passionate about leveraging big data technologies to solve complex business problems and optimize data workflows.",
     
     technicalSkills: {
         programming: ["Python", "SQL", "Bash", "JavaScript"],
@@ -26,7 +26,7 @@ const resumeData = {
     
     experience: [
         {
-            title: "Senior Data Engineer",
+            title: "Staff Data Engineer",
             company: "Current Role",
             duration: "Recent",
             keyProjects: [
