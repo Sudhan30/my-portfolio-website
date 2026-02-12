@@ -15,6 +15,37 @@ Allow: /
 User-agent: Slurp
 Allow: /
 
+# AI Crawler Bots (Generative Engine Optimization)
+# Allow AI chatbots to index and cite content
+
+# ChatGPT (OpenAI)
+User-agent: OAI-SearchBot
+Allow: /
+
+# GPTBot (OpenAI training)
+User-agent: GPTBot
+Allow: /
+
+# Google Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
 # Block access to admin or private areas (if any)
 Disallow: /admin/
 Disallow: /private/
