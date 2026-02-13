@@ -21,11 +21,26 @@ const TelemetryConsent = () => {
         });
         
         setConsentGiven(consent);
-        
-        // If consent was already given, initialize the service
+
+        // If consent was already given, initialize the services
         if (consent) {
-            console.log('✅ Consent already given, initializing OpenTelemetry');
+            console.log('✅ Consent already given, initializing OpenTelemetry and Google Analytics');
             otelService.initialize();
+
+            // Load Google Analytics
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-F2C1BRDZDW';
+            document.head.appendChild(script);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-F2C1BRDZDW', {
+                'anonymize_ip': true
+            });
+
+            console.log('✅ Google Analytics loaded (previous consent)');
         }
         
         // Show banner if no decision has been made
@@ -37,15 +52,36 @@ const TelemetryConsent = () => {
         }
     }, []);
 
+    const loadGoogleAnalytics = () => {
+        // Load Google Analytics script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-F2C1BRDZDW';
+        document.head.appendChild(script);
+
+        // Initialize Google Analytics
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-F2C1BRDZDW', {
+            'anonymize_ip': true
+        });
+
+        console.log('✅ Google Analytics loaded with user consent');
+    };
+
     const handleAccept = () => {
         otelService.setConsentStatusCompat(true);
         setConsentGiven(true);
         setShowBanner(false);
         localStorage.setItem('telemetry_consent_decision_made', 'true');
-        
+
         // Initialize OpenTelemetry service only after consent is given
         otelService.initialize();
-        
+
+        // Load Google Analytics
+        loadGoogleAnalytics();
+
         // Track the consent acceptance
         otelService.log('info', 'Consent accepted', {
             consentType: 'telemetry',
