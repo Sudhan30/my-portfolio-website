@@ -80,8 +80,7 @@ const ContactForm = () => {
     return (
         <div className="contact-form-container">
             <div className="contact-form-header">
-                <h3>Get in Touch</h3>
-                <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions. Feel free to reach out, and I'll get back to you as soon as possible.</p>
+                <p>Feel free to reach out for collaboration, technical discussions, or to share your thoughts. I'm always happy to connect with fellow engineers and enthusiasts.</p>
             </div>
             
             <form onSubmit={handleSubmit} className="contact-form">
