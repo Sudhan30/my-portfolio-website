@@ -2,14 +2,16 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 
-const root = resolve('dist');
+const root = resolve(process.env.SITE_ROOT ?? 'dist');
 const port = Number(process.env.DESIGN_PORT ?? 4321);
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.webp':'image/webp', '.woff2':'font/woff2', '.txt':'text/plain; charset=utf-8' };
 createServer(async (req,res) => {
   res.setHeader('X-Robots-Tag','noindex, nofollow');
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('Referrer-Policy','no-referrer');
-  res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
+  const hostingConfig = process.env.SITE_ROOT ? JSON.parse(await readFile('firebase.json','utf8')) : undefined;
+  const productionCSP = hostingConfig?.hosting.headers.find(entry=>entry.source==='**')?.headers.find(header=>header.key==='Content-Security-Policy')?.value;
+  res.setHeader('Content-Security-Policy', productionCSP ?? "default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
   res.setHeader('Cache-Control','no-store');
   try {
     const pathname = decodeURIComponent(new URL(req.url, `http://127.0.0.1:${port}`).pathname);

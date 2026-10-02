@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-10-02T19:00:37.009Z",
+  "base": "http://127.0.0.1:4322",
+  "browsers": [
+    {
+      "name": "chromium",
+      "status": "passed",
+      "layouts": 28,
+      "axeScans": 14,
+      "violations": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "checks": [
+        "keyboard and reduced motion work under production CSP",
+        "unknown and review routes return 404",
+        "deliberate Motion animation plays once under production CSP",
+        "no-JavaScript explanations and work navigation"
+      ]
+    },
+    {
+      "name": "firefox",
+      "status": "passed",
+      "layouts": 28,
+      "axeScans": 14,
+      "violations": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "checks": [
+        "keyboard and reduced motion work under production CSP",
+        "unknown and review routes return 404",
+        "deliberate Motion animation plays once under production CSP",
+        "no-JavaScript explanations and work navigation"
+      ]
+    },
+    {
+      "name": "webkit",
+      "status": "unavailable",
+      "reason": "browserType.launch: \n╔══════════════════════════════════════════════════════╗\n║ Host system is missing dependencies to run browsers. ║\n║ Missing libraries:                                   ║\n║     libgtk-4.so.1                                    ║\n║     libgraphene-1.0.so.0                             ║\n║     libevent-2.1.so.7                                ║\n║     libopus.so.0                                     ║\n║     libgstallocators-1.0.so.0                        ║\n║     libgstapp-1.0.so.0                               ║\n║     libgstpbutils-1.0.so.0                           ║\n║     libgstaudio-1.0.so.0                             ║\n║     libgsttag-1.0.so.0                               ║\n║     libgstvideo-1.0.so.0                             ║\n║     libgstgl-1.0.so.0                                ║\n║     libgstcodecparsers-1.0.so.0                      ║\n║     libgstfft-1.0.so.0                               ║\n║     libflite.so.1                                    ║\n║     libflite_usenglish.so.1                          ║\n║     libflite_cmu_grapheme_lang.so.1                  ║\n║     libflite_cmu_grapheme_lex.so.1                   ║\n║     libflite_cmu_indic_lang.so.1     "
+    }
+  ]
+}

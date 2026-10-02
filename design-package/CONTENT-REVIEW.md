@@ -49,3 +49,5 @@ Version 03 editorial rewrite: the user said “site looks good” and requested 
 Copy, career, portrait, contribution approval: pending.
 
 No publication, workflow, cloud, or endpoint-retirement authorization has been inferred from this review. Do not change approval statuses merely because checks pass.
+
+Release authorization update: the user subsequently instructed “push the code main, cicd will deploy.” Main publication through existing Hosting CI/CD is now explicitly authorized. The high-level copy and design are the reviewed version 03. Endpoint retirement, new cloud identity, and domain configuration remain outside that release scope. See the root `RELEASE.md` for actual evidence and limitations.

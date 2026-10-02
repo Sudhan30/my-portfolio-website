@@ -1,0 +1,20 @@
+name: Validate static studio
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: design-package/package-lock.json
+      - run: npm ci --prefix design-package --ignore-scripts
+      - run: npm run check && npm run build && npm test
+      - run: npm audit --prefix design-package --audit-level=high
