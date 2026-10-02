@@ -1,6 +1,6 @@
 # Local design validation
 
-Checked on 2026-10-02 against version 02 of the built design package, following the résumé expansion. This is local review evidence, not production acceptance. Version 01 evidence remains preserved in its Git tag and verified snapshot.
+Checked on 2026-10-02 against version 03, following the high-level editorial rewrite. This is local review evidence, not production acceptance. Earlier versions and evidence remain preserved in their Git tags; version 01 also has a verified snapshot.
 
 ## Completed
 
@@ -16,11 +16,12 @@ Checked on 2026-10-02 against version 02 of the built design package, following 
 | Navigation/content | All six work-story/back links, four career chapters, certification, scoped GMV labels, skip link, exact existing LinkedIn destination, and real unknown-route 404 | `evidence/browser-checks.json` |
 | Privacy | No external browser requests, cookies, or local/session storage; no application API or tracking references in the built CSS/JS | Browser report and artifact checks |
 | Assets | Local fonts/portrait/illustrations; licenses present; WebP variants have no EXIF/XMP/ICC payload; public SVG has no executable/remote content | Artifact validation and `CONTENT-REVIEW.md` |
-| Size budgets | gzip JS 3,464 bytes; gzip CSS 5,341 bytes. Fresh mobile context: approximately 123KB in both tested browsers, served without response compression | Artifact report; browser report |
+| Size budgets | gzip JS 3,464 bytes; gzip CSS approximately 5.2KB. Fresh mobile transfer remains below 700KB | Exact current values in artifact and browser reports |
 | Dependency audit | Zero known vulnerabilities reported by npm audit for the isolated package | `evidence/dependency-audit.json` |
 | Zoom simulation | No overflow at 200% CSS zoom in Chromium/Firefox | Browser report; actual browser zoom remains pending |
 | Visual inspection | Expanded desktop homepage, professional mobile section, and career desktop inspected; six illustrations and content hierarchy checked | PNGs in `evidence/`; final expanded-copy review pending |
 | Résumé handling | Both original documents read directly, fingerprints recorded, raw files kept outside source/artifact; no email, phone, local path, or résumé download in emitted pages | `evidence/resume-source-fingerprints.json`, artifact validation, `RESUME-CONTENT-REVIEW.md` |
+| Editorial copy | All twelve rendered routes checked for résumé references, audit panels, draft labels, and preview/review language; none present | Artifact validation; source provenance retained in repository notes |
 | Repository isolation | Original checkout clean on `main`; changes confined to `design-package/` in the separate worktree | Local git status/diff verification |
 
 `evidence/artifact.sha256` records SHA-256 for every emitted file. It identifies this local design build; it is not a release approval or deployment attestation.

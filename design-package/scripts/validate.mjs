@@ -12,6 +12,7 @@ for(const route of routes) {
   const html = await readFile(resolve(root,route),'utf8');
   assert.match(html, /<html lang="en">/);
   assert.match(html, /name="robots" content="noindex, nofollow"/);
+  assert.doesNotMatch(html, /résumés?|resumes?|follow the evidence|supplied FDE|draft for factual|local preview|ready for content review|résumé account/i,`Editorial process language in ${route}`);
   assert.equal((html.match(/<h1[ >]/g) ?? []).length,1,route);
   assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/,`Inline script in ${route}`);
   assert.doesNotMatch(html, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,`Private email in ${route}`);

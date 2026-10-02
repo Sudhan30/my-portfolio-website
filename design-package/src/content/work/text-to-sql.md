@@ -7,39 +7,32 @@ group: personal
 order: 2
 illustration: sql
 category: "Agents · SQL · boundaries"
-summary: "A local text-to-SQL experiment uses two focused model contexts to turn a data question into a proposed query."
+summary: "A familiar database question becomes a conversation, with focused steps for understanding, retrieval, and presentation."
 decision: "Separate conversational intent from SQL generation, then check the proposed query."
 source: "https://github.com/Sudhan30/my-blog-site-sudhanverse/blob/main/content/posts/text-to-sql-agent.md"
 sourceLabel: "Read the text-to-SQL article"
 evidenceLabel: "Architecture article · March 2026"
 evidenceNote: "The article documents a dated experiment, not a current security or accuracy assessment. Its examples do not establish that every generated query is correct or safe."
 caption: "A proposed query passes through an application boundary before reaching data."
+displayLabel: "Personal project · conversational data tools"
 ---
 
-## A small question with a repetitive path
+## Make a familiar task easier
 
-Checking a blog metric meant opening a terminal, connecting to the server, entering the database, and writing a query. I wanted to ask the same question through the chat interface I was already using.
+Checking a simple database metric meant opening a terminal, connecting to the server, and writing a query. I wanted to ask the same question through a conversation.
 
-My March 2026 article describes the resulting text-to-SQL experiment: conversational intent becomes a structured tool request, query results return to the application, and the response is presented in natural language.
+I built a local text-to-SQL experiment that connects a natural-language question to a proposed query and a readable answer.
 
-## My contribution
+## Give each stage a focused job
 
-I built the orchestration described in the article around two local models. Gemma3 handled conversational intent and presentation. Qwen3 handled structured tool calls with schema context.
+One model handles conversational intent and presentation. Another works with the schema and structured tool calls. The application connects the stages and decides how a proposed query reaches the database.
 
-The design gave the conversational model short tool descriptions and gave the query model the database schema. Each context was shaped for the responsibility of that stage.
+That separation keeps the responsibilities visible: understand the question, retrieve the data, and explain the result.
 
-## The decision: give each stage a focused job
+## Put control around the tool
 
-The separation makes the application flow easier to reason about: understand the question, propose a query, apply the execution boundary, then present the result. It also introduces extra orchestration and model calls when a data question needs the full path.
+Read-only access, query checks, and execution limits sit outside the model. A convenient interface still needs an explicit boundary around what it can do.
 
-That tradeoff needs to be measured against a simpler baseline. The article explains the design choice; it does not establish a general advantage for two models over one.
+## Bring the answer back to the person
 
-## The boundary needs its own evidence
-
-The article describes a read-only database user, SQL validation, query limits, and connection timeouts. A generated query still needs controls outside the model.
-
-The shown keyword checks are examples, rather than a proof that every SQL construct is handled safely. A production assessment would need to inspect actual permissions, parsing, execution limits, and failure cases. This story does not claim that those checks have been completed.
-
-## What I take from the experiment
-
-A conversational interface can make a familiar task more convenient, while leaving correctness and authorization as separate engineering responsibilities. Keeping those responsibilities explicit is the part of the design I want to carry forward.
+The result returns to the conversation, where it can be presented in a useful form. The project explores how a small, repetitive workflow can become easier to use while keeping its engineering responsibilities clear.

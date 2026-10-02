@@ -21,10 +21,10 @@
       "sha256": "13a6dd465e4d9fb74eefd79ba8fd4205cbbdb34cf479deb6e5abc9625e6b3793"
     },
     {
-      "path": "_astro/Base.DjzyfHhX.css",
-      "bytes": 23101,
-      "gzipBytes": 5341,
-      "sha256": "03704df43393683ef2941195280a82a8238060251900f06ea44b0d5b0553cb51"
+      "path": "_astro/Base.DXC7oHQo.css",
+      "bytes": 22298,
+      "gzipBytes": 5189,
+      "sha256": "f4a952db2f68d434396d23526a30514b79ae167a6174d04138630b5abd1de0b9"
     },
     {
       "path": "_astro/Workbench.astro_astro_type_script_index_0_lang.SeohlHCv.js",
@@ -70,6 +70,6 @@
     }
   ],
   "gzipJSBytes": 3464,
-  "gzipCSSBytes": 5341,
+  "gzipCSSBytes": 5189,
   "externalResources": []
 }

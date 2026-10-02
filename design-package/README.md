@@ -1,8 +1,10 @@
 # Sudharsana local design package
 
-This is version 02 of the runnable local design, expanded at the user's request with content from the DE and FDE résumés. It lives on `redesign/design-package`, in an isolated worktree created from `main` at `f8288606d3b918e214ee72b071ea4c7b9fcd3f6c`. No remote push, PR, workflow change, deployment, or cloud retirement has occurred.
+This is version 03 of the runnable local design. At the user's request, résumé material now informs direct, high-level editorial copy about the work, rather than appearing as attribution or review language in the visitor experience. It lives on `redesign/design-package`, in an isolated worktree created from `main` at `f8288606d3b918e214ee72b071ea4c7b9fcd3f6c`. No remote push, PR, workflow change, deployment, or cloud retirement has occurred.
 
 Version 01 is preserved at commit `7feebbd2485d5d4738f52edf76c19bff7ce771e3`, local tag `design-v1-before-resume-expansion`, and `/home/sudhan0312/Desktop/sudharsana-design-snapshots/2026-10-02-design-v1/`. Its source and exact built-preview archives were checksum verified before these changes.
+
+Version 02 is preserved at commit `de6a74a` and tag `design-v2-resume-expansion`.
 
 ## Open the package
 
@@ -23,7 +25,7 @@ If Node is unavailable in this shell, the verified existing runtime can be added
 export PATH=/home/sudhan0312/actions-runner/externals/node24/bin:$PATH
 ```
 
-Open **http://127.0.0.1:4321/design/**. The preview server listens only on loopback. It serves built files with blocked connections, no indexing, and a real 404 response. Its `style-src-attr 'unsafe-inline'` allowance supports the local review swatches and Motion's element transforms; it is not the final production CSP.
+Open **http://127.0.0.1:4321/** for the site and `/design/` for the studio palette/type/interaction guide. The preview server listens only on loopback. It serves built files with blocked connections, no indexing, and a real 404 response. Its `style-src-attr 'unsafe-inline'` allowance supports the studio swatches and Motion's element transforms; it is not the final production CSP.
 
 ## Review artifacts
 
@@ -37,7 +39,7 @@ Open **http://127.0.0.1:4321/design/**. The preview server listens only on loopb
 
 The workbench has no startup animation. Each deliberate selection plays a short animation once. Reduced motion changes the state immediately. Native radios support keyboard and touch; without JavaScript, CSS updates the figure and all explanations remain visible. Motion is locally bundled through its small animation entrypoint. Portrait variants, fonts, CSS, and scripts are local assets. All six story links are local document navigation. Professional work, personal work, and career chapters use typed content collections.
 
-The new visual treatment adds a featured professional story, illustrated project cards, contextual scope figures, connected career chapters, and an original certification stamp. Hover details respect reduced motion. Raw résumés, personal phone/email, and internal documents are not copied into the source or artifact. Résumé outcomes are labeled with their actual scope; they are not independent verification.
+The visual treatment includes a featured professional story, illustrated project cards, contextual scope figures, connected career chapters, and an original certification stamp. Hover details respect reduced motion. Raw résumés, personal phone/email, and internal documents are not copied into the source or artifact. Scope labels remain precise (order GMV surfaced, first-year visits/GMV, distinct organizations), while source provenance and review requirements remain in repository documentation and unrendered collection fields. Public project links remain ordinary optional links for a deeper read.
 
 ## Reproduce browser checks
 

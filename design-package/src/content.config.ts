@@ -10,7 +10,7 @@ const work = defineCollection({
     sourceLabel: z.string(), illustration: z.enum(['chat', 'sql', 'probe', 'agents', 'identity', 'pipeline']),
     group: z.enum(['professional', 'personal']), order: z.number(),
     summary: z.string(), decision: z.string(), category: z.string(),
-    evidenceLabel: z.string(), evidenceNote: z.string(), caption: z.string(),
+    displayLabel: z.string(), evidenceLabel: z.string(), evidenceNote: z.string(), caption: z.string(),
     metrics: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
   }),
 });

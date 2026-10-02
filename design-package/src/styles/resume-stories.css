@@ -35,7 +35,6 @@
   .project-metrics > div, .story-metrics > div { display: flex; flex-direction: column; }
   .project-metrics dd, .story-metrics dd { font-size: 33px; letter-spacing: -.04em; font-weight: 600; margin: 0; order: -1; line-height: 1.2; }
   .project-metrics dt { font-size: 12px; line-height: 1.45; margin-top: 8px; max-width: 220px; }
-  .source-caption { margin-top: 20px; font-size: 12px; color: var(--muted); }
   .personal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; }
   .personal-card .work-copy { margin-top: 25px; }
   .personal-card .work-copy h3 { font-size: 29px; }
@@ -71,7 +70,6 @@
   .certification-note h3 { font-size: 24px; letter-spacing: -.03em; line-height: 1.25; }
   .certification-note .eyebrow { font-size: 10px; margin-bottom: 12px; }
   .certification-note p:not(.eyebrow) { font-size: 13px; margin-top: 10px; }
-  .certification-note .small-note { font-size: 11px !important; }
   .certification-stamp { width: 74px; height: 74px; flex-shrink: 0; display: grid; place-items: center; border: 1px solid var(--ink); outline: 1px dashed var(--ink); outline-offset: 5px; border-radius: 50%; background: var(--lime); font-size: 55px; line-height: 1; transform: rotate(-12deg); }
   .story-metrics { max-width: 720px; margin: 42px auto 0; padding-block: 25px; border-bottom: 1px solid var(--line); }
   .story-metrics dt { font-size: 14px; margin-top: 10px; }
@@ -121,7 +119,6 @@
     .project-metrics { gap: 16px; }
     .project-metrics dd { font-size: 30px; }
     .project-metrics dt { font-size: 11px; }
-    .source-caption { font-size: 11px; }
     .personal-grid { gap: 43px; }
     .personal-card .work-copy h3 { font-size: 30px; }
     .personal-card .eyebrow { font-size: 11px; }

@@ -1,6 +1,6 @@
 # Content and asset review
 
-Status: **version 02 local draft**. The user said the first design “looks great,” requested more content from the DE and FDE résumés, and supplied the FDE PDF. This authorizes the local expansion. Final factual/publication review is still pending.
+Status: **version 03 local draft**. The user approved the visual direction, requested the résumé expansion, then asked that those materials be used as inspiration for a high-level rewrite. Visitor-facing provenance, résumé references, and review scaffolding have been removed. Source traceability stays in this repository. Publication review remains separate.
 
 | Item | Source or reasoning | Owner decision needed |
 | --- | --- | --- |
@@ -20,7 +20,7 @@ Status: **version 02 local draft**. The user said the first design “looks grea
 
 Professional work now includes employment, contribution, and outcome statements supported by the supplied résumés. Their source and measurement limits are explicit. No independent employer confirmation, metric audit, deployment verification, or agent-quality benchmark is implied.
 
-The personal stories describe documented architecture and capabilities. The complete stories distinguish those source accounts from current deployment/performance evidence. Exact résumé field mappings and the 95% attribution target distinction are recorded in [RESUME-CONTENT-REVIEW.md](RESUME-CONTENT-REVIEW.md).
+The personal stories describe architecture and capabilities without current deployment/performance claims. Visitor pages present the work directly. Exact source mappings and the 95% attribution target distinction are recorded in [RESUME-CONTENT-REVIEW.md](RESUME-CONTENT-REVIEW.md). Provenance fields remain unrendered; no evidence panel or audit language appears on the site.
 
 Public source links:
 
@@ -43,6 +43,8 @@ All three `/post/<slug>` blog destinations returned HTTP 200 in read-only checks
 Version 01 visual direction: positively reviewed by the user (“website looks great”). Saved before expansion under tag `design-v1-before-resume-expansion` and verified source/preview archives.
 
 Version 02 résumé expansion: requested and implemented locally. Final expanded design/copy review: pending.
+
+Version 03 editorial rewrite: the user said “site looks good” and requested high-level copy using the source materials as inspiration. This rewrite is implemented locally; it does not imply publication authorization.
 
 Copy, career, portrait, contribution approval: pending.
 

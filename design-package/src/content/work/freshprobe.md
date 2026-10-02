@@ -14,16 +14,17 @@ sourceLabel: "Explore the freshprobe repository"
 evidenceLabel: "Public repository · README account"
 evidenceNote: "Capabilities are described by the README reviewed on October 2, 2026; no independent performance claim is made."
 caption: "A successful response is one clue; freshness needs more evidence."
+displayLabel: "Personal project · data freshness"
 ---
 
-## Look beyond availability
+## Ask a second question
 
-An endpoint may respond while its data is outdated. For an agent, that difference matters before making a decision.
+An endpoint can respond successfully while the information behind it is out of date. For an agent deciding what to do next, freshness is part of understanding the response.
 
-## The design
+## Look for useful signals
 
-The public repository describes a Go tool combining cache headers, repeated content fingerprints, and infrastructure signals. Its verdict can be fresh, stale, or unknown. CLI, MCP, and HTTP interfaces make the same concern available in different workflows.
+freshprobe brings cache headers, content fingerprints, and infrastructure signals into a common view of freshness. CLI, MCP, and HTTP interfaces let that check fit into different workflows.
 
-## The limit
+## Leave room for uncertainty
 
-Those signals describe observable behavior. They do not prove that a source is factually correct. This story points to the documented design; it does not claim measured improvements in agent decisions.
+When the available signals are inconclusive, an unknown result keeps that uncertainty visible. I’m interested in tools that help a system recognize what it can rely on before taking the next step.

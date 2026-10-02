@@ -4,5 +4,5 @@
   "period": "August 2020 — March 2022",
   "order": 2,
   "chapter": "Data for infrastructure",
-  "summary": "A Python ETL framework brought 700+ field collection sheets into a reporting layer for data center planning. Supply-chain reporting and a multi-system platform migration connected the rest of the picture."
+  "summary": "I built data workflows for the people planning and operating data center infrastructure, bringing field data and supply-chain information into a clearer reporting picture and helping systems move to a new platform."
 }

@@ -1,4 +1,6 @@
-# Résumé content expansion — version 02
+# Résumé content expansion and editorial rewrite
+
+Version 03 update: the user requested direct high-level copy inspired by the source materials. All six story bodies, career summaries, approach prose, and project previews were rewritten. Résumé attribution and process language were removed from every rendered route, including the studio guide. The original figures retain their scope, without invented outcomes. The table below records the version 02 source mapping; secondary figures (classification accuracy, lead counts, annual run rate, attribution target, collection-sheet count, team size) now remain in source review notes and are omitted from the high-level pages.
 
 The user requested additional content from the DE and FDE résumés and asked that version 01 be saved first. Version 01 was preserved with a local annotated Git tag and source/build archives whose contents and checksums were verified. The user then copied the FDE PDF to the server and confirmed completion.
 
@@ -39,6 +41,6 @@ Professional frontmatter uses 2026-10-02 as the content-review date, not a proje
 
 The homepage now connects data engineering and applied AI through project narratives. A featured professional story sits above two illustrated project cards. Contextual scale figures keep their labels; they are static, not animated counters. Three personal projects use a compact desktop grid and readable mobile stack. A three-part approach section describes discovery, foundations, and operations. Four career chapters lead into education and an original certification stamp.
 
-All six case studies are local static pages in typed collections. Each story records its source and evidence boundary. The original palette, portrait, serif accents, and inference sketch remain. New hover details apply only on devices with hover and when reduced motion is not requested. They add no JavaScript.
+All six case studies are local static pages in typed collections. Each story retains unrendered provenance fields. Professional pages focus on the business problem, contribution, and engineering approach; personal pages keep optional ordinary links to articles/repositories. The original palette, portrait, serif accents, and inference sketch remain. Hover details apply only on devices with hover and when reduced motion is not requested. They add no JavaScript.
 
 Final publication review should confirm the current role, public suitability of employer outcomes, and the phrasing of contribution/decision statements. This local expansion does not publish any material remotely.

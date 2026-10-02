@@ -32,8 +32,6 @@
 @layer components {
   .skip-link { position: fixed; z-index: 5; left: 16px; top: -100px; padding: 12px 20px; background: var(--ink); color: var(--paper); clip-path: inset(50%); }
   .skip-link:focus { top: 16px; clip-path: none; }
-  .review-banner { text-align: center; padding: 7px 20px; border-bottom: 1px solid var(--line); font-size: 12px; background: #eae7dc; }
-  .review-banner a { margin-left: 14px; color: var(--cobalt); }
   .site-header { padding-block: 27px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
   .wordmark { font-size: 25px; font-weight: 600; letter-spacing: -.055em; text-decoration: none; display: inline-flex; align-items: center; }
   .wordmark-dot { color: var(--cobalt); }
@@ -129,9 +127,7 @@
   .story-body { max-width: 720px; margin: 64px auto; }
   .story-body h2 { font-size: 34px; margin-block: 42px 18px; }
   .story-body p + p { margin-top: 20px; }
-  .evidence-note { margin-top: 48px; padding: 5px 30px 30px; border: 1px solid var(--ink); background: #e2e9d5; border-radius: 16px; }
-  .evidence-note h2 { margin-top: 25px; }
-  .evidence-note .text-link { margin-top: 20px; }
+  .story-resource { margin-top: 30px; }
   .story-end { border-top: 1px solid var(--ink); padding-block: 35px; display: flex; justify-content: space-between; align-items: center; gap: 30px; }
   .missing-page { padding-block: 80px; }
   .missing-page p, .missing-page .button { margin-top: 30px; }
@@ -147,12 +143,9 @@
   .swatch p { padding: 12px; font-size: 14px; }
   .type-samples { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
   .type-samples h3 { margin-block: 16px; font-size: 40px; }
-  .review-list { padding-left: 24px; max-width: 860px; }
-  .review-list li { margin-block: 13px; }
   .state-page { padding-top: 60px; max-width: 850px; }
   .state-page h1 { font-size: 55px; margin-block: 24px; }
   .state-page .workbench { margin-block: 35px; }
-  .review-status { font-size: 14px; margin-block: 20px; padding: 12px 18px; border: 1px solid var(--ink); border-radius: 12px; background: var(--lime); }
 }
 @layer responsive {
   @media (min-width: 1500px) { .hero { gap: 70px; } }
@@ -168,8 +161,6 @@
   @media (max-width: 740px) {
     .wrap { width: calc(100% - 40px); }
     .section-space { margin-top: 70px; }
-    .review-banner { font-size: 11px; }
-    .review-banner a { display: block; margin-left: 0; }
     .site-header { align-items: start; flex-direction: column; gap: 13px; padding-block: 20px; }
     .site-header nav { width: 100%; justify-content: space-between; gap: 16px; }
     .site-header nav a { font-size: 14px; }
@@ -214,7 +205,6 @@
     .story-body h2 { font-size: 30px; }
     .story-art figcaption { font-size: 12px; padding: 15px; }
     .story-end { align-items: start; flex-direction: column; gap: 16px; }
-    .evidence-note { padding-inline: 20px; }
     .design-page > h1 { font-size: 46px; }
     .swatches { grid-template-columns: repeat(2, 1fr); }
     .type-samples { grid-template-columns: 1fr; }
