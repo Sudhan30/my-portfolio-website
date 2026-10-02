@@ -1,0 +1,7 @@
+{
+  "title": "Teaching my chat app to query databases",
+  "date": "2026-03-11",
+  "summary": "Two models, focused contexts, and a boundary between a proposed query and a database.",
+  "url": "https://blog.sudharsana.dev/post/text-to-sql-agent",
+  "order": 1
+}

@@ -1,0 +1,27 @@
+---
+interface Props { kind: 'chat' | 'sql' | 'probe'; }
+const { kind } = Astro.props;
+---
+<svg class={`work-art art-${kind}`} viewBox="0 0 560 360" role="img" aria-label={kind === 'chat' ? 'Earlier messages become a summary, paired with recent conversation.' : kind === 'sql' ? 'A question passes through a model and a query boundary before reaching data.' : 'A magnifying glass inspects a response for freshness clues.'}>
+  <defs><pattern id={`grid-${kind}`} width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".12" /></pattern></defs>
+  <rect width="560" height="360" fill={`url(#grid-${kind})`} />
+  {kind === 'chat' && <>
+    <path d="M187 140h73v45h60M187 251h133" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 6" />
+    <g transform="translate(54 55) rotate(-6 90 70)"><rect x="12" y="12" width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><rect x="6" y="6" width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><rect width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M24 35h108M24 52h90M24 69h64" stroke="#17211B" stroke-width="3"/><text x="24" y="95" font-size="14">Earlier dialogue</text></g>
+    <rect x="66" y="221" width="148" height="60" rx="14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="140" y="247" text-anchor="middle" font-size="16">Recent messages</text><path d="M95 261h89" stroke="#17211B" stroke-width="2"/>
+    <g transform="translate(319 96) rotate(5 88 95)"><rect x="8" y="9" width="166" height="180" rx="20" fill="#17211B"/><rect width="166" height="180" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><circle cx="84" cy="51" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M70 51h28M84 37v28" stroke="#17211B" stroke-width="2"/><text x="83" y="106" text-anchor="middle" font-size="20">Working</text><text x="83" y="132" text-anchor="middle" font-size="20">context</text><path d="M39 153h88" stroke="#17211B" stroke-width="2"/></g>
+    <text x="280" y="329" text-anchor="middle" font-size="14">Remember enough to keep going.</text>
+  </>}
+  {kind === 'sql' && <>
+    <path d="M172 115h59v130h49M335 245h58v-97h45" fill="none" stroke="#17211B" stroke-width="2"/>
+    <g transform="translate(43 59) rotate(-5 75 55)"><rect width="156" height="112" rx="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M25 112v19l22-19" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="78" y="49" text-anchor="middle" font-size="20">How many</text><text x="78" y="77" text-anchor="middle" font-size="20">comments?</text></g>
+    <rect x="267" y="188" width="116" height="112" rx="20" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="325" y="235" text-anchor="middle" font-size="20">Query</text><text x="325" y="261" text-anchor="middle" font-size="20">boundary</text>
+    <g transform="translate(421 72)"><path d="M0 24v92c0 32 96 32 96 0V24" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><ellipse cx="48" cy="24" rx="48" ry="18" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M0 70c0 30 96 30 96 0" fill="none" stroke="#17211B" stroke-width="2"/><text x="48" y="118" text-anchor="middle" font-size="18">Data</text></g>
+    <text x="280" y="338" text-anchor="middle" font-size="14">A proposed query still needs a boundary.</text>
+  </>}
+  {kind === 'probe' && <>
+    <g transform="translate(90 66) rotate(-5 140 100)"><rect width="280" height="213" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M0 39h280" stroke="#17211B" stroke-width="2"/><circle cx="22" cy="20" r="5" fill="#F58B70"/><circle cx="41" cy="20" r="5" fill="#D6EB77"/><text x="24" y="83" font-size="19">HTTP 200 OK</text><path d="M24 113h160M24 139h194M24 165h113" stroke="#17211B" stroke-width="3"/><text x="24" y="194" font-size="15">Look a little closer.</text></g>
+    <circle cx="377" cy="159" r="68" fill="#D6EB77" fill-opacity=".92" stroke="#17211B" stroke-width="3"/><circle cx="377" cy="159" r="53" fill="none" stroke="#17211B" stroke-width="2"/><path d="M425 207l57 63" stroke="#17211B" stroke-width="22" stroke-linecap="round"/><path d="M377 128v33l22 15" fill="none" stroke="#17211B" stroke-width="3" stroke-linecap="round"/>
+    <text x="280" y="329" text-anchor="middle" font-size="14">Available is only one part of useful.</text>
+  </>}
+</svg>

@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import '@fontsource/space-grotesk/latin-400.css';
+import '@fontsource/space-grotesk/latin-600.css';
+import '@fontsource/instrument-serif/latin-400-italic.css';
+import { site } from '../content/site';
+interface Props { title?: string; description?: string; }
+const { title = 'Sudharsana — a playful studio for serious engineering', description = 'AI systems, engineering decisions, and things made by Sudharsana Rajasekaran.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#F5F1E8" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="review-banner">Local design draft · copy and portrait await your review <a href="/design/">Review the design ↗</a></div>
+    <header class="site-header wrap">
+      <a class="wordmark" href="/" aria-label="Sudharsana, home"><span class="brand-mark" aria-hidden="true">✳</span> {site.name}<span class="wordmark-dot">.</span></a>
+      <nav aria-label="Main navigation">
+        <a href="/#work">Work</a><a href="/#notes">Notes</a><a href="/#about">About</a><a class="nav-connect" href="/#connect">Let’s talk <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer wrap">
+      <a class="wordmark" href="/">Sudharsana.</a>
+      <p>Made with curiosity &amp; a little intention.</p>
+      <a href="/design/">Local design package ↗</a>
+    </footer>
+  </body>
+</html>

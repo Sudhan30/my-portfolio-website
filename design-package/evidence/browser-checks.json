@@ -1,0 +1,491 @@
+{
+  "timestamp": "2026-10-02T07:04:16.285Z",
+  "browsers": [
+    {
+      "name": "chromium",
+      "version": "153.0.8010.12",
+      "status": "passed",
+      "layouts": [
+        {
+          "width": 320,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/404.html",
+          "overflow": false
+        }
+      ],
+      "accessibility": [
+        {
+          "width": 390,
+          "route": "/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/work/ai-chat/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/one/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/queue/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/prefix/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/404.html",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/work/ai-chat/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/one/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/queue/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/prefix/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/404.html",
+          "violations": []
+        }
+      ],
+      "checks": [
+        "native radio arrow-key navigation and immediate reduced motion",
+        "skip link",
+        "work story and back navigation; exact LinkedIn href",
+        "200% CSS zoom overflow check (manual browser zoom still required)",
+        "genuine unknown-route 404",
+        "no external requests, cookies, or browser storage",
+        "fresh-context mobile transfer budget",
+        "homepage, work story navigation, and all three explanations readable without JavaScript; every initial SVG state",
+        "no idle animation; deliberate animation plays once; rapid changes settle",
+        "touch radio selection"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "mobileTransferBytes": 100068
+    },
+    {
+      "name": "firefox",
+      "version": "155.0",
+      "status": "passed",
+      "layouts": [
+        {
+          "width": 320,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/404.html",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/work/ai-chat/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/one/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/queue/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/prefix/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/404.html",
+          "overflow": false
+        }
+      ],
+      "accessibility": [
+        {
+          "width": 390,
+          "route": "/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/work/ai-chat/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/one/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/queue/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/design/states/prefix/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/404.html",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/work/ai-chat/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/one/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/queue/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/design/states/prefix/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/404.html",
+          "violations": []
+        }
+      ],
+      "checks": [
+        "native radio arrow-key navigation and immediate reduced motion",
+        "skip link",
+        "work story and back navigation; exact LinkedIn href",
+        "200% CSS zoom overflow check (manual browser zoom still required)",
+        "genuine unknown-route 404",
+        "no external requests, cookies, or browser storage",
+        "fresh-context mobile transfer budget",
+        "homepage, work story navigation, and all three explanations readable without JavaScript; every initial SVG state",
+        "no idle animation; deliberate animation plays once; rapid changes settle"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [],
+      "mobileTransferBytes": 100606
+    },
+    {
+      "name": "webkit",
+      "status": "unavailable",
+      "reason": "browserType.launch: \n╔══════════════════════════════════════════════════════╗\n║ Host system is missing dependencies to run browsers. ║\n║ Missing libraries:                                   ║\n║     libgtk-4.so.1                                    ║\n║     libgraphene-1.0.so.0                             ║\n║     libevent-2.1.so.7                                ║\n║     libopus.so.0                                     ║"
+    }
+  ],
+  "failures": [],
+  "screenshots": [
+    "evidence/homepage-mobile.png",
+    "evidence/work-story-mobile.png",
+    "evidence/design-system-mobile.png",
+    "evidence/homepage-desktop.png",
+    "evidence/work-story-desktop.png",
+    "evidence/design-system-desktop.png",
+    "evidence/inference-one.png",
+    "evidence/inference-queue.png",
+    "evidence/inference-prefix.png"
+  ]
+}

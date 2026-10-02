@@ -1,0 +1,9 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Workbench from '../../../components/Workbench.astro';
+import { inferenceStates, type InferenceState } from '../../../content/inference';
+export function getStaticPaths() { return inferenceStates.map(state => ({params:{state:state.id},props:{selected:state.id,label:state.label}})); }
+interface Props { selected: InferenceState; label: string; }
+const { selected, label } = Astro.props;
+---
+<Base title={`${label} — inference design review`}><section class="wrap state-page"><a class="text-link" href="/design/">← Back to design review</a><h1>{label}</h1><p>This route opens in the selected state, including with JavaScript disabled. The other choices remain available.</p><Workbench selected={selected}/></section></Base>
