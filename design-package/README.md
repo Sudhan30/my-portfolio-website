@@ -1,6 +1,8 @@
 # Sudharsana local design package
 
-This is the first review gate in the supplied plan: a runnable local design, rather than the full production migration. It lives on `redesign/design-package`, in an isolated worktree created from `main` at `f8288606d3b918e214ee72b071ea4c7b9fcd3f6c`. No remote push, PR, workflow change, deployment, or cloud retirement has occurred.
+This is version 02 of the runnable local design, expanded at the user's request with content from the DE and FDE résumés. It lives on `redesign/design-package`, in an isolated worktree created from `main` at `f8288606d3b918e214ee72b071ea4c7b9fcd3f6c`. No remote push, PR, workflow change, deployment, or cloud retirement has occurred.
+
+Version 01 is preserved at commit `7feebbd2485d5d4738f52edf76c19bff7ce771e3`, local tag `design-v1-before-resume-expansion`, and `/home/sudhan0312/Desktop/sudharsana-design-snapshots/2026-10-02-design-v1/`. Its source and exact built-preview archives were checksum verified before these changes.
 
 ## Open the package
 
@@ -26,12 +28,16 @@ Open **http://127.0.0.1:4321/design/**. The preview server listens only on loopb
 ## Review artifacts
 
 - Homepage: `/`; [desktop](evidence/homepage-desktop.png) and [mobile](evidence/homepage-mobile.png).
-- Complete AI chat work story: `/work/ai-chat/`; [desktop](evidence/work-story-desktop.png) and [mobile](evidence/work-story-mobile.png).
+- Professional work stories: `/work/gtm-agents/`, `/work/customer-identity/`, `/work/affiliate-pipeline/`; [professional section desktop](evidence/professional-section-desktop.png) and [mobile](evidence/professional-section-mobile.png), [GTM story desktop](evidence/professional-story-desktop.png) and [mobile](evidence/professional-story-mobile.png).
+- Personal work stories: `/work/ai-chat/`, `/work/text-to-sql/`, `/work/freshprobe/`; [AI chat story desktop](evidence/work-story-desktop.png) and [mobile](evidence/work-story-mobile.png).
+- Career, education, and certification: `/#experience`; [desktop](evidence/career-desktop.png) and [mobile](evidence/career-mobile.png).
 - Typography, palette, and review questions: `/design/`; [desktop](evidence/design-system-desktop.png) and [mobile](evidence/design-system-mobile.png).
 - Inference states: `/design/states/one/`, `/design/states/queue/`, `/design/states/prefix/`; [one request](evidence/inference-one.png), [busy queue](evidence/inference-queue.png), [shared prefix](evidence/inference-prefix.png).
 - [Content review](CONTENT-REVIEW.md), [validation evidence](VALIDATION.md), and [release/rollback checklist](RELEASE-CHECKLIST.md).
 
-The workbench has no startup animation. Each deliberate selection plays a short animation once. Reduced motion changes the state immediately. Native radios support keyboard and touch; without JavaScript, CSS updates the figure and all explanations remain visible. Motion is locally bundled through its small animation entrypoint. Portrait variants, fonts, CSS, and scripts are local assets. The two remaining story previews link to their public sources pending the full build.
+The workbench has no startup animation. Each deliberate selection plays a short animation once. Reduced motion changes the state immediately. Native radios support keyboard and touch; without JavaScript, CSS updates the figure and all explanations remain visible. Motion is locally bundled through its small animation entrypoint. Portrait variants, fonts, CSS, and scripts are local assets. All six story links are local document navigation. Professional work, personal work, and career chapters use typed content collections.
+
+The new visual treatment adds a featured professional story, illustrated project cards, contextual scope figures, connected career chapters, and an original certification stamp. Hover details respect reduced motion. Raw résumés, personal phone/email, and internal documents are not copied into the source or artifact. Résumé outcomes are labeled with their actual scope; they are not independent verification.
 
 ## Reproduce browser checks
 

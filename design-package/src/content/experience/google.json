@@ -1,0 +1,8 @@
+{
+  "company": "Google · contract",
+  "role": "Data Engineer",
+  "period": "August 2020 — March 2022",
+  "order": 2,
+  "chapter": "Data for infrastructure",
+  "summary": "A Python ETL framework brought 700+ field collection sheets into a reporting layer for data center planning. Supply-chain reporting and a multi-system platform migration connected the rest of the picture."
+}

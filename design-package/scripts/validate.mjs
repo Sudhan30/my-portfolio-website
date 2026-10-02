@@ -5,7 +5,7 @@ import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 
 const root = resolve('dist');
-const routes = ['index.html','work/ai-chat/index.html','design/index.html','design/states/one/index.html','design/states/queue/index.html','design/states/prefix/index.html','404.html'];
+const routes = (await readdir(root,{recursive:true})).filter(path => path.endsWith('.html')).sort();
 const results = { routes: [], assets: [], gzipJSBytes:0, gzipCSSBytes:0, externalResources: [] };
 for(const license of ['licenses/space-grotesk-OFL.txt','licenses/instrument-serif-OFL.txt']) assert.match(await readFile(resolve(root,license),'utf8'),/SIL OPEN FONT LICENSE/i);
 for(const route of routes) {
@@ -14,14 +14,19 @@ for(const route of routes) {
   assert.match(html, /name="robots" content="noindex, nofollow"/);
   assert.equal((html.match(/<h1[ >]/g) ?? []).length,1,route);
   assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/,`Inline script in ${route}`);
+  assert.doesNotMatch(html, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,`Private email in ${route}`);
+  assert.doesNotMatch(html, /(?:\+1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}|\/home\/[^/]+\//,`Private phone or local path in ${route}`);
   for(const match of html.matchAll(/(?:src|href)="(\/[^"#]+)"/g)) {
     const path = match[1].split('#')[0];
     await readFile(resolve(root,'.' + (path.endsWith('/') ? path+'index.html' : path)));
   }
   for(const match of html.matchAll(/(?:src|srcset)="(https?:[^" ]+)/g)) results.externalResources.push(match[1]);
+  const ids=[...html.matchAll(/\sid="([^"]+)"/g)].map(match=>match[1]);
+  assert.equal(new Set(ids).size,ids.length,`Duplicate ids in ${route}`);
   results.routes.push(route);
 }
 assert.equal(results.externalResources.length,0);
+assert.ok(!(await readdir(root,{recursive:true})).some(path => /\.(pdf|docx)$|(?:^|\/)\.env/.test(path)),'Unexpected private document in artifact');
 for(const path of await readdir(root,{recursive:true})) {
   if(!/\.(js|css|webp|woff2|svg)$/.test(path)) continue;
   const bytes = await readFile(resolve(root,path));

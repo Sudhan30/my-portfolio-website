@@ -1,0 +1,12 @@
+{
+  "DE r\u00e9sum\u00e9": {
+    "format": "docx",
+    "bytes": 12669,
+    "sha256": "7f77642304d5e5af354ebfc5fe2b53e9d06fc9c9151f557324a20503687321d9"
+  },
+  "FDE r\u00e9sum\u00e9": {
+    "format": "pdf",
+    "bytes": 329410,
+    "sha256": "20aea8d937ff7d45f484af794c592a339ce89c24cb24c0bd142eb71d938eefe3"
+  }
+}

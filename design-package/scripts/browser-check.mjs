@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const base = 'http://127.0.0.1:4321';
-const routes = ['/', '/work/ai-chat/', '/design/', '/design/states/one/', '/design/states/queue/', '/design/states/prefix/', '/404.html'];
+const artifact=JSON.parse(await readFile('evidence/artifact-checks.json'));
+const routes = artifact.routes.map(route => route === 'index.html' ? '/' : route.endsWith('/index.html') ? '/'+route.slice(0,-10) : '/'+route);
 const widths = [320,390,768,1440];
 const report = { timestamp: new Date().toISOString(), browsers:[], failures:[], screenshots:[] };
 async function checkOverflow(page, label) {
@@ -39,14 +40,28 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
           result.accessibility.push({width,route,violations});
           assert.equal(violations.filter(v=>['serious','critical'].includes(v.impact)).length,0,`${name} ${route} serious axe violations: ${JSON.stringify(violations)}`);
         }
-        if(name==='chromium' && (width===390 || width===1440) && ['/', '/work/ai-chat/', '/design/'].includes(route)) {
-          const filename = `evidence/${route==='/'?'homepage':route==='/design/'?'design-system':'work-story'}-${width===390?'mobile':'desktop'}.png`;
+        if(name==='chromium' && (width===390 || width===1440) && ['/', '/work/ai-chat/', '/work/gtm-agents/', '/design/'].includes(route)) {
+          const filename = `evidence/${route==='/'?'homepage':route==='/design/'?'design-system':route==='/work/gtm-agents/'?'professional-story':'work-story'}-${width===390?'mobile':'desktop'}.png`;
           await page.screenshot({path:filename,fullPage:true});report.screenshots.push(filename);
         }
       }
     }
     await page.setViewportSize({width:1440,height:1000});
     await page.goto(base);
+    for(const card of await page.locator('.professional-card,.personal-card').all()) {
+      const href=await card.locator('h3 a').getAttribute('href');
+      const expected=await card.locator('h3 a').textContent();
+      const response=await page.goto(base+href);assert.equal(response.status(),200);
+      assert.equal((await page.locator('h1').textContent()).trim(),expected.trim());
+      await page.getByRole('link',{name:'Back to selected work'}).click();
+      await page.waitForURL(base+'/#work');
+    }
+    assert.equal(await page.locator('.career-chapter').count(),4);
+    assert.equal(await page.getByRole('heading',{name:'Google Cloud Certified Professional Data Engineer'}).isVisible(),true);
+    const gmv=page.locator('.career-scale dl > div').filter({hasText:'$750M+'});
+    assert.match(await gmv.textContent(),/order GMV surfaced/);
+    assert.match(await page.locator('.professional-card').filter({hasText:'From a new channel'}).textContent(),/first production year/);
+    result.checks.push('all six project navigation paths; four career chapters; certification; scoped GMV labels');
     const one=page.getByRole('radio',{name:'One request'});
     await one.focus();await page.keyboard.press('ArrowRight');
     assert.equal(await page.getByRole('radio',{name:'A busy queue'}).isChecked(),true);
@@ -94,7 +109,7 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
     const plainPage=await plain.newPage();
     await plainPage.goto(base);assert.equal(await plainPage.locator('.scenario-explanation:visible').count(),3);
     assert.equal(await plainPage.getByRole('heading',{name:'Selected work.'}).isVisible(),true);
-    await plainPage.getByRole('link',{name:'Explore the story'}).click();
+    await plainPage.getByRole('link',{name:'Explore the story'}).first().click();
     assert.equal(await plainPage.getByRole('heading',{name:'The decision: give memory a budget'}).isVisible(),true);
     for(const state of ['one','queue','prefix']) {
       await plainPage.goto(base+`/design/states/${state}/`);

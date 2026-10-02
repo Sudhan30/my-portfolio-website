@@ -1,6 +1,6 @@
 # Content and asset review
 
-Status: **draft; owner approval pending**. No factual review or design approval has been inferred from the instruction to implement the plan.
+Status: **version 02 local draft**. The user said the first design “looks great,” requested more content from the DE and FDE résumés, and supplied the FDE PDF. This authorizes the local expansion. Final factual/publication review is still pending.
 
 | Item | Source or reasoning | Owner decision needed |
 | --- | --- | --- |
@@ -8,16 +8,19 @@ Status: **draft; owner approval pending**. No factual review or design approval 
 | Existing illustrated portrait | `src/myProfPhoto.png`; pixel-only WebP derivative, responsive variants | Approve use and likeness |
 | Headline and AI systems/inference focus | Supplied plan; editorial draft in `src/content/site.ts` | Approve final positioning |
 | First-person curiosity and biography | Editorial prose, informed by the supplied direction | Confirm it sounds like you and reflects your interests |
-| Career paragraph | Older portfolio `src/data.js`; no current title, dates, impact metrics, or employment assertion | Confirm roles and whether employers should appear |
+| Professional stories, scope figures, and career journey | Supplied August 2026 DE DOCX and uploaded FDE PDF; see `RESUME-CONTENT-REVIEW.md` | Review the final paraphrasing, current-role wording, and public suitability |
 | AI chat story | Public architecture article dated 2026-02-05 | Confirm contribution and decision descriptions; approve final copy |
-| Text-to-SQL preview | Public article dated 2026-03-11 | Confirm contribution before completing the full story |
-| freshprobe preview | Public README inspected 2026-10-02 | Confirm project framing and contribution before completing the full story |
+| Text-to-SQL story | Public article dated 2026-03-11 | Review the design account and explicit limits of the illustrated SQL checks |
+| freshprobe story | Public README re-read 2026-10-02 | Review project framing and the distinction between freshness signals and factual correctness |
+| Education and Google Cloud certification | Both supplied résumés | Review exact degree/certification names and dates |
 | Three note dates | Local article frontmatter matching the public source titles | Confirm editorial preview text |
 | LinkedIn, GitHub, blog | Existing contact component | Confirm preferred contact destinations |
 
 ## Evidence boundaries
 
-Work copy describes documented architecture and capabilities. It makes no latency, accuracy, cost, deployment, current production-readiness, revenue, or employment claims. The complete story makes its evidence boundary explicit. First-person authorship still requires owner confirmation.
+Professional work now includes employment, contribution, and outcome statements supported by the supplied résumés. Their source and measurement limits are explicit. No independent employer confirmation, metric audit, deployment verification, or agent-quality benchmark is implied.
+
+The personal stories describe documented architecture and capabilities. The complete stories distinguish those source accounts from current deployment/performance evidence. Exact résumé field mappings and the 95% attribution target distinction are recorded in [RESUME-CONTENT-REVIEW.md](RESUME-CONTENT-REVIEW.md).
 
 Public source links:
 
@@ -30,15 +33,17 @@ All three `/post/<slug>` blog destinations returned HTTP 200 in read-only checks
 
 ## Asset provenance
 
-- Original illustrations: authored SVG geometry in `src/components/WorkArt.astro`, `Workbench.astro`, and the homepage. SVGs have no remote references, scripts, embedded foreign content, or raster payloads.
+- Original illustrations: authored SVG geometry in `src/components/WorkArt.astro`, `Workbench.astro`, and the homepage, including the new agents, identity, and affiliate diagrams. SVGs have no remote references, scripts, embedded foreign content, or raster payloads. The certification stamp is a decorative original symbol, not an official credential badge.
 - Portrait: existing repository asset. The derivative carries only pixels; generated WebP variants are local. The original remains preserved.
 - Space Grotesk 400/600 and Instrument Serif 400 italic: pinned Fontsource packages, Latin WOFF2, bundled locally. OFL licenses copied to `public/licenses/` and emitted into the artifact. No remote font provider is called.
 - Conceptual inference copy: describes prefill/decode, waiting vs batch utilization, and cached exact-prefix computation. It uses no simulated benchmark values or timing claims.
 
 ## Approval record
 
-Design approval: pending.
+Version 01 visual direction: positively reviewed by the user (“website looks great”). Saved before expansion under tag `design-v1-before-resume-expansion` and verified source/preview archives.
+
+Version 02 résumé expansion: requested and implemented locally. Final expanded design/copy review: pending.
 
 Copy, career, portrait, contribution approval: pending.
 
-Record the actual approving instruction and any edits here after review. Do not change these statuses merely because checks pass.
+No publication, workflow, cloud, or endpoint-retirement authorization has been inferred from this review. Do not change approval statuses merely because checks pass.

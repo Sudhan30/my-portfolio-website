@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { chapters: CollectionEntry<'experience'>[]; }
+const { chapters } = Astro.props;
+---
+<section id="experience" class="wrap section-space journey" aria-labelledby="journey-title">
+  <div class="section-heading"><div><p class="eyebrow">The longer story</p><h2 id="journey-title">A career in<br/>connected <em>chapters.</em></h2></div><p>Retail, tech, telecom.<br/>A thread of making information useful.</p></div>
+  <ol class="career-chapters">
+    {chapters.map((entry,index) => <li class="career-chapter">
+      <div class="chapter-marker"><span>{String(index+1).padStart(2,'0')}</span><p>{entry.data.period}</p></div>
+      <p class="chapter-theme">{entry.data.chapter}</p><h3>{entry.data.company}</h3><p class="chapter-role">{entry.data.role}</p><p class="chapter-summary">{entry.data.summary}</p>
+    </li>)}
+  </ol>
+  <div class="learning-grid">
+    <section class="education-note" aria-labelledby="education-title"><p class="eyebrow">The foundation underneath</p><h3 id="education-title">Engineering meets <em>analytics.</em></h3><p><strong>M.S. in Business Analytics (Data Science)</strong><br/>The University of Texas at Dallas · 2020</p><p><strong>B.E. in Electronics &amp; Communication Engineering</strong><br/>Anna University · 2014</p></section>
+    <section class="certification-note" aria-labelledby="certification-title"><div class="certification-stamp" aria-hidden="true">✳</div><div><p class="eyebrow">A recent milestone</p><h3 id="certification-title">Google Cloud Certified<br/>Professional Data Engineer</h3><p>June 2026</p><p class="small-note">Certification listed in both résumés.</p></div></section>
+  </div>
+</section>

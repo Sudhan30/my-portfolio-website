@@ -6,6 +6,14 @@ status: draft
 source: "https://github.com/Sudhan30/my-blog-site-sudhanverse/blob/main/content/posts/building-ai-chat-system.md"
 sourceLabel: "Read the architecture article"
 illustration: chat
+group: personal
+order: 1
+category: "Memory · orchestration · interfaces"
+summary: "An AI chat architecture that treats memory as a resource and failure as part of the experience."
+decision: "Summarize earlier dialogue; keep recent context close."
+evidenceLabel: "Architecture article · February 2026"
+evidenceNote: "The public article documents architecture and code examples. It does not establish current deployment health or independently measured performance."
+caption: "Earlier dialogue and recent messages contribute to the context sent to the model."
 ---
 
 ## A chat box is the beginning

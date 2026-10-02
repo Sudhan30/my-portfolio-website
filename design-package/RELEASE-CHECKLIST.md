@@ -4,7 +4,7 @@ This checklist carries the later plan gates forward. None of its cloud or public
 
 ## Local implementation after approval
 
-- Record design/copy/portrait approval; finish all three work stories in typed collections.
+- Record final expanded design/copy/portrait approval, including résumé outcomes and employer-detail suitability. Six work stories are now drafted in typed collections; review their final factual/publication wording.
 - Replace CRA at the site root with the approved Astro static site, Node 24, exact dependency versions, and committed lockfile. Preserve branch history; do not merge historical telemetry branches.
 - Generate metadata, canonicals at `https://sudharsana.dev`, structured data, sitemap, favicon, and local social previews from approved content. Keep `/404.html` genuine rather than a SPA rewrite.
 - Remove legacy UI, frontend API calls, tracking, and old dependencies. Removing callers does not retire deployed endpoints.

@@ -1,8 +1,16 @@
 ---
-interface Props { kind: 'chat' | 'sql' | 'probe'; }
+interface Props { kind: 'chat' | 'sql' | 'probe' | 'agents' | 'identity' | 'pipeline'; }
 const { kind } = Astro.props;
+const labels = {
+  chat: 'Earlier messages become a summary, paired with recent conversation.',
+  sql: 'A question passes through a model and a query boundary before reaching data.',
+  probe: 'A magnifying glass inspects a response for freshness clues.',
+  agents: 'Curated business context connects to focused Sales and Marketing workflows.',
+  identity: 'Several source records resolve into a shared organization identity.',
+  pipeline: 'Channel activity passes through a pipeline into a view of business outcomes.',
+};
 ---
-<svg class={`work-art art-${kind}`} viewBox="0 0 560 360" role="img" aria-label={kind === 'chat' ? 'Earlier messages become a summary, paired with recent conversation.' : kind === 'sql' ? 'A question passes through a model and a query boundary before reaching data.' : 'A magnifying glass inspects a response for freshness clues.'}>
+<svg class={`work-art art-${kind}`} viewBox="0 0 560 360" role="img" aria-label={labels[kind]}>
   <defs><pattern id={`grid-${kind}`} width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".12" /></pattern></defs>
   <rect width="560" height="360" fill={`url(#grid-${kind})`} />
   {kind === 'chat' && <>
@@ -23,5 +31,32 @@ const { kind } = Astro.props;
     <g transform="translate(90 66) rotate(-5 140 100)"><rect width="280" height="213" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M0 39h280" stroke="#17211B" stroke-width="2"/><circle cx="22" cy="20" r="5" fill="#F58B70"/><circle cx="41" cy="20" r="5" fill="#D6EB77"/><text x="24" y="83" font-size="19">HTTP 200 OK</text><path d="M24 113h160M24 139h194M24 165h113" stroke="#17211B" stroke-width="3"/><text x="24" y="194" font-size="15">Look a little closer.</text></g>
     <circle cx="377" cy="159" r="68" fill="#D6EB77" fill-opacity=".92" stroke="#17211B" stroke-width="3"/><circle cx="377" cy="159" r="53" fill="none" stroke="#17211B" stroke-width="2"/><path d="M425 207l57 63" stroke="#17211B" stroke-width="22" stroke-linecap="round"/><path d="M377 128v33l22 15" fill="none" stroke="#17211B" stroke-width="3" stroke-linecap="round"/>
     <text x="280" y="329" text-anchor="middle" font-size="14">Available is only one part of useful.</text>
+  </>}
+  {kind === 'agents' && <>
+    <path d="M144 111h30v60h34M145 251h29v-45h34M354 179h30v-72h25M384 179v76h25" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
+    <g transform="translate(35 66) rotate(-7 55 43)"><rect width="118" height="88" rx="15" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M20 22h78M20 35h53" stroke="#17211B" stroke-width="2"/><text x="19" y="65" font-size="16">Behavior</text></g>
+    <g transform="translate(35 207) rotate(6 55 43)"><rect width="118" height="88" rx="15" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M20 22h78M20 35h53" stroke="#17211B" stroke-width="2"/><text x="19" y="65" font-size="16">Intent</text></g>
+    <rect x="204" y="109" width="158" height="146" rx="25" fill="#17211B"/>
+    <rect x="198" y="103" width="158" height="146" rx="25" fill="#D6EB77" stroke="#17211B" stroke-width="2"/>
+    <path d="M277 124v36M259 142h36" stroke="#17211B" stroke-width="2"/><circle cx="277" cy="142" r="24" fill="none" stroke="#17211B" stroke-width="2"/>
+    <text x="277" y="195" text-anchor="middle" font-size="21">Business</text><text x="277" y="222" text-anchor="middle" font-size="21">context</text>
+    <g transform="translate(409 64)"><rect width="122" height="81" rx="20" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M22 81v14l17-14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="61" y="46" text-anchor="middle" font-size="19">Sales</text></g>
+    <g transform="translate(402 215)"><rect width="137" height="81" rx="20" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M23 81v14l17-14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="69" y="46" text-anchor="middle" font-size="18">Marketing</text></g>
+    <text x="280" y="334" text-anchor="middle" font-size="14">Give the model context that means something.</text>
+  </>}
+  {kind === 'identity' && <>
+    <path d="M167 78h68v98h58M167 178h125M167 273h68v-95M292 178h47" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
+    {[49,143,237].map((y,i) => <g transform={`translate(${i===1?57:48} ${y}) rotate(${i===1?4:-4} 55 28)`}><rect width="119" height="61" rx="12" fill={i===1?'#F58B70':'#F5F1E8'} stroke="#17211B" stroke-width="2"/><circle cx="25" cy="27" r="10" fill="#D6EB77" stroke="#17211B" stroke-width="1.5"/><path d="M46 22h52M46 34h34" stroke="#17211B" stroke-width="2"/></g>)}
+    <circle cx="292" cy="178" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M281 178l8 8 14-17" fill="none" stroke="#2448C6" stroke-width="3"/>
+    <g transform="translate(342 79) rotate(4 84 100)"><rect x="7" y="8" width="162" height="198" rx="20" fill="#17211B"/><rect width="162" height="198" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M49 36h64v48H49zM42 84h78M62 49h9M88 49h9M62 63h9M88 63h9" fill="none" stroke="#17211B" stroke-width="2"/><text x="81" y="122" text-anchor="middle" font-size="19">One shared</text><text x="81" y="148" text-anchor="middle" font-size="19">identity</text><path d="M32 170h97" stroke="#17211B" stroke-width="2"/></g>
+    <text x="280" y="334" text-anchor="middle" font-size="14">Bring the pieces into the same picture.</text>
+  </>}
+  {kind === 'pipeline' && <>
+    <path d="M147 174h43M343 174h39" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/><path d="M183 169l7 5-7 5M375 169l7 5-7 5" fill="none" stroke="#17211B" stroke-width="2"/>
+    <g transform="translate(30 95) rotate(-5 60 75)"><rect width="122" height="152" rx="20" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M33 40l39-13v43L33 58zM33 40v18M47 63l7 20" fill="none" stroke="#17211B" stroke-width="2"/><text x="61" y="120" text-anchor="middle" font-size="19">Channel</text></g>
+    <rect x="198" y="83" width="146" height="187" rx="23" fill="#17211B"/>
+    <rect x="191" y="76" width="146" height="187" rx="23" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M222 102h84l-31 35v29h-23v-29z" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><text x="264" y="211" text-anchor="middle" font-size="20">Pipeline</text><path d="M223 235h81" stroke="#17211B" stroke-width="2"/>
+    <g transform="translate(385 94) rotate(5 70 80)"><rect width="148" height="157" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M28 100V72h20v28M63 100V55h20v45M98 100V34h20v66M22 101h104" fill="none" stroke="#17211B" stroke-width="2"/><text x="74" y="133" text-anchor="middle" font-size="17">Channel view</text></g>
+    <text x="280" y="334" text-anchor="middle" font-size="14">Carry the business question through the pipeline.</text>
   </>}
 </svg>
