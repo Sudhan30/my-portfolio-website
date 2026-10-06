@@ -1,0 +1,14 @@
+@layer components {
+  .vb-step .vb-row { fill: var(--paper); }
+  .vb-step[data-state="active"] .vb-row { stroke: var(--cobalt); stroke-width: 3; }
+  .vb-step[data-state="pass"] .vb-pill { fill: var(--lime); }
+  .vb-step[data-state="fail"] .vb-row { fill: #fbd9cf; }
+  .vb-step[data-state="fail"] .vb-pill { fill: var(--coral); }
+  .vb-step[data-state="skip"] .vb-pill, .vb-step[data-state="pending"] .vb-pill, .vb-step[data-state="active"] .vb-pill { fill: var(--paper); stroke-dasharray: 5 4; }
+  .vb-step[data-state="skip"] text { opacity: .5; }
+  .vb-outcome[data-tone="ok"] .vb-outcome-box { fill: var(--lime); }
+  .vb-outcome[data-tone="alert"] .vb-outcome-box { fill: var(--coral); }
+  .vb-outcome, .vb-now { transform-box: fill-box; transform-origin: center; }
+  .vb-silent, .play[data-choice="silent"] .vb-steps { display: none; }
+  .play[data-choice="silent"] .vb-silent { display: inline; }
+}

@@ -1,0 +1,86 @@
+---
+import Playable from '../Playable.astro';
+import { scenarios, nodes, nodeHeight, edges, chipRows, routeEdges, centre, type NodeId, type PanelKind } from '../../content/figures/decide-answer';
+import '../../styles/figures/decide-answer.css';
+
+// The server renders the first scenario settled; the script redraws the rest.
+const first = scenarios[0];
+const firstPanel = first.panel as PanelKind;
+const panelDisplay = (kind: PanelKind) => (kind === firstPanel ? undefined : 'none');
+const firstEdges: string[] = routeEdges(first.route);
+const nodeState = (id: NodeId) => {
+  const index = (first.route as readonly NodeId[]).indexOf(id);
+  if (index < 0) return 'off';
+  return index === first.route.length - 1 ? 'end' : 'on';
+};
+const start = centre('gate');
+const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+---
+<Playable id="da" kind="decide-answer" surface="chat"
+  legend="Should it look before it answers?"
+  intro="Pick a question. Watch the gate score it word by word, then follow the route it takes through the agent."
+  caption="Scores and routes are what the chat app’s grounding gate returns for these exact questions. Tool rounds stop at three, then the model answers with tools removed. Replies are illustrative."
+  scenarios={scenarios}>
+  <svg viewBox="0 0 600 560" role="img" aria-labelledby="da-svg-title">
+    <title id="da-svg-title">A question is scored by a gate. The score decides whether the agent may answer from memory, must call a tool first, or must refuse. Database queries pass through an application boundary before they run.</title>
+    <defs><pattern id="da-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".14" /></pattern></defs>
+    <rect width="600" height="560" fill="url(#da-dots)" />
+
+    {scenarios.map((scenario, index) => <g class="da-question" data-for={scenario.id} display={index === 0 ? undefined : 'none'}>
+      <rect x="16" y="16" width="568" height={scenario.question.length * 28 + 30} rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+      <path d={`M48 ${scenario.question.length * 28 + 46}v12l16-12`} fill="#F5F1E8" stroke="#17211B" stroke-width="2" stroke-linejoin="round" />
+      {scenario.question.map((line, row) => <text x="36" y={54 + row * 28} font-size="22" font-weight="600">{line}</text>)}
+    </g>)}
+
+    <text x="16" y="134" font-size="22" font-weight="600">Gate score</text>
+    <text x="536" y="134" font-size="18" text-anchor="end" data-out="need">{first.need}</text>
+    <text x="584" y="136" font-size="30" font-weight="600" text-anchor="end" data-out="score">{first.score < 0 ? `−${Math.abs(first.score)}` : first.score}</text>
+    {scenarios.map((scenario, index) => <g class="da-hits" data-for={scenario.id} display={index === 0 ? undefined : 'none'}>
+      {chipRows(scenario.hits).map((chip) => <g class="da-chip"><g>
+        <rect x={chip.x} y={chip.y} width={chip.w} height="38" rx="19" fill={chip.points > 0 ? '#D6EB77' : '#F58B70'} stroke="#17211B" stroke-width="2" />
+        <text x={chip.x + chip.w / 2} y={chip.y + 26} font-size="18" text-anchor="middle">{chip.label}</text>
+      </g></g>)}
+    </g>)}
+
+    {edges.map((edge) => <path class="da-edge" data-edge={edge.id} data-on={firstEdges.includes(edge.id) ? 'true' : 'false'} d={edge.d} fill="none" />)}
+    {(Object.keys(nodes) as NodeId[]).map((id) => <g class="da-node" data-node={id} data-state={nodeState(id)}>
+      <rect x={nodes[id].x} y={nodes[id].y} width={nodes[id].w} height={nodeHeight} rx="14" stroke="#17211B" stroke-width="2" data-fade />
+      <text x={nodes[id].x + nodes[id].w / 2} y={nodes[id].y + 31} font-size="22" text-anchor="middle" data-fade>{nodes[id].label}</text>
+    </g>)}
+    <g class="da-dot"><circle cx={start.x} cy={start.y} r="8" fill="#2448C6" stroke="#F5F1E8" stroke-width="2" /></g>
+
+    <rect x="16" y="412" width="568" height="136" rx="16" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+    <g class="da-panel" data-panel="none" display={panelDisplay('none')}>
+      <text x="34" y="446" font-size="18" font-weight="600">No tool call · reply from the model</text>
+      <text x="34" y="480" font-size="20">“A NetworkPolicy lists which pods may talk</text>
+      <text x="34" y="506" font-size="20">to which, and the network plugin enforces it.”</text>
+    </g>
+    <g class="da-panel" data-panel="tool" display={panelDisplay('tool')}>
+      <text x="34" y="446" font-size="18" font-weight="600">Tool call</text>
+      <text x="34" y="476" font-size="20" font-family={mono} fill="#2448C6">get_k8s_pods()</text>
+      <text x="34" y="512" font-size="18" font-weight="600">Reply, written from what came back</text>
+      <text x="34" y="536" font-size="20">“There are 23 pods running right now.”</text>
+    </g>
+    <g class="da-panel" data-panel="sql-pass" display={panelDisplay('sql-pass')}>
+      <text font-size="17" font-family={mono} fill="#2448C6"><tspan x="34" y="440">SELECT * FROM (</tspan><tspan x="56" y="462">SELECT count(*) FROM comments</tspan><tspan x="56" y="484">WHERE posted_on &gt;= date_trunc('week', now())</tspan><tspan x="34" y="506">) AS q LIMIT 100</tspan></text>
+      {[['SELECT only', 34, 118], ['one statement', 160, 140], ['read only', 308, 104], ['10s timeout', 420, 120]].map(([label, x, w]) => <g><rect x={x as number} y="514" width={w as number} height="28" rx="14" fill="#D6EB77" stroke="#17211B" stroke-width="2" /><text x={(x as number) + (w as number) / 2} y="534" font-size="17" text-anchor="middle">{label}</text></g>)}
+    </g>
+    <g class="da-panel" data-panel="sql-reject" display={panelDisplay('sql-reject')}>
+      <text font-size="17" font-family={mono} fill="#2448C6"><tspan x="34" y="444">DELETE FROM comments</tspan><tspan x="34" y="466">WHERE body ILIKE '%spam%'</tspan></text>
+      <path d="M30 438h236" stroke="#17211B" stroke-width="2" />
+      <rect x="34" y="482" width="150" height="30" rx="15" fill="#F58B70" stroke="#17211B" stroke-width="2" />
+      <text x="109" y="503" font-size="17" text-anchor="middle">SELECT only: no</text>
+      <text x="198" y="503" font-size="18" font-weight="600">“Only SELECT queries are allowed”</text>
+      <text x="34" y="536" font-size="18">Never reached the database.</text>
+    </g>
+    <g class="da-panel" data-panel="refuse" display={panelDisplay('refuse')}>
+      <text x="34" y="446" font-size="18" font-weight="600">No tool, no model · reply written by code</text>
+      <text x="34" y="480" font-size="20">“I didn’t read anything for this, so I won’t</text>
+      <text x="34" y="506" font-size="20">answer it from memory. No tool here reads</text>
+      <text x="34" y="532" font-size="20">alerting.”</text>
+    </g>
+  </svg>
+</Playable>
+<script>
+  import '../../scripts/figures/decide-answer';
+</script>

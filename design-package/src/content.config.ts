@@ -7,7 +7,9 @@ const work = defineCollection({
   schema: z.object({
     title: z.string(), subtitle: z.string(), date: z.string(),
     status: z.literal('draft'), source: z.url().optional(),
-    sourceLabel: z.string(), illustration: z.enum(['chat', 'sql', 'probe', 'agents', 'identity', 'pipeline']),
+    sourceLabel: z.string(), illustration: z.enum(['chat', 'sql', 'probe', 'agents', 'identity', 'pipeline', 'platform', 'sentinel']),
+    figure: z.enum(['ask-account', 'resolve-records', 'follow-click', 'decide-answer', 'verified-backup', 'severity-gate', 'fresh-vote']).optional(),
+    closing: z.string().default('Good systems start with good questions.'),
     group: z.enum(['professional', 'personal']), order: z.number(),
     summary: z.string(), decision: z.string(), category: z.string(),
     displayLabel: z.string(), evidenceLabel: z.string(), evidenceNote: z.string(), caption: z.string(),

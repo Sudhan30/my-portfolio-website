@@ -1,0 +1,79 @@
+---
+import Playable from '../Playable.astro';
+import { stages, week, journey, plans, scenarios, firstTouchPanel } from '../../content/figures/follow-click';
+import '../../styles/figures/follow-click.css';
+
+// The server renders the first scenario's settled state, so the figure reads
+// correctly before (or without) the script.
+const plan = plans.normal!;
+const boxes = [
+  { x: 16, y: 20 }, { x: 212, y: 20 }, { x: 408, y: 20 },
+  { x: 408, y: 124 }, { x: 212, y: 124 }, { x: 16, y: 124 },
+];
+const slot = 528 / week.length;
+const barX = (index: number) => 36 + index * slot + (slot - 40) / 2;
+const barH = (value: number) => value * 1.2;
+const chipX = (index: number) => 36 + index * 136;
+---
+<Playable id="fc" kind="follow-click" surface="pipeline"
+  legend="Follow one click"
+  intro="A partner click travels from the channel to the view the business reads. Pick a day and watch where it goes, and where it stops."
+  caption="Illustrative data. The stages and checks reflect the pipeline; the clicks, days and journey are made up."
+  scenarios={scenarios} panels={[firstTouchPanel]}>
+  <svg viewBox="0 0 600 530" role="img" aria-labelledby="fc-svg-title">
+    <title id="fc-svg-title">A click passes through six stages: channel, ingest, dedupe, join to orders, attribution and a freshness check, then reaches a channel view of daily results. When a partner file is late, the freshness check holds today's value. A second view shows how last touch and first touch credit the same three step journey differently.</title>
+    <defs><pattern id="fc-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".14" /></pattern></defs>
+    <rect width="600" height="530" fill="url(#fc-dots)" />
+
+    <path d="M192 54h18M388 54h18M496 88v34M408 158h-18M212 158h-18M104 192v42" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 6" />
+    <path d="M203 49l7 5-7 5M399 49l7 5-7 5M491 115l5 7 5-7M397 153l-7 5 7 5M201 153l-7 5 7 5M99 227l5 7 5-7" fill="none" stroke="#17211B" stroke-width="2" />
+    {stages.map((stage, index) => <g class="fc-stage" data-stage={stage.id} data-state={plan.states[stage.id]}>
+      <rect class="fc-box" x={boxes[index]!.x} y={boxes[index]!.y} width="176" height="68" rx="16" stroke="#17211B" stroke-width="2" data-fade />
+      <circle class="fc-dot" cx={boxes[index]!.x + 156} cy={boxes[index]!.y + 20} r="7" stroke="#17211B" stroke-width="2" data-fade />
+      <text x={boxes[index]!.x + 16} y={boxes[index]!.y + 31} font-size="22" font-weight="600">{stage.label}</text>
+      <text class="fc-note" x={boxes[index]!.x + 16} y={boxes[index]!.y + 55} font-size="17">{plan.notes[stage.id]}</text>
+    </g>)}
+
+    <rect x="16" y="236" width="568" height="278" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+
+    <g class="fc-view">
+      <text x="36" y="274" font-size="22" font-weight="600">Channel view</text>
+      <path d="M36 476h528" stroke="#17211B" stroke-width="2" />
+      {week.map((entry, index) => <>
+        <rect class={index === week.length - 1 ? 'fc-today' : 'fc-bar'} data-today={index === week.length - 1 ? plan.today : undefined} x={barX(index)} y={476 - barH(entry.value)} width="40" height={barH(entry.value)} rx="6" stroke="#17211B" stroke-width="2" />
+        <text x={barX(index) + 20} y="502" font-size="17" text-anchor="middle" font-weight={index === week.length - 1 ? 600 : 400}>{entry.day}</text>
+      </>)}
+      <text class="fc-held-label" x={barX(week.length - 1) + 20} y="402" font-size="17" text-anchor="middle">held</text>
+      <g class="fc-flag">
+        <rect x="324" y="250" width="240" height="46" rx="14" fill="#F58B70" stroke="#17211B" stroke-width="2" />
+        <text x="444" y="280" font-size="20" font-weight="600" text-anchor="middle">Late file: view held</text>
+      </g>
+    </g>
+
+    <g class="fc-credit">
+      <text x="36" y="274" font-size="22" font-weight="600">One customer, one order</text>
+      {journey.map((touch, index) => <>
+        <rect x={chipX(index)} y="294" width="116" height="48" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+        <text x={chipX(index) + 58} y="325" font-size="22" text-anchor="middle">{touch.label}</text>
+        <path d={`M${chipX(index) + 118} 318h16`} stroke="#17211B" stroke-width="2" stroke-dasharray="4 4" />
+        <rect class="fc-credit-bar" data-touch={touch.id} x={chipX(index) + 28} y="380" width="60" height="96" rx="6" fill="#D6EB77" stroke="#17211B" stroke-width="2" />
+        <text class="fc-credit-value" data-touch={touch.id} x={chipX(index) + 58} y="372" font-size="22" font-weight="600" text-anchor="middle">{touch.id === 'affiliate' ? '100%' : '0%'}</text>
+      </>)}
+      <rect x="444" y="294" width="120" height="48" rx="14" fill="#17211B" />
+      <text class="fc-order-text" x="504" y="325" font-size="22" text-anchor="middle">Order</text>
+      <path d="M36 476h392" stroke="#17211B" stroke-width="2" />
+      <text x="504" y="430" font-size="17" text-anchor="middle">rule</text>
+      <text x="504" y="458" font-size="22" font-weight="600" text-anchor="middle" data-out="rule">last touch</text>
+    </g>
+
+    <g class="fc-packet"><circle cx="104" cy="54" r="9" fill="#2448C6" stroke="#F5F1E8" stroke-width="2" /></g>
+  </svg>
+  <div class="fc-controls" role="group" aria-labelledby="fc-rule-label">
+    <span id="fc-rule-label">Credit rule</span>
+    <button type="button" class="fc-rule" data-rule="credit" aria-pressed="true">Last touch (agreed)</button>
+    <button type="button" class="fc-rule" data-rule="first" aria-pressed="false">First touch</button>
+  </div>
+</Playable>
+<script>
+  import '../../scripts/figures/follow-click';
+</script>

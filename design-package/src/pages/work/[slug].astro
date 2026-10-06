@@ -2,20 +2,32 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import WorkArt from '../../components/WorkArt.astro';
+import AskAccount from '../../components/figures/AskAccount.astro';
+import ResolveRecords from '../../components/figures/ResolveRecords.astro';
+import FollowClick from '../../components/figures/FollowClick.astro';
+import DecideAnswer from '../../components/figures/DecideAnswer.astro';
+import VerifiedBackup from '../../components/figures/VerifiedBackup.astro';
+import SeverityGate from '../../components/figures/SeverityGate.astro';
+import FreshVote from '../../components/figures/FreshVote.astro';
 export async function getStaticPaths() {
   return (await getCollection('work')).map(story => ({params:{slug:story.id},props:{story}}));
 }
 interface Props { story: CollectionEntry<'work'>; }
 const { story } = Astro.props;
 const { Content } = await render(story);
+const figures = {
+  'ask-account': AskAccount, 'resolve-records': ResolveRecords, 'follow-click': FollowClick,
+  'decide-answer': DecideAnswer, 'verified-backup': VerifiedBackup, 'severity-gate': SeverityGate, 'fresh-vote': FreshVote,
+} as const;
+const Figure = story.data.figure ? figures[story.data.figure] : undefined;
 ---
 <Base title={`${story.data.title} — Sudharsana`} description={story.data.subtitle}>
   <article class="story wrap">
     <a class="text-link" href="/#work">← Back to selected work</a>
     <header class="story-header"><p class="eyebrow">{story.data.group === 'professional' ? 'Professional work' : 'Personal explorations'} · {story.data.category}</p><h1>{story.data.title}</h1><p class="large-prose">{story.data.subtitle}</p><p class="small-note">{story.data.displayLabel}</p></header>
-    <figure class={`story-art surface-${story.data.illustration}`}><WorkArt kind={story.data.illustration}/><figcaption>{story.data.caption}</figcaption></figure>
+    {Figure ? <Figure/> : <figure class={`story-art surface-${story.data.illustration}`}><WorkArt kind={story.data.illustration}/><figcaption>{story.data.caption}</figcaption></figure>}
     {story.data.metrics.length > 0 && <dl class="story-metrics">{story.data.metrics.map(metric => <div><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}
     <div class="story-body"><Content/>{story.data.source && <a class="text-link story-resource" href={story.data.source}>{story.data.sourceLabel} ↗</a>}</div>
-    <div class="story-end"><p>Good systems start with good questions.</p><a class="text-link" href="/#connect">Let’s talk ↗</a></div>
+    <div class="story-end"><p>{story.data.closing}</p><a class="text-link" href="/#connect">Let’s talk ↗</a></div>
   </article>
 </Base>

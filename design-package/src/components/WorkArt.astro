@@ -1,5 +1,5 @@
 ---
-interface Props { kind: 'chat' | 'sql' | 'probe' | 'agents' | 'identity' | 'pipeline'; }
+interface Props { kind: 'chat' | 'sql' | 'probe' | 'agents' | 'identity' | 'pipeline' | 'platform' | 'sentinel'; }
 const { kind } = Astro.props;
 const labels = {
   chat: 'Earlier messages become a summary, paired with recent conversation.',
@@ -8,16 +8,18 @@ const labels = {
   agents: 'Curated business context connects to focused Sales and Marketing workflows.',
   identity: 'Several source records resolve into a shared organization identity.',
   pipeline: 'Channel activity passes through a pipeline into a view of business outcomes.',
+  platform: 'Last night’s backup is restored into a scratch database and checked off, line by line.',
+  sentinel: 'Security events pass through rules that set severity; a high finding goes straight to email, a medium one may carry a model’s note.',
 };
 ---
-<svg class={`work-art art-${kind}`} viewBox="0 0 560 360" role="img" aria-label={labels[kind]}>
+<svg class={`work-art art-${kind}`} viewBox="0 0 560 360" role="img" aria-label={labels[kind]} data-preview>
   <defs><pattern id={`grid-${kind}`} width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".12" /></pattern></defs>
   <rect width="560" height="360" fill={`url(#grid-${kind})`} />
   {kind === 'chat' && <>
     <path d="M187 140h73v45h60M187 251h133" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 6" />
     <g transform="translate(54 55) rotate(-6 90 70)"><rect x="12" y="12" width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><rect x="6" y="6" width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><rect width="164" height="110" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M24 35h108M24 52h90M24 69h64" stroke="#17211B" stroke-width="3"/><text x="24" y="95" font-size="14">Earlier dialogue</text></g>
-    <rect x="66" y="221" width="148" height="60" rx="14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="140" y="247" text-anchor="middle" font-size="16">Recent messages</text><path d="M95 261h89" stroke="#17211B" stroke-width="2"/>
-    <g transform="translate(319 96) rotate(5 88 95)"><rect x="8" y="9" width="166" height="180" rx="20" fill="#17211B"/><rect width="166" height="180" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><circle cx="84" cy="51" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M70 51h28M84 37v28" stroke="#17211B" stroke-width="2"/><text x="83" y="106" text-anchor="middle" font-size="20">Working</text><text x="83" y="132" text-anchor="middle" font-size="20">context</text><path d="M39 153h88" stroke="#17211B" stroke-width="2"/></g>
+    <g class="pv pv-slide"><rect x="66" y="221" width="148" height="60" rx="14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="140" y="247" text-anchor="middle" font-size="16">Recent messages</text><path d="M95 261h89" stroke="#17211B" stroke-width="2"/></g>
+    <g class="pv pv-pop pv-d3"><g transform="translate(319 96) rotate(5 88 95)"><rect x="8" y="9" width="166" height="180" rx="20" fill="#17211B"/><rect width="166" height="180" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><circle cx="84" cy="51" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M70 51h28M84 37v28" stroke="#17211B" stroke-width="2"/><text x="83" y="106" text-anchor="middle" font-size="20">Working</text><text x="83" y="132" text-anchor="middle" font-size="20">context</text><path d="M39 153h88" stroke="#17211B" stroke-width="2"/></g></g>
     <text x="280" y="329" text-anchor="middle" font-size="14">Remember enough to keep going.</text>
   </>}
   {kind === 'sql' && <>
@@ -29,25 +31,25 @@ const labels = {
   </>}
   {kind === 'probe' && <>
     <g transform="translate(90 66) rotate(-5 140 100)"><rect width="280" height="213" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M0 39h280" stroke="#17211B" stroke-width="2"/><circle cx="22" cy="20" r="5" fill="#F58B70"/><circle cx="41" cy="20" r="5" fill="#D6EB77"/><text x="24" y="83" font-size="19">HTTP 200 OK</text><path d="M24 113h160M24 139h194M24 165h113" stroke="#17211B" stroke-width="3"/><text x="24" y="194" font-size="15">Look a little closer.</text></g>
-    <circle cx="377" cy="159" r="68" fill="#D6EB77" fill-opacity=".92" stroke="#17211B" stroke-width="3"/><circle cx="377" cy="159" r="53" fill="none" stroke="#17211B" stroke-width="2"/><path d="M425 207l57 63" stroke="#17211B" stroke-width="22" stroke-linecap="round"/><path d="M377 128v33l22 15" fill="none" stroke="#17211B" stroke-width="3" stroke-linecap="round"/>
+    <g class="pv pv-sweep"><circle cx="377" cy="159" r="68" fill="#D6EB77" fill-opacity=".92" stroke="#17211B" stroke-width="3"/><circle cx="377" cy="159" r="53" fill="none" stroke="#17211B" stroke-width="2"/><path d="M425 207l57 63" stroke="#17211B" stroke-width="22" stroke-linecap="round"/><path d="M377 128v33l22 15" fill="none" stroke="#17211B" stroke-width="3" stroke-linecap="round"/></g>
     <text x="280" y="329" text-anchor="middle" font-size="14">Available is only one part of useful.</text>
   </>}
   {kind === 'agents' && <>
-    <path d="M144 111h30v60h34M145 251h29v-45h34M354 179h30v-72h25M384 179v76h25" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
+    <path class="pv pv-flow" d="M144 111h30v60h34M145 251h29v-45h34M354 179h30v-72h25M384 179v76h25" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
     <g transform="translate(35 66) rotate(-7 55 43)"><rect width="118" height="88" rx="15" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M20 22h78M20 35h53" stroke="#17211B" stroke-width="2"/><text x="19" y="65" font-size="16">Behavior</text></g>
     <g transform="translate(35 207) rotate(6 55 43)"><rect width="118" height="88" rx="15" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M20 22h78M20 35h53" stroke="#17211B" stroke-width="2"/><text x="19" y="65" font-size="16">Intent</text></g>
     <rect x="204" y="109" width="158" height="146" rx="25" fill="#17211B"/>
     <rect x="198" y="103" width="158" height="146" rx="25" fill="#D6EB77" stroke="#17211B" stroke-width="2"/>
     <path d="M277 124v36M259 142h36" stroke="#17211B" stroke-width="2"/><circle cx="277" cy="142" r="24" fill="none" stroke="#17211B" stroke-width="2"/>
     <text x="277" y="195" text-anchor="middle" font-size="21">Business</text><text x="277" y="222" text-anchor="middle" font-size="21">context</text>
-    <g transform="translate(409 64)"><rect width="122" height="81" rx="20" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M22 81v14l17-14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="61" y="46" text-anchor="middle" font-size="19">Sales</text></g>
-    <g transform="translate(402 215)"><rect width="137" height="81" rx="20" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M23 81v14l17-14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="69" y="46" text-anchor="middle" font-size="18">Marketing</text></g>
+    <g class="pv pv-pop pv-d2"><g transform="translate(409 64)"><rect width="122" height="81" rx="20" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M22 81v14l17-14" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="61" y="46" text-anchor="middle" font-size="19">Sales</text></g></g>
+    <g class="pv pv-pop pv-d3"><g transform="translate(402 215)"><rect width="137" height="81" rx="20" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M23 81v14l17-14" fill="#F58B70" stroke="#17211B" stroke-width="2"/><text x="69" y="46" text-anchor="middle" font-size="18">Marketing</text></g></g>
     <text x="280" y="334" text-anchor="middle" font-size="14">Give the model context that means something.</text>
   </>}
   {kind === 'identity' && <>
     <path d="M167 78h68v98h58M167 178h125M167 273h68v-95M292 178h47" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
-    {[49,143,237].map((y,i) => <g transform={`translate(${i===1?57:48} ${y}) rotate(${i===1?4:-4} 55 28)`}><rect width="119" height="61" rx="12" fill={i===1?'#F58B70':'#F5F1E8'} stroke="#17211B" stroke-width="2"/><circle cx="25" cy="27" r="10" fill="#D6EB77" stroke="#17211B" stroke-width="1.5"/><path d="M46 22h52M46 34h34" stroke="#17211B" stroke-width="2"/></g>)}
-    <circle cx="292" cy="178" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M281 178l8 8 14-17" fill="none" stroke="#2448C6" stroke-width="3"/>
+    {[49,143,237].map((y,i) => <g class={`pv pv-gather pv-d${i+1}`}><g transform={`translate(${i===1?57:48} ${y}) rotate(${i===1?4:-4} 55 28)`}><rect width="119" height="61" rx="12" fill={i===1?'#F58B70':'#F5F1E8'} stroke="#17211B" stroke-width="2"/><circle cx="25" cy="27" r="10" fill="#D6EB77" stroke="#17211B" stroke-width="1.5"/><path d="M46 22h52M46 34h34" stroke="#17211B" stroke-width="2"/></g></g>)}
+    <circle cx="292" cy="178" r="24" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path class="pv pv-draw pv-d4" d="M281 178l8 8 14-17" fill="none" stroke="#2448C6" stroke-width="3" pathLength="1"/>
     <g transform="translate(342 79) rotate(4 84 100)"><rect x="7" y="8" width="162" height="198" rx="20" fill="#17211B"/><rect width="162" height="198" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M49 36h64v48H49zM42 84h78M62 49h9M88 49h9M62 63h9M88 63h9" fill="none" stroke="#17211B" stroke-width="2"/><text x="81" y="122" text-anchor="middle" font-size="19">One shared</text><text x="81" y="148" text-anchor="middle" font-size="19">identity</text><path d="M32 170h97" stroke="#17211B" stroke-width="2"/></g>
     <text x="280" y="334" text-anchor="middle" font-size="14">Bring the pieces into the same picture.</text>
   </>}
@@ -57,6 +59,28 @@ const labels = {
     <rect x="198" y="83" width="146" height="187" rx="23" fill="#17211B"/>
     <rect x="191" y="76" width="146" height="187" rx="23" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M222 102h84l-31 35v29h-23v-29z" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><text x="264" y="211" text-anchor="middle" font-size="20">Pipeline</text><path d="M223 235h81" stroke="#17211B" stroke-width="2"/>
     <g transform="translate(385 94) rotate(5 70 80)"><rect width="148" height="157" rx="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M28 100V72h20v28M63 100V55h20v45M98 100V34h20v66M22 101h104" fill="none" stroke="#17211B" stroke-width="2"/><text x="74" y="133" text-anchor="middle" font-size="17">Channel view</text></g>
+    <g class="pv pv-travel"><circle cx="150" cy="174" r="8" fill="#2448C6" stroke="#F5F1E8" stroke-width="2"/></g>
     <text x="280" y="334" text-anchor="middle" font-size="14">Carry the business question through the pipeline.</text>
+  </>}
+  {kind === 'platform' && <>
+    <path d="M168 168h44M336 168h30" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/><path d="M205 163l7 5-7 5M359 163l7 5-7 5" fill="none" stroke="#17211B" stroke-width="2"/>
+    <g transform="translate(38 84) rotate(-5 64 84)"><path d="M0 18q0-18 18-18h70l40 40v110q0 18-18 18H18q-18 0-18-18z" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M88 0v40h40" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M22 66h72M22 84h84M22 102h58" stroke="#17211B" stroke-width="3"/><text x="22" y="140" font-size="15">Last night</text></g>
+    <g transform="translate(216 92)"><path d="M0 22v108c0 30 116 30 116 0V22" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><ellipse cx="58" cy="22" rx="58" ry="20" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d="M0 74c0 26 116 26 116 0" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="5 5"/><text x="58" y="120" text-anchor="middle" font-size="16">Scratch</text><text x="58" y="140" text-anchor="middle" font-size="16">restore</text></g>
+    <g transform="translate(370 64) rotate(4 80 104)"><rect x="7" y="8" width="160" height="206" rx="20" fill="#17211B"/><rect width="160" height="206" rx="20" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/>
+      {['Under 26h', 'Archive intact', 'Restored', 'Counts match'].map((item, i) => <g class={`pv pv-tick pv-d${i+1}`}><circle cx="30" cy={40 + i*42} r="12" fill="#D6EB77" stroke="#17211B" stroke-width="2"/><path d={`M24 ${40 + i*42}l4 5 9-10`} fill="none" stroke="#17211B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="52" y={46 + i*42} font-size="15">{item}</text></g>)}
+    </g>
+    <text x="280" y="334" text-anchor="middle" font-size="14">A backup counts once it has been restored.</text>
+  </>}
+  {kind === 'sentinel' && <>
+    <path d="M166 98h22v72h22M166 176h44M166 254h22v-84" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/><path d="M352 150h18v-46h20M352 192h18v52h20" fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 5"/>
+    {[['Sign-in', '#F58B70', 70], ['Probe', '#F5F1E8', 148], ['Log line', '#F5F1E8', 226]].map(([label, fill, y], i) => <g class={`pv pv-gather pv-d${i+1}`}><g transform={`translate(36 ${y}) rotate(${i === 1 ? 3 : -3} 65 28)`}><rect width="130" height="56" rx="14" fill={fill as string} stroke="#17211B" stroke-width="2"/><circle cx="24" cy="28" r="7" fill="#17211B"/><text x="42" y="34" font-size="16">{label}</text></g></g>)}
+    <rect x="216" y="100" width="142" height="148" rx="24" fill="#17211B"/>
+    <rect x="210" y="94" width="142" height="148" rx="24" fill="#D6EB77" stroke="#17211B" stroke-width="2"/>
+    <path d="M281 116l26 10v22c0 18-12 30-26 36-14-6-26-18-26-36v-22z" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><path d="M270 146l8 8 14-16" fill="none" stroke="#17211B" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="281" y="210" text-anchor="middle" font-size="20">Rules</text><text x="281" y="230" text-anchor="middle" font-size="13">set the severity</text>
+    <g class="pv pv-pop pv-d4"><g transform="translate(392 62) rotate(4 68 42)"><rect width="140" height="84" rx="18" fill="#F58B70" stroke="#17211B" stroke-width="2"/><path d="M20 22h44v30H20zM20 22l22 16 22-16" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="78" y="44" font-size="17">HIGH</text><text x="20" y="72" font-size="13">straight to email</text></g></g>
+    <g transform="translate(392 210) rotate(-3 68 42)"><rect width="140" height="84" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2"/><text x="20" y="36" font-size="17">MEDIUM</text><text x="20" y="58" font-size="13">batched</text></g>
+    <g transform="translate(444 290) rotate(5 44 20)"><rect width="92" height="40" rx="10" fill="#F5F1E8" stroke="#2448C6" stroke-width="2" stroke-dasharray="4 4"/><text x="46" y="26" text-anchor="middle" font-size="13" fill="#2448C6">model note</text></g>
+    <text x="280" y="334" text-anchor="middle" font-size="14">Rules decide. The model only annotates.</text>
   </>}
 </svg>

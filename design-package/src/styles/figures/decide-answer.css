@@ -1,0 +1,14 @@
+@layer components {
+  .da-node rect { fill: var(--paper); transition: fill 280ms ease, opacity 280ms ease; }
+  .da-node[data-state="off"] { opacity: .45; }
+  .da-node[data-state="on"] rect { fill: var(--lime); }
+  .da-node[data-state="end"] rect { fill: var(--ink); }
+  .da-node[data-state="end"] text { fill: var(--paper); }
+  .da-node[data-node="refuse"][data-state="end"] rect { fill: var(--coral); }
+  .da-node[data-node="refuse"][data-state="end"] text { fill: var(--ink); }
+  .da-node[data-state="pending"] rect { fill: var(--paper); }
+  .da-edge { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 6; opacity: .4; transition: stroke 280ms ease, opacity 280ms ease; }
+  .da-edge[data-on="true"] { stroke: var(--cobalt); stroke-width: 3; stroke-dasharray: none; opacity: 1; }
+  .da-chip, .da-dot { transform-box: fill-box; transform-origin: center; }
+  .da-dot { opacity: 0; }
+}

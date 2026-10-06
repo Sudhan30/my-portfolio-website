@@ -1,0 +1,33 @@
+@layer components {
+  .fc-stage .fc-box { fill: var(--paper); }
+  .fc-stage[data-state="ok"] .fc-dot { fill: var(--lime); }
+  .fc-stage[data-state="fail"] .fc-box { fill: var(--coral); }
+  .fc-stage[data-state="fail"] .fc-dot { fill: var(--paper); }
+  .fc-stage[data-state="focus"] .fc-box { fill: var(--lime); }
+  .fc-stage[data-state="focus"] .fc-dot { fill: var(--cobalt); }
+  .fc-stage[data-state="idle"] .fc-box, .fc-stage[data-state="pending"] .fc-box { stroke-dasharray: 6 6; }
+  .fc-stage[data-state="idle"] .fc-dot, .fc-stage[data-state="pending"] .fc-dot { fill: var(--paper); }
+  .fc-stage[data-state="idle"] text, .fc-stage[data-state="pending"] text { opacity: .55; }
+  .fc-bar { fill: #dfe5ee; }
+  .fc-today { fill: var(--lime); transform-box: fill-box; transform-origin: center bottom; }
+  .fc-today[data-today="held"] { fill: transparent; stroke: var(--cobalt); stroke-dasharray: 6 5; }
+  .fc-held-label { opacity: 0; }
+  .play-stage .fc-held-label { fill: var(--cobalt); }
+  .play-stage .fc-order-text { fill: var(--paper); }
+  .play[data-choice="late"] .fc-held-label { opacity: 1; }
+  .fc-flag { transform-box: fill-box; transform-origin: center; opacity: 0; }
+  .fc-credit-bar { transform-box: fill-box; transform-origin: center bottom; }
+  .fc-credit, .play[data-choice="credit"] .fc-view, .play[data-choice="first"] .fc-view { display: none; }
+  .play[data-choice="credit"] .fc-credit, .play[data-choice="first"] .fc-credit { display: inline; }
+  .fc-packet { opacity: 0; }
+  .fc-controls { display: none; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin: 4px 4px 0; padding-top: 14px; border-top: 1px dashed #17211b55; font-size: 15px; }
+  .fc-controls > span { font-weight: 600; margin-right: 4px; }
+  .play[data-choice="credit"] .fc-controls, .play[data-choice="first"] .fc-controls { display: flex; }
+  .fc-rule { min-height: 44px; padding: 8px 14px; border: 1px solid #17211b60; border-radius: 100px; background: #f5f1e8b3; color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+  .fc-rule[aria-pressed="true"] { background: var(--lime); border-color: var(--ink); }
+  .fc-rule:hover { border-color: var(--ink); }
+}
+@layer responsive {
+  @media (max-width: 740px) { .fc-controls { margin-inline: 10px; } }
+  @media (forced-colors: active) { .fc-rule[aria-pressed="true"] { border: 2px solid ButtonText; } }
+}

@@ -1,0 +1,39 @@
+/*
+ * Homepage card previews. Each illustration rests in its final, static
+ * composition; art-preview.ts adds .is-playing once when the card scrolls into
+ * view (and again on hover) to show how its pieces arrive. Only the bare
+ * <g class="pv"> wrappers move, so no positioned group loses its transform.
+ */
+@layer components {
+  .work-art .pv { transform-box: fill-box; transform-origin: center; }
+  .pv-travel { opacity: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .work-art.is-playing .pv { animation: 900ms cubic-bezier(.16, 1, .3, 1) both; }
+    .work-art.is-playing .pv-d1 { animation-delay: 80ms; }
+    .work-art.is-playing .pv-d2 { animation-delay: 220ms; }
+    .work-art.is-playing .pv-d3 { animation-delay: 380ms; }
+    .work-art.is-playing .pv-d4 { animation-delay: 560ms; }
+    .work-art.is-playing .pv-slide { animation-name: pv-slide; }
+    .work-art.is-playing .pv-pop { animation-name: pv-pop; }
+    .work-art.is-playing .pv-sweep { animation-name: pv-sweep; animation-duration: 1400ms; }
+    .work-art.is-playing .pv-flow { animation: pv-flow 1400ms linear both; }
+    .work-art.is-playing .pv-gather { animation-name: pv-gather; }
+    .work-art.is-playing .pv-draw { animation-name: pv-draw; stroke-dasharray: 1; }
+    .work-art.is-playing .pv-tick { animation-name: pv-pop; }
+    .work-art.is-playing .pv-travel { animation: pv-travel 1500ms cubic-bezier(.45, 0, .2, 1) both; }
+  }
+  @keyframes pv-slide { from { transform: translateX(-26px); opacity: 0; } }
+  @keyframes pv-pop { from { transform: scale(.86); opacity: 0; } }
+  @keyframes pv-gather { from { transform: translateX(-34px) rotate(-3deg); opacity: 0; } }
+  @keyframes pv-sweep { 0% { transform: translate(-150px, 18px); } 55% { transform: translate(-60px, -6px); } }
+  @keyframes pv-flow { from { stroke-dashoffset: 66; } to { stroke-dashoffset: 0; } }
+  @keyframes pv-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes pv-travel {
+    0% { transform: translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    45% { transform: translateX(114px); }
+    55% { transform: translateX(114px); }
+    92% { opacity: 1; }
+    100% { transform: translateX(300px); opacity: 0; }
+  }
+}

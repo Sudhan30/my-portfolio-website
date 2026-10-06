@@ -1,0 +1,73 @@
+---
+import Playable from '../Playable.astro';
+import { scenarios, customPanel, records, levels, resolve, maxOrganizations } from '../../content/figures/resolve-records';
+import '../../styles/figures/resolve-records.css';
+
+// The server renders the first scenario's settled state, so the figure reads
+// correctly before (or without) the script.
+const first = scenarios[0];
+const initial = resolve(first.level, first.deleted);
+const levelIndex = levels.findIndex((level) => level.id === first.level);
+const recordY = (index: number) => 60 + index * 56;
+const slotY = (index: number) => 60 + index * 88;
+const tints = ['#D6EB77', '#dfe5ee', '#eee1d9', '#e2e9d5', '#F5F1E8'];
+const orgFill = (index: number, flag?: string) => (flag === 'over' ? '#F58B70' : tints[index] ?? '#F5F1E8');
+const status = (flags: (string | undefined)[]) => flags.includes('over') ? 'Over-merged' : flags.includes('split') ? 'Split' : 'Resolved';
+const initialStatus = status(initial.orgs.map((org) => org.flag));
+const wire = (recordIndex: number, slot: number) => `M266 ${recordY(recordIndex) + 25} C284 ${recordY(recordIndex) + 25} 282 ${slotY(slot) + 40} 300 ${slotY(slot) + 40}`;
+---
+<Playable id="rr" kind="resolve-records" surface="identity"
+  legend="Resolve the records"
+  intro="Eight records from different systems. Choose a matching rule and watch them become organizations, then send a deletion request."
+  caption="Illustrative companies and addresses. The rules are simplified to show the two ways matching goes wrong."
+  scenarios={scenarios} panels={[customPanel]}>
+  <svg viewBox="0 0 600 520" role="img" aria-labelledby="rr-svg-title">
+    <title id="rr-svg-title">Eight source records about four companies are matched into organizations. A loose rule merges a dental clinic into Northwind Traders; a strict rule splits Northwind Traders in two; a balanced rule finds four organizations. A deletion request removes one record and its address from the golden record.</title>
+    <defs>
+      <pattern id="rr-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".14" /></pattern>
+    </defs>
+    <rect width="600" height="520" fill="url(#rr-dots)" />
+
+    <text x="16" y="38" font-size="22" font-weight="600" data-out="count">{initial.remaining} records → {initial.orgs.length} organizations</text>
+    <g class="rr-status" data-status={initialStatus}>
+      <rect x="440" y="14" width="144" height="34" rx="17" stroke="#17211B" stroke-width="2" data-fade />
+      <text x="512" y="37" font-size="18" font-weight="600" text-anchor="middle" data-out="status">{initialStatus}</text>
+    </g>
+
+    {records.map((record, index) => {
+      const cluster = initial.clusterOf.get(record.id);
+      return <path class="rr-wire" data-wire={record.id} d={cluster === undefined ? `M266 ${recordY(index) + 25}h0` : wire(index, cluster)} fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 6" data-hidden={String(cluster === undefined)} />;
+    })}
+
+    {records.map((record, index) => {
+      const cluster = initial.clusterOf.get(record.id);
+      return <g class="rr-record" data-record={record.id} data-deleted={String(cluster === undefined)} data-odd={String(initial.odd.has(record.id))}>
+        <rect x="16" y={recordY(index)} width="250" height="50" rx="12" fill={cluster === undefined ? '#F5F1E8' : orgFill(cluster, initial.orgs[cluster]?.flag)} stroke="#17211B" stroke-width="2" data-fade />
+        <circle cx="34" cy={recordY(index) + 25} r="12" fill="#F5F1E8" stroke="#17211B" stroke-width="1.5" />
+        <text x="34" y={recordY(index) + 31} font-size="17" text-anchor="middle">{record.id}</text>
+        <text x="56" y={recordY(index) + 21} font-size="18" font-weight="600">{record.name}</text>
+        <text x="56" y={recordY(index) + 42} font-size="17">{record.address}</text>
+        <path class="rr-strike" d={`M50 ${recordY(index) + 25}h206`} stroke="#B4381A" stroke-width="3" stroke-linecap="round" />
+      </g>;
+    })}
+
+    {Array.from({ length: maxOrganizations }, (_, slot) => {
+      const org = initial.orgs[slot];
+      return <g class="rr-org" data-slot={slot} data-present={String(Boolean(org))} data-flag={org?.flag ?? 'none'}>
+        <rect x="300" y={slotY(slot)} width="284" height="80" rx="16" fill={org ? orgFill(slot, org.flag) : '#F5F1E8'} stroke="#17211B" stroke-width="2" data-fade />
+        <text x="316" y={slotY(slot) + 28} font-size="20" font-weight="600" data-org="name">{org?.name ?? ''}</text>
+        <text x="316" y={slotY(slot) + 50} font-size="17" data-org="members">{org ? `records ${org.members.join(', ')}` : ''}</text>
+        <text x="316" y={slotY(slot) + 71} font-size="17" data-org="attributes">{org?.attributes.join(' · ') ?? ''}</text>
+      </g>;
+    })}
+  </svg>
+  <div class="rr-controls">
+    <label class="rr-field"><span>Matching rule</span><input type="range" min="0" max={levels.length - 1} step="1" value={levelIndex} data-in="level" aria-valuetext={levels[levelIndex]?.label} /><output data-out="level">{levels[levelIndex]?.label}</output></label>
+    <label class="rr-check"><input type="checkbox" data-in="deleted" checked={first.deleted} /> Apply the deletion request for record 3</label>
+    <p class="rr-rule" data-out="rule">{levels[levelIndex]?.rule}.</p>
+    <p class="rr-readout" aria-live="polite" data-out="readout">{initial.remaining} records resolve to {initial.orgs.length} organizations. {initialStatus}.</p>
+  </div>
+</Playable>
+<script>
+  import '../../scripts/figures/resolve-records';
+</script>

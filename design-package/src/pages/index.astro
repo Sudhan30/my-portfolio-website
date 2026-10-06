@@ -47,3 +47,6 @@ const chapters = (await getCollection('experience')).sort((a,b) => a.data.order 
   <CareerJourney chapters={chapters}/>
   <section id="connect" class="wrap invitation section-space" aria-labelledby="connect-title"><p class="eyebrow">Have an interesting problem?</p><h2 id="connect-title">Let’s make<br/>something <em>useful.</em><span class="invite-spark" aria-hidden="true">✳</span></h2><div class="invitation-bottom"><p>I’d love to talk about AI systems,<br/>engineering, and what you’re building.</p><a class="button" href={site.linkedin}>Connect on LinkedIn <span aria-hidden="true">↗</span></a></div><div class="social-links"><a href={site.github}>GitHub ↗</a><a href={site.blog}>Blog ↗</a></div></section>
 </Base>
+<script>
+  import '../scripts/art-preview';
+</script>

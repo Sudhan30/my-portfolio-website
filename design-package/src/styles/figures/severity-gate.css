@@ -1,0 +1,12 @@
+@layer components {
+  .sg-source rect { fill: var(--paper); transition: fill 280ms ease; }
+  .sg-source[data-state="blind"] rect { fill: var(--coral); stroke-dasharray: 6 5; }
+  .sg-source[data-state="blind"] [data-out="status"] { font-weight: 600; }
+  .sg-model { transition: opacity 280ms ease; }
+  .sg-model[data-active="false"] { opacity: .4; }
+  .sg-brain { transition: opacity 280ms ease; }
+  .sg-brain[data-state="silent"] { opacity: .5; }
+  .sg-brain[data-state="silent"] rect { stroke-dasharray: 6 5; }
+  .sg-lane, .sg-mail, .sg-stat { transform-box: fill-box; transform-origin: center; }
+  .sg-token, .sg-pulse { opacity: 0; }
+}

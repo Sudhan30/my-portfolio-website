@@ -1,0 +1,19 @@
+@layer components {
+  .aa-source .aa-lamp { fill: var(--paper); }
+  .aa-source[data-on="on"] .aa-lamp { fill: var(--lime); }
+  .aa-source[data-on="off"] .aa-lamp { fill: var(--coral); }
+  .aa-source .aa-strike { opacity: 0; transition: opacity 280ms ease; }
+  .aa-source[data-on="off"] .aa-strike { opacity: 1; }
+  .aa-source[data-on="off"] text, .aa-source[data-on="idle"] text { opacity: .55; }
+  .aa-source text { transition: opacity 280ms ease; }
+  .aa-wire { opacity: .2; }
+  .aa-wire[data-on="on"] { opacity: 1; }
+  .aa-answer[data-missed="true"] .aa-cites { fill: #b4381a; font-weight: 600; }
+  .aa-answer .aa-cites { fill: var(--cobalt); }
+  .aa-bar { transform-box: fill-box; transform-origin: left center; }
+  .aa-bar[data-zero="true"] { opacity: 0; }
+  .aa-row[data-present="false"] { opacity: 0; }
+  .aa-row[data-fragment="true"] text { fill: #b4381a; }
+  .aa-pulse { opacity: 0; }
+  .aa-answer { transform-box: fill-box; transform-origin: center; }
+}

@@ -1,0 +1,74 @@
+---
+import Playable from '../Playable.astro';
+import { scenarios, sources, threshold } from '../../content/figures/ask-account';
+import '../../styles/figures/ask-account.css';
+
+// The server renders the first scenario's settled state, so the figure reads
+// correctly before (or without) the script.
+const first = scenarios[0];
+const used = new Set<string>(first.used);
+const sourceY = (index: number) => 104 + index * 62;
+const rowY = (index: number) => 400 + index * 34;
+const barX = 250;
+const unit = 80;
+const rows = [0, 1, 2, 3];
+const barFill = (value: number) => value >= threshold ? '#D6EB77' : '#F5F1E8';
+---
+<Playable id="aa" kind="ask-account" surface="agents"
+  legend="Ask the account"
+  intro="A seller asks a question. Watch which sources the agent reads, what it answers, and what happens when the records underneath are not joined."
+  caption="Illustrative accounts and signals. The point is the join: every signal reaches the agent through one customer identity."
+  scenarios={scenarios}>
+  <svg viewBox="0 0 600 540" role="img" aria-labelledby="aa-svg-title">
+    <title id="aa-svg-title">A seller's question goes to an agent that reads behavior, intent, engagement and a shared customer identity, then answers with the account that crossed a signal threshold. Without the shared identity, one company's signals split across three records and none crosses the threshold.</title>
+    <defs>
+      <pattern id="aa-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#17211B" opacity=".14" /></pattern>
+    </defs>
+    <rect width="600" height="540" fill="url(#aa-dots)" />
+
+    <rect x="16" y="16" width="568" height="60" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+    <path d="M44 76v16l18-16" fill="#F5F1E8" stroke="#17211B" stroke-width="2" stroke-linejoin="round" />
+    <path d="M45 74h16" stroke="#F5F1E8" stroke-width="3" />
+    <text x="36" y="54" font-size="22" font-weight="600" data-out="question">{first.question}</text>
+
+    {sources.map((source, index) => <path class="aa-wire" data-wire={source.id} data-on={used.has(source.id) ? 'on' : 'idle'} d={`M236 ${sourceY(index) + 26} C246 ${sourceY(index) + 26} 242 223 252 223`} fill="none" stroke="#17211B" stroke-width="2" stroke-dasharray="6 6" data-fade />)}
+    {sources.map((source, index) => <g class="aa-source" data-source={source.id} data-on={used.has(source.id) ? 'on' : 'idle'}>
+      <rect x="16" y={sourceY(index)} width="220" height="52" rx="14" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+      <circle class="aa-lamp" cx="40" cy={sourceY(index) + 26} r="9" stroke="#17211B" stroke-width="2" data-fade />
+      <text x="60" y={sourceY(index) + 33} font-size="21" font-weight="600">{source.name}</text>
+      <path class="aa-strike" d={`M28 ${sourceY(index) + 26}h196`} stroke="#F58B70" stroke-width="4" stroke-linecap="round" />
+    </g>)}
+
+    <rect x="258" y="156" width="112" height="146" rx="22" fill="#17211B" />
+    <rect x="252" y="150" width="112" height="146" rx="22" fill="#D6EB77" stroke="#17211B" stroke-width="2" />
+    <text x="308" y="210" font-size="24" font-weight="600" text-anchor="middle">Agent</text>
+    <text x="308" y="240" font-size="17" text-anchor="middle">reads first,</text>
+    <text x="308" y="262" font-size="17" text-anchor="middle">then</text><text x="308" y="282" font-size="17" text-anchor="middle">answers</text>
+    <path d="M364 223h16" stroke="#17211B" stroke-width="2" /><path d="M378 218l7 5-7 5" fill="none" stroke="#17211B" stroke-width="2" />
+
+    <g class="aa-answer" data-missed={String(!first.identity)}>
+      <rect x="386" y="96" width="198" height="252" rx="18" fill="#F5F1E8" stroke="#17211B" stroke-width="2" />
+      <text x="403" y="128" font-size="20" font-weight="600">Answer</text>
+      {[0, 1, 2, 3, 4].map((line) => <text x="403" y={162 + line * 28} font-size="18" font-weight={line === 0 ? '600' : '400'} data-answer={line}>{first.answer[line]}</text>)}
+      <text class="aa-cites" x="403" y="330" font-size="17" data-out="cites">{first.cites}</text>
+    </g>
+
+    {sources.map((source, index) => <g class="aa-pulse" data-pulse={source.id}><circle cx="236" cy={sourceY(index) + 26} r="7" fill="#2448C6" stroke="#F5F1E8" stroke-width="2" /></g>)}
+    <g class="aa-pulse" data-pulse="answer"><circle cx="364" cy="223" r="7" fill="#2448C6" stroke="#F5F1E8" stroke-width="2" /></g>
+
+    <text x="16" y="386" font-size="20" font-weight="600" data-out="meter">{first.meter}</text>
+    <path d={`M${barX + threshold * unit} 392v140`} stroke="#2448C6" stroke-width="2" stroke-dasharray="4 4" />
+    <text x={barX + threshold * unit} y="386" font-size="17" text-anchor="middle" fill="#2448C6">threshold</text>
+    {rows.map((row) => {
+      const bar = first.bars[row];
+      return <g class="aa-row" data-row={row} data-present={String(Boolean(bar))}>
+        <text x="16" y={rowY(row) + 22} font-size="18" data-label>{bar?.name ?? ''}</text>
+        <rect x={barX} y={rowY(row) + 5} width={unit * 4} height="22" rx="11" fill="none" stroke="#17211B" stroke-width="1" opacity=".3" />
+        <rect class="aa-bar" x={barX} y={rowY(row) + 5} width={Math.max(1, (bar?.value ?? 0) * unit)} height="22" rx="11" fill={barFill(bar?.value ?? 0)} stroke="#17211B" stroke-width="2" data-zero={String(!bar?.value)} data-fade />
+      </g>;
+    })}
+  </svg>
+</Playable>
+<script>
+  import '../../scripts/figures/ask-account';
+</script>

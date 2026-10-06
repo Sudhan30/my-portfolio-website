@@ -1,0 +1,33 @@
+---
+// A story's playable figure. It reuses the inference workbench's chips and
+// explanation panels, inside the story-art frame. Without JavaScript the
+// default scenario renders as a static figure and every explanation stays
+// readable; the chips appear only once the figure's script has enhanced it.
+export interface Scenario { id: string; label: string; heading: string; body: string; note?: string; }
+interface Props {
+  id: string; kind: string; surface: string;
+  legend: string; intro: string; caption: string;
+  scenarios: readonly Scenario[]; selected?: string;
+  /** Panels with no chip, shown by a figure's own controls. Hidden until chosen. */
+  panels?: readonly Omit<Scenario, 'label'>[];
+}
+const { id, kind, surface, legend, intro, caption, scenarios, panels = [], selected = scenarios[0]?.id } = Astro.props;
+---
+<section class={`story-art play surface-${surface}`} data-playable={kind} data-default={selected} aria-labelledby={`${id}-legend`}>
+  <div class="play-head">
+    <fieldset class="play-controls">
+      <legend id={`${id}-legend`}>{legend}</legend>
+      <p class="workbench-intro">{intro}</p>
+      <div class="scenario-controls">
+        {scenarios.map((scenario) => <label class="scenario-choice"><input type="radio" name={id} value={scenario.id} checked={scenario.id === selected} aria-controls={`${id}-stage ${id}-${scenario.id}`} /> <span>{scenario.label}</span></label>)}
+      </div>
+    </fieldset>
+    <button type="button" class="play-again" data-replay>Play again <span aria-hidden="true">↻</span></button>
+  </div>
+  <div class="play-stage" id={`${id}-stage`}><slot /></div>
+  <div class="play-notes scenario-explanations" aria-live="polite" aria-atomic="true">
+    {scenarios.map((scenario) => <section class="scenario-explanation" id={`${id}-${scenario.id}`} data-explanation={scenario.id}><h3>{scenario.heading}</h3><p>{scenario.body}</p>{scenario.note && <p class="tradeoff">{scenario.note}</p>}</section>)}
+    {panels.map((panel) => <section class="scenario-explanation" id={`${id}-${panel.id}`} data-explanation={panel.id} hidden><h3>{panel.heading}</h3><p>{panel.body}</p>{panel.note && <p class="tradeoff">{panel.note}</p>}</section>)}
+  </div>
+  <p class="play-caption">{caption}</p>
+</section>
