@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { checkPlayables } from './playable-checks.mjs';
 
-const base = 'http://127.0.0.1:4321';
+const base = process.env.DESIGN_URL ?? 'http://127.0.0.1:4321';
 const artifact=JSON.parse(await readFile('evidence/artifact-checks.json'));
 const routes = artifact.routes.map(route => route === 'index.html' ? '/' : route.endsWith('/index.html') ? '/'+route.slice(0,-10) : '/'+route);
 const widths = [320,390,768,1440];
@@ -61,7 +62,7 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
     const gmv=page.locator('.career-scale dl > div').filter({hasText:'$750M+'});
     assert.match(await gmv.textContent(),/order GMV surfaced/);
     assert.match(await page.locator('.professional-card').filter({hasText:'From a new channel'}).textContent(),/first production year/);
-    result.checks.push('all six project navigation paths; four career chapters; certification; scoped GMV labels');
+    result.checks.push('all seven project navigation paths; four career chapters; certification; scoped GMV labels');
     const one=page.getByRole('radio',{name:'One request'});
     await one.focus();await page.keyboard.press('ArrowRight');
     assert.equal(await page.getByRole('radio',{name:'A busy queue'}).isChecked(),true);
@@ -110,7 +111,7 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
     await plainPage.goto(base);assert.equal(await plainPage.locator('.scenario-explanation:visible').count(),3);
     assert.equal(await plainPage.getByRole('heading',{name:'Selected work.'}).isVisible(),true);
     await plainPage.getByRole('link',{name:'Explore the story'}).first().click();
-    assert.equal(await plainPage.getByRole('heading',{name:'The decision: give memory a budget'}).isVisible(),true);
+    assert.equal(await plainPage.getByRole('heading',{name:'A gate before the model speaks'}).isVisible(),true);
     for(const state of ['one','queue','prefix']) {
       await plainPage.goto(base+`/design/states/${state}/`);
       assert.equal(await plainPage.locator('.scenario-explanation:visible').count(),3);
@@ -146,6 +147,9 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
       }
     }
     await motion.close();
+    const playable=await checkPlayables(browser,base,routes);
+    assert.ok(playable.length>=7,`playable figures checked: ${playable.join(', ')}`);
+    result.checks.push(`playable figures on ${playable.length} stories: keyboard chips, matching explanations, reduced motion, deliberate motion settles, readable without JavaScript`);
     assert.equal(result.consoleErrors.filter(e=>!e.includes('404')).length,0);
 
     if(name==='chromium' || name==='webkit') {

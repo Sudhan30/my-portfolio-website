@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-10-02T19:00:37.009Z",
+  "timestamp": "2026-10-06T00:00:20.086Z",
   "base": "http://127.0.0.1:4322",
   "browsers": [
     {
       "name": "chromium",
       "status": "passed",
-      "layouts": 28,
-      "axeScans": 14,
+      "layouts": 32,
+      "axeScans": 16,
       "violations": [],
       "externalRequests": [],
       "pageErrors": [],
@@ -14,14 +14,15 @@
         "keyboard and reduced motion work under production CSP",
         "unknown and review routes return 404",
         "deliberate Motion animation plays once under production CSP",
-        "no-JavaScript explanations and work navigation"
+        "no-JavaScript explanations and work navigation",
+        "playable figures on all seven stories under production CSP"
       ]
     },
     {
       "name": "firefox",
       "status": "passed",
-      "layouts": 28,
-      "axeScans": 14,
+      "layouts": 32,
+      "axeScans": 16,
       "violations": [],
       "externalRequests": [],
       "pageErrors": [],
@@ -29,7 +30,8 @@
         "keyboard and reduced motion work under production CSP",
         "unknown and review routes return 404",
         "deliberate Motion animation plays once under production CSP",
-        "no-JavaScript explanations and work navigation"
+        "no-JavaScript explanations and work navigation",
+        "playable figures on all seven stories under production CSP"
       ]
     },
     {

@@ -36,9 +36,10 @@ for(const path of files.filter(path=>/\.(js|css)$/.test(path))) {
 assert.ok(js<=100000);assert.ok(css<=40000);
 const social=await readFile('build/social.png');assert.equal(social.subarray(1,4).toString(),'PNG');
 assert.equal(social.readUInt32BE(16),1200);assert.equal(social.readUInt32BE(20),630);
-assert.equal(files.filter(path=>path.endsWith('.html')).length,8);
-assert.equal((await readFile('build/sitemap.xml','utf8')).match(/<loc>/g).length,7);
+assert.equal(files.filter(path=>path.endsWith('.html')).length,9);
+assert.equal((await readFile('build/sitemap.xml','utf8')).match(/<loc>/g).length,8);
+assert.deepEqual(config.hosting.redirects,[{source:'/work/text-to-sql',destination:'/work/ai-chat/',type:301},{source:'/work/text-to-sql/',destination:'/work/ai-chat/',type:301}]);
 for(const line of (await readFile('release-artifact/files.sha256','utf8')).trim().split('\n')) {
   const [hash,path]=line.split('  ');assert.equal(createHash('sha256').update(await readFile(path)).digest('hex'),hash);
 }
-console.log(`Production checks passed: 7 public pages + 404; gzip JS ${js}B, CSS ${css}B; exact artifact verified.`);
+console.log(`Production checks passed: 8 public pages + 404; gzip JS ${js}B, CSS ${css}B; exact artifact verified.`);

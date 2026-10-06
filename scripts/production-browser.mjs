@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit } from '../design-package/node_modules/@playwright/test/index.mjs';
 import AxeBuilder from '../design-package/node_modules/@axe-core/playwright/dist/index.mjs';
+import { checkPlayables } from '../design-package/scripts/playable-checks.mjs';
 
 const base=process.env.PRODUCTION_TEST_URL ?? 'http://127.0.0.1:4322';
-const routes=['/','/work/ai-chat/','/work/text-to-sql/','/work/freshprobe/','/work/gtm-agents/','/work/customer-identity/','/work/affiliate-pipeline/'];
+const routes=['/','/work/ai-chat/','/work/data-platform/','/work/argus/','/work/freshprobe/','/work/gtm-agents/','/work/customer-identity/','/work/affiliate-pipeline/'];
 const result={timestamp:new Date().toISOString(),base,browsers:[]};
 for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
   let browser;try{browser=await engine.launch();}catch(error){result.browsers.push({name,status:'unavailable',reason:error.message.slice(0,1200)});continue;}
@@ -44,8 +45,10 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
     item.checks.push('deliberate Motion animation plays once under production CSP');await animated.close();
     const plain=await browser.newContext({javaScriptEnabled:false});const nojs=await plain.newPage();
     await nojs.goto(base);assert.equal(await nojs.locator('.scenario-explanation:visible').count(),3);
-    await nojs.getByRole('link',{name:'Explore the story'}).first().click();assert.equal(await nojs.getByRole('heading',{name:'The decision: give memory a budget'}).isVisible(),true);
+    await nojs.getByRole('link',{name:'Explore the story'}).first().click();assert.equal(await nojs.getByRole('heading',{name:'A gate before the model speaks'}).isVisible(),true);
     item.checks.push('no-JavaScript explanations and work navigation');await plain.close();
+    const playable=await checkPlayables(browser,base,routes,{cspViolations:true});assert.equal(playable.length,7);
+    item.checks.push('playable figures on all seven stories under production CSP');
     assert.equal(item.violations.filter(v=>['critical','serious'].includes(v.impact)).length,0,JSON.stringify(item.violations));
   }catch(error){item.status='failed';item.error=error.stack;}
   finally{await browser.close();result.browsers.push(item);}

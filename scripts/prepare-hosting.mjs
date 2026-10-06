@@ -13,7 +13,9 @@ for(const path of pages) {
 }
 const csp=`default-src 'none'; script-src 'self' ${[...hashes].join(' ')}; style-src 'self'; style-src-attr 'none'; font-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'`;
 const htmlCache={key:'Cache-Control',value:'public, max-age=0, must-revalidate'};
-const config={hosting:{public:'build',ignore:['firebase.json','**/.*','**/node_modules/**'],trailingSlash:true,cleanUrls:false,headers:[
+// The text-to-SQL experiment became a tool inside the chat agent; keep its old URL working.
+const redirects=['/work/text-to-sql','/work/text-to-sql/'].map(source=>({source,destination:'/work/ai-chat/',type:301}));
+const config={hosting:{public:'build',ignore:['firebase.json','**/.*','**/node_modules/**'],trailingSlash:true,cleanUrls:false,redirects,headers:[
   {source:'**',headers:[{key:'Content-Security-Policy',value:csp},{key:'X-Content-Type-Options',value:'nosniff'},{key:'X-Frame-Options',value:'DENY'},{key:'Referrer-Policy',value:'strict-origin-when-cross-origin'},{key:'Permissions-Policy',value:'camera=(), microphone=(), geolocation=()'}]},
   ...['/','/index.html','/work/**','/404.html','/robots.txt','/sitemap.xml','/favicon.svg','/social.png','/licenses/**'].map(source=>({source,headers:[htmlCache]})),
   {source:'/_astro/**',headers:[{key:'Cache-Control',value:'public, max-age=31536000, immutable'}]},

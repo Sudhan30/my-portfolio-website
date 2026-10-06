@@ -8,12 +8,12 @@ Checked on 2026-10-02 against version 03, following the high-level editorial rew
 | --- | --- | --- |
 | Node/dependencies | Node 24.19.0; exact versions and committed lockfile | `.nvmrc`, `package.json`, `package-lock.json` |
 | Astro/TypeScript | 0 errors, 0 warnings, 0 hints across 19 files | `npm run check` |
-| Static build | Twelve routes, including six work stories, review hub, all three interaction states, and 404 | `npm run build`; `evidence/artifact-checks.json` |
+| Static build | Thirteen routes, including seven work stories with playable figures, review hub, all three interaction states, and 404 | `npm run build`; `evidence/artifact-checks.json` |
 | Browser layout | Chromium 153.0.8010.12 and Firefox 155.0; twelve routes at 320, 390, 768, and 1440px; 96 checks without document overflow | `evidence/browser-checks.json` |
 | Automated accessibility | 48 axe WCAG A/AA scans across mobile and desktop; zero reported violations | `evidence/browser-checks.json` |
 | Interaction | Native radio arrow keys, reduced motion, no idle animation, each deliberate animation stops, rapid changes settle; touch in Chromium | `evidence/browser-checks.json` |
 | No JavaScript | Homepage content, story navigation, all explanations, and every initial figure state readable | `evidence/browser-checks.json` |
-| Navigation/content | All six work-story/back links, four career chapters, certification, scoped GMV labels, skip link, exact existing LinkedIn destination, and real unknown-route 404 | `evidence/browser-checks.json` |
+| Navigation/content | All seven work-story/back links, four career chapters, certification, scoped GMV labels, skip link, exact existing LinkedIn destination, and real unknown-route 404 | `evidence/browser-checks.json` |
 | Privacy | No external browser requests, cookies, or local/session storage; no application API or tracking references in the built CSS/JS | Browser report and artifact checks |
 | Assets | Local fonts/portrait/illustrations; licenses present; WebP variants have no EXIF/XMP/ICC payload; public SVG has no executable/remote content | Artifact validation and `CONTENT-REVIEW.md` |
 | Size budgets | gzip JS 3,464 bytes; gzip CSS approximately 5.2KB. Fresh mobile transfer remains below 700KB | Exact current values in artifact and browser reports |

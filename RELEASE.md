@@ -6,7 +6,7 @@ The user explicitly instructed: “push the code main, cicd will deploy.” This
 
 - Root scripts now build the reviewed Astro application in `design-package/`; CRA is no longer an active dependency or build path.
 - Node 24.19.0, exact application versions, standalone app lockfile. Explicit TypeScript includes avoid a resolution problem caused by hoisting the app into a workspace.
-- Seven public pages (homepage and six work stories), real 404, canonical URLs, WebPage/Person structured data, sitemap, favicon, and a local 1200×630 social image. The local `/design/` guide and scenario review routes are excluded from the production artifact.
+- Eight public pages (homepage and seven work stories; the retired `/work/text-to-sql/` redirects to `/work/ai-chat/`), real 404, canonical URLs, WebPage/Person structured data, sitemap, favicon, and a local 1200×630 social image. The local `/design/` guide and scenario review routes are excluded from the production artifact.
 - Hosting config has no SPA rewrite, API backend, function deployment configuration, or application hook. HTML revalidates; fingerprinted assets cache immutably. CSP permits local scripts/assets and generated structured-data hashes, with blocked connections and framing and no unsafe-inline/eval allowances. Motion works under that CSP in the tested browsers.
 - PR checks are credential-free and do not publish previews. Main deployment builds and validates first, uploads an artifact, verifies archive and file hashes in a separate job, installs the deployment CLI before credentials, and invokes Hosting-only deployment. No application checkout, rebuild, or application script runs in the deployment job.
 

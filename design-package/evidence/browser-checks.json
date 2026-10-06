@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-02T16:37:18.863Z",
+  "timestamp": "2026-10-05T23:57:23.578Z",
   "browsers": [
     {
       "name": "chromium",
@@ -48,7 +48,17 @@
         },
         {
           "width": 320,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 320,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -59,11 +69,6 @@
         {
           "width": 320,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 320,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -108,7 +113,17 @@
         },
         {
           "width": 390,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 390,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -119,11 +134,6 @@
         {
           "width": 390,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 390,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -168,7 +178,17 @@
         },
         {
           "width": 768,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 768,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -179,11 +199,6 @@
         {
           "width": 768,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 768,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -228,7 +243,17 @@
         },
         {
           "width": 1440,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -239,11 +264,6 @@
         {
           "width": 1440,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 1440,
-          "route": "/work/text-to-sql/",
           "overflow": false
         }
       ],
@@ -290,7 +310,17 @@
         },
         {
           "width": 390,
+          "route": "/work/argus/",
+          "violations": []
+        },
+        {
+          "width": 390,
           "route": "/work/customer-identity/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/work/data-platform/",
           "violations": []
         },
         {
@@ -301,11 +331,6 @@
         {
           "width": 390,
           "route": "/work/gtm-agents/",
-          "violations": []
-        },
-        {
-          "width": 390,
-          "route": "/work/text-to-sql/",
           "violations": []
         },
         {
@@ -350,7 +375,17 @@
         },
         {
           "width": 1440,
+          "route": "/work/argus/",
+          "violations": []
+        },
+        {
+          "width": 1440,
           "route": "/work/customer-identity/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/work/data-platform/",
           "violations": []
         },
         {
@@ -362,15 +397,10 @@
           "width": 1440,
           "route": "/work/gtm-agents/",
           "violations": []
-        },
-        {
-          "width": 1440,
-          "route": "/work/text-to-sql/",
-          "violations": []
         }
       ],
       "checks": [
-        "all six project navigation paths; four career chapters; certification; scoped GMV labels",
+        "all seven project navigation paths; four career chapters; certification; scoped GMV labels",
         "native radio arrow-key navigation and immediate reduced motion",
         "skip link",
         "work story and back navigation; exact LinkedIn href",
@@ -380,13 +410,14 @@
         "fresh-context mobile transfer budget",
         "homepage, work story navigation, and all three explanations readable without JavaScript; every initial SVG state",
         "no idle animation; deliberate animation plays once; rapid changes settle",
+        "playable figures on 7 stories: keyboard chips, matching explanations, reduced motion, deliberate motion settles, readable without JavaScript",
         "touch radio selection"
       ],
       "externalRequests": [],
       "consoleErrors": [
         "Failed to load resource: the server responded with a status of 404 (Not Found)"
       ],
-      "mobileTransferBytes": 121829
+      "mobileTransferBytes": 132917
     },
     {
       "name": "firefox",
@@ -435,7 +466,17 @@
         },
         {
           "width": 320,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 320,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 320,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -446,11 +487,6 @@
         {
           "width": 320,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 320,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -495,7 +531,17 @@
         },
         {
           "width": 390,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 390,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -506,11 +552,6 @@
         {
           "width": 390,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 390,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -555,7 +596,17 @@
         },
         {
           "width": 768,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 768,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -566,11 +617,6 @@
         {
           "width": 768,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 768,
-          "route": "/work/text-to-sql/",
           "overflow": false
         },
         {
@@ -615,7 +661,17 @@
         },
         {
           "width": 1440,
+          "route": "/work/argus/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
           "route": "/work/customer-identity/",
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "route": "/work/data-platform/",
           "overflow": false
         },
         {
@@ -626,11 +682,6 @@
         {
           "width": 1440,
           "route": "/work/gtm-agents/",
-          "overflow": false
-        },
-        {
-          "width": 1440,
-          "route": "/work/text-to-sql/",
           "overflow": false
         }
       ],
@@ -677,7 +728,17 @@
         },
         {
           "width": 390,
+          "route": "/work/argus/",
+          "violations": []
+        },
+        {
+          "width": 390,
           "route": "/work/customer-identity/",
+          "violations": []
+        },
+        {
+          "width": 390,
+          "route": "/work/data-platform/",
           "violations": []
         },
         {
@@ -688,11 +749,6 @@
         {
           "width": 390,
           "route": "/work/gtm-agents/",
-          "violations": []
-        },
-        {
-          "width": 390,
-          "route": "/work/text-to-sql/",
           "violations": []
         },
         {
@@ -737,7 +793,17 @@
         },
         {
           "width": 1440,
+          "route": "/work/argus/",
+          "violations": []
+        },
+        {
+          "width": 1440,
           "route": "/work/customer-identity/",
+          "violations": []
+        },
+        {
+          "width": 1440,
+          "route": "/work/data-platform/",
           "violations": []
         },
         {
@@ -749,15 +815,10 @@
           "width": 1440,
           "route": "/work/gtm-agents/",
           "violations": []
-        },
-        {
-          "width": 1440,
-          "route": "/work/text-to-sql/",
-          "violations": []
         }
       ],
       "checks": [
-        "all six project navigation paths; four career chapters; certification; scoped GMV labels",
+        "all seven project navigation paths; four career chapters; certification; scoped GMV labels",
         "native radio arrow-key navigation and immediate reduced motion",
         "skip link",
         "work story and back navigation; exact LinkedIn href",
@@ -766,11 +827,12 @@
         "no external requests, cookies, or browser storage",
         "fresh-context mobile transfer budget",
         "homepage, work story navigation, and all three explanations readable without JavaScript; every initial SVG state",
-        "no idle animation; deliberate animation plays once; rapid changes settle"
+        "no idle animation; deliberate animation plays once; rapid changes settle",
+        "playable figures on 7 stories: keyboard chips, matching explanations, reduced motion, deliberate motion settles, readable without JavaScript"
       ],
       "externalRequests": [],
       "consoleErrors": [],
-      "mobileTransferBytes": 122367
+      "mobileTransferBytes": 133455
     },
     {
       "name": "webkit",
