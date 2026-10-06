@@ -3,7 +3,7 @@ export const site = {
   fullName: 'Sudharsana Rajasekaran',
   headline: [{ lead: 'Curious by ', emphasis: 'nature.' }, { lead: 'A builder by ', emphasis: 'choice.' }],
   introduction: 'I’m a Staff Data Engineer working across data platforms and applied AI. I turn business questions into systems people can use—from the data underneath to the agents and interfaces on top.',
-  curiosity: 'The part that keeps pulling me in is everything around the model. What should a system remember? When should it reach for a tool? What happens when a request has to wait? I like making those choices visible, then testing the assumptions behind them.',
+  curiosity: 'The part that keeps pulling me in is everything around the model. What should a system remember? When should it reach for a tool, and when should it admit it cannot know? How do you check an answer before someone acts on it? I like making those choices visible, then testing the assumptions behind them.',
   biography: 'I’m Sudharsana Rajasekaran. I build data and AI systems with one eye on the technical details and the other on the people using them. I enjoy following a problem all the way through: listening, finding the shape of it, building something useful, and learning from what happens next.',
   career: 'My path has taken me through business intelligence, telecom analytics, data center infrastructure, and B2B platforms. That experience shapes how I approach AI today: with care for the data underneath, the decisions it supports, and the responsibility of running the system. My personal projects give that curiosity more room to roam.',
   linkedin: 'https://www.linkedin.com/in/sudharsanarajasekaran/',

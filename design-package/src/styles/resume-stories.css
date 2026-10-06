@@ -24,6 +24,8 @@
   .surface-agents { background: #e2e9d5; }
   .surface-identity { background: #dfe5ee; }
   .surface-pipeline { background: #eee1d9; }
+  .surface-platform { background: #eee1d9; }
+  .surface-sentinel { background: #e6e3d6; }
   .professional-copy .eyebrow { font-size: 11px; margin-bottom: 15px; }
   .professional-copy h3 { font-size: 34px; margin-bottom: 19px; }
   .professional-copy h3 a { text-decoration: none; }
@@ -35,7 +37,7 @@
   .project-metrics > div, .story-metrics > div { display: flex; flex-direction: column; }
   .project-metrics dd, .story-metrics dd { font-size: 33px; letter-spacing: -.04em; font-weight: 600; margin: 0; order: -1; line-height: 1.2; }
   .project-metrics dt { font-size: 12px; line-height: 1.45; margin-top: 8px; max-width: 220px; }
-  .personal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; }
+  .personal-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 54px 40px; }
   .personal-card .work-copy { margin-top: 25px; }
   .personal-card .work-copy h3 { font-size: 29px; }
   .personal-card .work-copy > p:not(.eyebrow) { font-size: 16px; }

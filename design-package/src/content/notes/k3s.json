@@ -1,7 +1,7 @@
 {
-  "title": "Two sites, two paths",
-  "date": "2025-08-04",
-  "summary": "Why a portfolio and a personal systems lab can call for different infrastructure.",
-  "url": "https://blog.sudharsana.dev/post/two-sites-two-paths",
+  "title": "Building a production K3s blog",
+  "date": "2025-09-15",
+  "summary": "From a mini PC to a GitOps platform: the architecture, monitoring, and lessons behind the cluster my projects run on.",
+  "url": "https://blog.sudharsana.dev/post/k3s-blog-architecture",
   "order": 3
 }

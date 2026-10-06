@@ -1,40 +1,50 @@
 ---
 title: "The system around the conversation"
-subtitle: "An AI chat architecture with memory, search, and room to fail gracefully."
-date: "2026-02-05"
+subtitle: "A self-hosted chat agent that checks whether it needs live data before it speaks, and keeps its database tools behind a boundary."
+date: "2026-09-27"
 status: draft
-source: "https://github.com/Sudhan30/my-blog-site-sudhanverse/blob/main/content/posts/building-ai-chat-system.md"
-sourceLabel: "Read the architecture article"
+source: "https://blog.sudharsana.dev/post/building-ai-chat-system"
+sourceLabel: "Read where it started: the February 2026 article"
 illustration: chat
+figure: decide-answer
 group: personal
 order: 1
-category: "Memory · orchestration · interfaces"
-summary: "A conversation system exploring what to remember, when to search, and how to make the response useful."
-decision: "Summarize earlier dialogue; keep recent context close."
-evidenceLabel: "Architecture article · February 2026"
-evidenceNote: "The public article documents architecture and code examples. It does not establish current deployment health or independently measured performance."
-caption: "Earlier dialogue and recent messages contribute to the context sent to the model."
+category: "Agents · grounding · SQL boundaries"
+summary: "A self-hosted chat agent that scores every question, reaches for a tool when the answer lives in a real system, and says so when nothing can see it."
+decision: "Decide whether a tool is needed before the model answers, in plain code that can be tested."
+evidenceLabel: "Private repository · September 2026"
+evidenceNote: "Scores in the figure come from running the app's own grounding function on each question. The linked article predates the current design."
+caption: "Scores come from running the chat app’s real grounding function on each question. Answers and data are illustrative."
+closing: "The interesting part was never the model. It was everything that decides what the model may say."
 displayLabel: "Personal project · conversation systems"
 ---
 
-## Build around the conversation
+## The answer that started it
 
-A chat interface is simple on the surface. Underneath it are choices about memory, context, search, presentation, and what happens when a feature fails.
+I asked my own chat app for the CPU temperature of my server. It replied with a neat table of five pods, their namespaces, and their restart counts. Every row was invented. No tool had been called, and nothing in the system had asked whether one should be.
 
-I built a chat system to explore those choices together, using local inference and a persistent conversation layer.
+## A gate before the model speaks
 
-## The decision: give memory a budget
+Now every question is scored before any model call. A live subject or a metric adds two points. Words like “my” or “right now” add two. State verbs add one. Framing like “explain” takes two away. A tool is required when a live subject fires and the score reaches three.
 
-Earlier dialogue is summarized in the background, while recent messages stay close to the next response. The aim is to carry forward intent, decisions, and open questions without sending an ever-growing history on every turn.
+It is a word list and some arithmetic, with no network calls, so it can be tested exhaustively for free.
 
-The interesting part is deciding what matters enough to remember.
+The threshold leans toward calling a tool on purpose. An unnecessary call costs a fraction of a second. A confident, invented answer about my own infrastructure costs far more.
 
-## Make the surrounding system useful
+## Knowing what it cannot see
 
-Selective search brings in fresh information when the conversation needs it. A separate rendering layer gives responses a readable shape. Failure handling helps the interface explain when a capability is unavailable.
+Some questions point at things no tool can read. Asked how many alerts fired last week, the agent says it has no tool that can see alerts, instead of answering with pod counts. That refusal is a designed path in the graph, not a model’s mood.
 
-These details shape the experience as much as the model itself.
+## A boundary the model cannot talk its way past
 
-## Keep following the questions
+The SQL tool began as a separate text-to-SQL experiment and is now one of the agent’s tools. Its boundary lives outside the model: SELECT only, no comments, no stacked statements, every query wrapped with a row limit, all of it inside a read-only transaction with a ten second timeout. Rows are redacted before the model reads them.
 
-This project gives me a place to explore the connection between system design and a human conversation: what the application knows, how it uses that context, and how clearly it communicates its limits.
+Asked to delete spam comments, the model can propose the query. The boundary turns it down.
+
+## Memory with a budget
+
+Long conversations get a rolling summary every ten messages: detailed at first, briefer after fifty. Recent messages stay close. The model gets enough to keep going without the whole history on every turn.
+
+## Measured, not assumed
+
+Changes run against a tiered set of test questions. Some have a checkable right answer. Some have no tool that could answer them, where saying so is correct. Some are plain conversation, where calling a tool is wrong. Scoring follows fixed rules, not another model’s opinion.
