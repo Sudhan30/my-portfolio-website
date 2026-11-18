@@ -4,7 +4,7 @@ subtitle: "A shared identity foundation for sales, marketing, fraud, and applied
 date: "2026-10-02"
 status: draft
 group: professional
-order: 2
+order: 1
 illustration: identity
 figure: resolve-records
 category: "Data architecture · identity · governance"

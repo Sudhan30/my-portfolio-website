@@ -4,7 +4,7 @@ subtitle: "An affiliate data pipeline built end to end, with attribution agreed 
 date: "2026-10-02"
 status: draft
 group: professional
-order: 3
+order: 2
 illustration: pipeline
 figure: follow-click
 category: "Data engineering · attribution · business delivery"

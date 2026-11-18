@@ -10,9 +10,9 @@
   [hidden] { display: none !important; }
 }
 @layer base {
-  :root { --paper: #F5F1E8; --ink: #17211B; --lime: #D6EB77; --cobalt: #2448C6; --coral: #F58B70; --line: #c9cec0; --muted: #4e594f; }
+  :root { --paper: #faf9f5; --ink: #17211B; --lime: #cee2d9; --cobalt: #11665e; --coral: #dbc2ac; --line: #c9cec0; --muted: #4e594f; }
   html { scroll-behavior: smooth; scroll-padding-top: 30px; }
-  body { background: var(--paper); color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 18px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; font-size: 18px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
   ::selection { background: var(--lime); color: var(--ink); }
   :focus-visible { outline: 3px solid var(--cobalt); outline-offset: 5px; border-radius: 3px; }
   h1, h2, h3 { font-weight: 600; line-height: 1.08; letter-spacing: -.045em; text-wrap: balance; }
@@ -66,7 +66,7 @@
   .surface-chat { background: #e2e9d5; }
   .surface-sql { background: #eee1d9; }
   .surface-probe { background: #dfe5ee; }
-  .work-art { width: 100%; height: auto; font-family: 'Space Grotesk', sans-serif; fill: var(--ink); }
+  .work-art { width: 100%; height: auto; font-family: 'Geist', system-ui, sans-serif; fill: var(--ink); }
   .work-copy { max-width: 520px; }
   .work-number { display: inline-block; padding: 3px 6px; border: 1px solid var(--ink); border-radius: 5px; margin-right: 8px; letter-spacing: 0; }
   .work-copy .eyebrow { font-size: 11px; margin-bottom: 22px; }
@@ -88,7 +88,7 @@
   .scenario-choice input { accent-color: var(--ink); margin: 0; width: 15px; height: 15px; }
   .scenario-choice input:focus-visible { outline: none; }
   .workbench figure { margin-block: 10px 24px; }
-  .workbench svg { width: 100%; font-family: 'Space Grotesk', sans-serif; fill: var(--ink); }
+  .workbench svg { width: 100%; font-family: 'Geist', system-ui, sans-serif; fill: var(--ink); }
   .workbench figcaption { padding: 0 10px; font-size: 12px; }
   .scenario-explanation + .scenario-explanation { margin-top: 20px; }
   .scenario-explanation h3 { font-size: 21px; line-height: 1.25; letter-spacing: -.025em; margin-bottom: 12px; }
@@ -212,4 +212,17 @@
   }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   @media (forced-colors: active) { .button, .scenario-choice:has(input:checked) { border: 2px solid ButtonText; } }
+}
+
+.name-dot { width: .46em; height: .46em; margin-inline-end: .48em; background: var(--cobalt); border-radius: 50%; }
+.hero h1 { max-width: 12ch; }
+.hero-portrait { max-width: 340px; padding: 0; }
+.portrait-frame { border: 1px solid var(--line); border-radius: 10px; transform: none; box-shadow: none; background: #e4eae5; }
+.hero-actions .button { background: #174f47; color: white; border: 0; border-radius: 5px; }
+.hero-actions a { text-underline-offset: 4px; }
+.case-decision { margin: 18px auto 0; max-width: 62ch; }
+@media (max-width: 740px) {
+  .hero-portrait { width: 160px; justify-self: start; }
+  .hero-intro { max-width: 42ch; }
+  .wordmark { font-size: 20px; }
 }

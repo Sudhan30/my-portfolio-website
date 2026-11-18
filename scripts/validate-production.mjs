@@ -22,6 +22,7 @@ for(const path of files.filter(path=>path.endsWith('.html'))) {
     if(!match[2].trim())continue;
     assert.match(match[1],/application\/ld\+json/);
     const data=JSON.parse(match[2]);assert.equal(data.author.name,'Sudharsana Rajasekaran');
+    assert.equal(data.author['@id'],'https://sudharsana.dev/#person');
     assert.ok(csp.includes(`'sha256-${createHash('sha256').update(match[2]).digest('base64')}'`));
   }
   for(const match of html.matchAll(/(?:src|href)="(\/[^"#]*)"/g)) {
