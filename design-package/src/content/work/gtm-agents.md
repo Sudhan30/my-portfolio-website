@@ -4,7 +4,7 @@ subtitle: "Sales and Marketing agents built on the customer data the business al
 date: "2026-10-02"
 status: draft
 group: professional
-order: 1
+order: 3
 illustration: agents
 figure: ask-account
 category: "Applied AI · technical discovery · delivery"

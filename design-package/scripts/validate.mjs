@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 const root = resolve('dist');
 const routes = (await readdir(root,{recursive:true})).filter(path => path.endsWith('.html')).sort();
 const results = { routes: [], assets: [], gzipJSBytes:0, gzipCSSBytes:0, externalResources: [] };
-for(const license of ['licenses/space-grotesk-OFL.txt','licenses/instrument-serif-OFL.txt']) assert.match(await readFile(resolve(root,license),'utf8'),/SIL OPEN FONT LICENSE/i);
+for(const license of ['licenses/geist-OFL.txt','licenses/instrument-serif-OFL.txt']) assert.match(await readFile(resolve(root,license),'utf8'),/SIL OPEN FONT LICENSE/i);
 for(const route of routes) {
   const html = await readFile(resolve(root,route),'utf8');
   assert.match(html, /<html lang="en">/);

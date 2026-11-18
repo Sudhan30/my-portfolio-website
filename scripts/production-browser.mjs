@@ -20,6 +20,11 @@ for(const [name,engine] of Object.entries({chromium,firefox,webkit})) {
       for(const route of routes){
         const response=await page.goto(base+route);assert.equal(response.status(),200,route);
         await page.evaluate(()=>document.fonts.ready);
+        if (route === '/' && width === 390) {
+          assert.equal(await page.locator('h1').textContent(), 'Sudharsana Rajasekaran');
+          const link = await page.locator('a[href="/work/customer-identity/"]').first().boundingBox();
+          assert.ok(link && link.y >= 0 && link.y + link.height <= 844, 'Identity case visible on first phone screen');
+        }
         assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),`${width} ${route}: overflow`);
         assert.equal(await page.locator('h1').count(),1);item.layouts++;
         assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://sudharsana.dev'+route);

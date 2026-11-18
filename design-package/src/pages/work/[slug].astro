@@ -1,5 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { site } from '../../content/site';
 import Base from '../../layouts/Base.astro';
 import WorkArt from '../../components/WorkArt.astro';
 import AskAccount from '../../components/figures/AskAccount.astro';
@@ -21,10 +22,11 @@ const figures = {
 } as const;
 const Figure = story.data.figure ? figures[story.data.figure] : undefined;
 ---
-<Base title={`${story.data.title} — Sudharsana`} description={story.data.subtitle}>
+<Base title={`${story.data.title} — ${site.fullName}`} description={story.data.subtitle}>
   <article class="story wrap">
     <a class="text-link" href="/#work">← Back to selected work</a>
-    <header class="story-header"><p class="eyebrow">{story.data.group === 'professional' ? 'Professional work' : 'Personal explorations'} · {story.data.category}</p><h1>{story.data.title}</h1><p class="large-prose">{story.data.subtitle}</p><p class="small-note">{story.data.displayLabel}</p></header>
+    <header class="story-header"><p class="eyebrow">{story.data.group === 'professional' ? 'Professional work' : 'Personal explorations'} · {story.data.category}</p><h1>{story.data.title}</h1><p class="large-prose">{story.data.subtitle}</p><p class="small-note"><a href="/#person" rel="author">{site.fullName}</a> · {story.data.displayLabel}</p>
+      <p class="case-decision">{story.data.decision}</p></header>
     {Figure ? <Figure/> : <figure class={`story-art surface-${story.data.illustration}`}><WorkArt kind={story.data.illustration}/><figcaption>{story.data.caption}</figcaption></figure>}
     {story.data.metrics.length > 0 && <dl class="story-metrics">{story.data.metrics.map(metric => <div><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}
     <div class="story-body"><Content/>{story.data.source && <a class="text-link story-resource" href={story.data.source}>{story.data.sourceLabel} ↗</a>}</div>

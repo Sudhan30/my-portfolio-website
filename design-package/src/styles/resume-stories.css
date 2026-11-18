@@ -145,3 +145,7 @@
     .story-metrics dt { font-size: 12px; }
   }
 }
+
+.professional-section { padding-top: 32px; margin-top: 16px; border-top: 1px solid var(--line); }
+.professional-art { margin: 22px 0 0; }
+.professional-card--lead .professional-art { margin: 0; }
