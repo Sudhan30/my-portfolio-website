@@ -17,7 +17,7 @@ export const projects = [
     illustration: 'voice',
     displayLabel: 'Android app · private voice typing',
     category: 'Voice typing · privacy · on-device AI',
-    summary: 'Private voice typing for Android. Dictate in any app with a voice keyboard or floating mic. Speech is recognized on the phone, on your own server, or with a service you choose, and polishing runs on the phone. It supports many languages, with no ads, no tracking and no account.',
+    summary: 'Private voice typing for Android. Dictate in any app with a voice keyboard or floating mic. Speech is recognized on the phone, on your own server, or with a service you choose, and polishing can run on the phone. It supports many languages, with no ads, no tracking and no account.',
     description: 'Private voice typing for Android: dictate in any app, with speech handled on your phone, your own server or a service you choose. No ads, no tracking, no account.',
     linkLabel: 'Visit BabbleScribe',
   },
