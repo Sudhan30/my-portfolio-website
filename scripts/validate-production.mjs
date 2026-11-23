@@ -23,6 +23,9 @@ for(const path of files.filter(path=>path.endsWith('.html'))) {
     assert.match(match[1],/application\/ld\+json/);
     const data=JSON.parse(match[2]);assert.equal(data.author.name,'Sudharsana Rajasekaran');
     assert.equal(data.author['@id'],'https://sudharsana.dev/#person');
+    assert.ok(data.author.sameAs.includes('https://blog.sudharsana.dev/'));
+    const app=data.author.subjectOf.find(item=>item['@type']==='SoftwareApplication');
+    assert.equal(app.url,'https://babblescribe.com/');assert.equal(app.creator['@id'],data.author['@id']);
     assert.ok(csp.includes(`'sha256-${createHash('sha256').update(match[2]).digest('base64')}'`));
   }
   for(const match of html.matchAll(/(?:src|href)="(\/[^"#]*)"/g)) {
@@ -38,7 +41,9 @@ assert.ok(js<=100000);assert.ok(css<=40000);
 const social=await readFile('build/social.png');assert.equal(social.subarray(1,4).toString(),'PNG');
 assert.equal(social.readUInt32BE(16),1200);assert.equal(social.readUInt32BE(20),630);
 assert.equal(files.filter(path=>path.endsWith('.html')).length,9);
-assert.equal((await readFile('build/sitemap.xml','utf8')).match(/<loc>/g).length,8);
+const sitemap=await readFile('build/sitemap.xml','utf8');
+assert.equal(sitemap.match(/<loc>/g).length,8);assert.equal(sitemap.match(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g).length,8);
+assert.match(await readFile('build/index.html','utf8'),/href="https:\/\/babblescribe\.com\/"/);
 assert.deepEqual(config.hosting.redirects,[{source:'/work/text-to-sql',destination:'/work/ai-chat/',type:301},{source:'/work/text-to-sql/',destination:'/work/ai-chat/',type:301}]);
 for(const line of (await readFile('release-artifact/files.sha256','utf8')).trim().split('\n')) {
   const [hash,path]=line.split('  ');assert.equal(createHash('sha256').update(await readFile(path)).digest('hex'),hash);

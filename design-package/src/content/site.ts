@@ -10,6 +10,18 @@ export const site = {
   github: 'https://github.com/Sudhan30',
   blog: 'https://blog.sudharsana.dev',
 };
+export const projects = [
+  {
+    name: 'BabbleScribe',
+    url: 'https://babblescribe.com/',
+    illustration: 'voice',
+    displayLabel: 'Android app · private voice typing',
+    category: 'Voice typing · privacy · on-device AI',
+    summary: 'Private voice typing for Android. Dictate in any app with a voice keyboard or floating mic. Speech is recognized on the phone, on your own server, or with a service you choose, and polishing can run on the phone. It supports many languages, with no ads, no tracking and no account.',
+    description: 'Private voice typing for Android: dictate in any app, with speech handled on your phone, your own server or a service you choose. No ads, no tracking, no account.',
+    linkLabel: 'Visit BabbleScribe',
+  },
+] as const;
 export const careerScale = [
   { value: '50+', label: 'production pipelines', context: 'Across the B2B data platform' },
   { value: '1.8M', label: 'distinct organizations', context: 'In the customer golden record' },
