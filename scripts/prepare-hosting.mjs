@@ -22,7 +22,8 @@ const config={hosting:{public:'build',ignore:['firebase.json','**/.*','**/node_m
 ]}};
 await writeFile('firebase.json',JSON.stringify(config,null,2)+'\n');
 const urls=pages.filter(path=>path!=='404.html').map(path=>'https://sudharsana.dev/'+(path==='index.html'?'':path.replace(/index\.html$/,'')));
-await writeFile('build/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+urls.map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>\n');
+const lastmod=execFileSync('git',['log','-1','--format=%cs'],{encoding:'utf8'}).trim();
+await writeFile('build/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+urls.map(url=>`<url><loc>${url}</loc><lastmod>${lastmod}</lastmod></url>`).join('')+'</urlset>\n');
 await writeFile('build/robots.txt','User-agent: *\nAllow: /\nSitemap: https://sudharsana.dev/sitemap.xml\n');
 const manifest=[];
 for(const path of (await readdir('build',{recursive:true})).sort()) {
